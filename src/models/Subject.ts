@@ -1,15 +1,15 @@
 import Teacher from './User/Teacher';
 import Student from './User/Student';
-import Project from './Project/Project';
+import Project from './Project';
 
 class Subject {
   id: string;
   name: string;
-  owner: Teacher;
+  owner?: Teacher;
 
-  students: Student[];
+  students: Student[] = [];
 
-  projects: Project[];
+  projects: Project[] = [];
 
   constructor(id: string, name: string) {
     this.id = id;
