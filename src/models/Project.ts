@@ -7,8 +7,8 @@ class Project {
   detail: string = '';
 
   tasks: Task[] = [];
-  students: Student[] = [];
-  comment: Comment[] = [];
+  members: Student[] = [];
+  comments: Comment[] = [];
 
   progress?: ProjectProgress;
   schedule?: ProjectSchedule;
