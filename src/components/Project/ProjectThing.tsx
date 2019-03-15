@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
 import { Comment, Project } from '../../models';
+import { ProjectProgress, ProjectSchedule } from '../../models/Project';
+
+import ProjectMembers from './ProjectMembers';
+import ProjectComments from './ProjectComments';
+import ProjectDetail from './ProjectDetail';
+import ProjectTime from './ProjectTime';
+import ProjectPercent from './ProjectPercent';
+import ProjectTasks from './ProjectTasks';
 
 interface IProjectThingProps {
   project: Project;
@@ -24,24 +32,12 @@ class ProjectThing extends Component<IProjectThingProps> {
 
     return (
       <div>
-        <div>Project Name {name}</div>
-        <div>Project Detail {detail}</div>
-        <div>Project Tasks </div>
-        {tasks.map(task => {
-          return <div>{task.detail}</div>;
-        })}
-        <div>Project Comments</div>
-        {comments.map(comment => {
-          return <div>{comment.detail}</div>;
-        })}
-        <div>Project Members</div>
-        {members.map(member => {
-          return <div>{member.name}</div>;
-        })}
-        <div>Project Progress</div>
-        {progress ? <div> Progress </div> : <div />}
-        <div>Project Schedule</div>
-        {schedule ? <div> Schedule </div> : <div />}
+        <ProjectDetail name={name} detail={detail} />
+        <ProjectMembers members={members} />
+        <ProjectTasks tasks={tasks} />
+        <ProjectComments comments={comments} />
+        <ProjectPercent progress={progress} />
+        <ProjectTime schedule={schedule} />
       </div>
     );
   }

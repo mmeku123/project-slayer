@@ -1,6 +1,6 @@
 import Comment from '../models/Comment';
-import { simpleStudent } from './students';
+import { student } from './students';
 
-let simpleComment = new Comment(simpleStudent, new Date(), 'test comment');
+let simpleComment = new Comment(student, new Date(), 'test comment');
 
 export { simpleComment };
