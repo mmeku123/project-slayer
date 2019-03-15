@@ -4,6 +4,7 @@ import Project from '../models/Project';
 
 import SubjectList from './Subject/SubjectList';
 import ProjectList from './Project/ProjectList';
+import ProjectThing from './Project/ProjectThing';
 
 import subjects from '../mocks/subjects';
 
@@ -86,6 +87,8 @@ class ProjectManagement extends Component<
           isChooseProject={project.isChoose}
           onChangeProject={this.handleProjectChange}
         />
+
+        <ProjectThing project={project.choose} />
       </div>
     );
   }
