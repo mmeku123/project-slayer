@@ -12,5 +12,6 @@ simpleProject3.comment = [simpleComment];
 simpleProject3.detail = 'project3';
 
 let simpleProjects = [simpleProject1, simpleProject2, simpleProject3];
+let simpleProjects2 = [simpleProject2, simpleProject3];
 
-export { simpleProject1, simpleProjects };
+export { simpleProject1, simpleProjects, simpleProjects2 };

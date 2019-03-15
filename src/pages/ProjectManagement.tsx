@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import ProjectList from '../components/Project/ProjectList';
+import ProjectManagement from '../components/ProjectManagement';
 
 const ProjectManagementPage = () => {
-  return <ProjectList />;
+  return <ProjectManagement />;
 };
 
 export default ProjectManagementPage;

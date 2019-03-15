@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import Project from '../../models/Project';
 import { simpleProjects } from '../../mocks/projects';
 
-interface ProjectListProps {}
-
-interface ProjectListState {
+interface ProjectListProps {
+  projects: Project[];
   isChooseProject: boolean;
   chooseProject: Project;
+  onChangeProject: (project: Project) => void;
 }
+
+interface ProjectListState {}
 
 class ProjectCardList extends Component<{
   projects: Project[];
@@ -34,17 +36,18 @@ class ProjectCardList extends Component<{
 }
 
 class ProjectList extends Component<ProjectListProps, ProjectListState> {
-  constructor(props: {}) {
+  constructor(props: ProjectListProps) {
     super(props);
-    this.state = { isChooseProject: false, chooseProject: simpleProjects[0] };
+    this.state = {};
   }
 
   handleChooseProjectChange = (project: Project) => {
-    this.setState({ chooseProject: project });
+    this.props.onChangeProject(project);
   };
 
   render() {
-    let project = this.state.chooseProject;
+    let projects = this.props.projects;
+    let project = this.props.chooseProject;
 
     return (
       <div>
@@ -52,7 +55,7 @@ class ProjectList extends Component<ProjectListProps, ProjectListState> {
         <div>Detail: {project.detail}</div>
 
         <ProjectCardList
-          projects={simpleProjects}
+          projects={projects}
           onProjectChange={this.handleChooseProjectChange}
         />
       </div>

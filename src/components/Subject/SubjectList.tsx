@@ -1,12 +1,42 @@
 import React, { Component } from 'react';
+import Subject from '../../models/Subject';
 
-class SubjectList extends Component {
-  constructor(props: {}) {
+import subjects from '../../mocks/subjects';
+
+interface ISubjectListProps {
+  subjects: Subject[];
+  isChooseSubject: boolean;
+  chooseSubject: Subject;
+  onChangeSubject: (subject: Subject) => void;
+}
+
+interface ISubjectListStates {}
+
+class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
+  constructor(props: ISubjectListProps) {
     super(props);
-    this.state = {};
   }
+
+  handleChangeSubject = (event, subject: Subject) => {
+    console.log(event);
+    this.props.onChangeSubject(subject);
+  };
+
   render() {
-    return null;
+    return (
+      <div>
+        Your subject is: {this.props.chooseSubject.name}
+        <br />
+        {this.props.subjects.map(subject => {
+          return (
+            <button onClick={event => this.handleChangeSubject(event, subject)}>
+              {subject.name}
+            </button>
+          );
+        })}
+        ;
+      </div>
+    );
   }
 }
 
