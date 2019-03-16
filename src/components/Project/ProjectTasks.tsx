@@ -11,6 +11,7 @@ class ProjectTasks extends Component<IProjectTasksProps> {
     super(props);
     this.state = {};
   }
+
   render() {
     let tasks = this.props.tasks;
 
@@ -18,7 +19,7 @@ class ProjectTasks extends Component<IProjectTasksProps> {
       <div>
         <h5>Project Tasks </h5>
         {tasks.map(task => {
-          return <div>{task.detail}</div>;
+          return <div>{task.name}</div>;
         })}
       </div>
     );

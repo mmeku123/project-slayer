@@ -14,21 +14,33 @@ class ProjectMembers extends Component<IProjectMembersProps> {
   render() {
     let members: Student[] = this.props.members;
 
-    return members.map(member => {
-      return (
-        <div>
-          <h5>Project Members</h5>
+    return (
+      <div>
+        <h5>Project Members</h5>
 
-          <b>{member.name}</b>
-          <ul>
-            <li>id {member.id}</li>
-            <li>email {member.email}</li>
-            <li>nickname {member.nickname}</li>
-            <li>job {member.job}</li>
-          </ul>
-        </div>
-      );
-    });
+        {members.map(member => {
+          return (
+            <div>
+              <b>{member.name}</b>
+              <ul>
+                <li>id {member.id}</li>
+                <li>email {member.email}</li>
+                <li>nickname {member.nickname}</li>
+                <li>job {member.job}</li>
+                <li>
+                  task
+                  <ol>
+                    {member.tasks.map(task => {
+                      return <li>{task.name}</li>;
+                    })}
+                  </ol>
+                </li>
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+    );
   }
 }
 

@@ -1,4 +1,5 @@
 import Student from '../models/User/Student';
+import { tasks } from './tasks';
 
 let student = new Student(
   '590610644',
@@ -9,6 +10,8 @@ let student = new Student(
   'tusave'
 );
 
+student.tasks = [tasks[1]];
+
 let student2 = new Student(
   '590610621',
   'Thanatat Voraveeravong',
@@ -17,5 +20,7 @@ let student2 = new Student(
   'general assistant',
   'fame'
 );
+
+student2.tasks = [tasks[0]];
 
 export { student, student2 };
