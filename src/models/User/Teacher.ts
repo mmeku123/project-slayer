@@ -1,4 +1,5 @@
-class Teacher {
+import User from './User';
+class Teacher implements User {
   id: string;
   name: string;
 

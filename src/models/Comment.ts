@@ -1,11 +1,11 @@
-import Student from './User/Student';
+import User from './User/User';
 
 class Comment {
-  owner: Student;
+  owner: User;
   time: Date;
   detail: string;
 
-  constructor(owner: Student, time: Date, detail: string) {
+  constructor(owner: User, time: Date, detail: string) {
     this.owner = owner;
     this.time = time;
     this.detail = detail;

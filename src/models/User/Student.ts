@@ -1,6 +1,7 @@
 import Task from '../Task';
+import User from './User';
 
-class Student {
+class Student implements User {
   id: string;
   name: string;
   nickname?: string;
