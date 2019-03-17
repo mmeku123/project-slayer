@@ -8,6 +8,8 @@ import ProjectThing from './Project/ProjectThing';
 
 import subjects from '../mocks/subjects';
 import { simpleProjects, simpleProjects2 } from '../mocks/projects';
+import { student, student2 } from '../mocks/students';
+import { simpleComment, simpleComment2 } from '../mocks/comments';
 
 interface IProjectManagementProps {}
 
@@ -66,6 +68,16 @@ class ProjectManagement extends Component<
     }));
   };
 
+  handleProjectCreate = (projectName: string) => {
+    let newProject = new Project(projectName);
+    newProject.comments = [simpleComment];
+    newProject.detail = 'project1';
+    newProject.members = [student, student2];
+    newProject.addProjectTaskByMember();
+    this.state.project.list.push(newProject);
+    this.setState({});
+  };
+
   handleProjectChange = (project: Project) => {
     this.setState(state => ({
       project: {
@@ -95,6 +107,7 @@ class ProjectManagement extends Component<
           chooseProject={project.choose}
           isChooseProject={project.isChoose}
           onChangeProject={this.handleProjectChange}
+          onCreateProject={this.handleProjectCreate}
         />
 
         <ProjectThing project={project.choose} />

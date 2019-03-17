@@ -2,14 +2,18 @@ import React, { Component } from 'react';
 import Project from '../../models/Project';
 import { simpleProjects } from '../../mocks/projects';
 
-interface ProjectListProps {
+interface IProjectListProps {
   projects: Project[];
   isChooseProject: boolean;
   chooseProject: Project;
   onChangeProject: (project: Project) => void;
+  onCreateProject: (projectName: string) => void;
 }
 
-interface ProjectListState {}
+interface IProjectListState {
+  isAddNewProject: boolean;
+  newProjectName: string;
+}
 
 class ProjectCardList extends Component<{
   projects: Project[];
@@ -38,14 +42,37 @@ class ProjectCardList extends Component<{
   }
 }
 
-class ProjectList extends Component<ProjectListProps, ProjectListState> {
-  constructor(props: ProjectListProps) {
+class ProjectList extends Component<IProjectListProps, IProjectListState> {
+  constructor(props: IProjectListProps) {
     super(props);
-    this.state = {};
+    this.state = { isAddNewProject: false, newProjectName: '' };
   }
 
   handleChooseProjectChange = (project: Project) => {
     this.props.onChangeProject(project);
+  };
+
+  showNewProjectInput = () => {
+    this.setState({ isAddNewProject: true });
+  };
+
+  createNewProject = () => {
+    this.props.onCreateProject(this.state.newProjectName);
+  };
+
+  inputChange = event => {
+    this.setState({ newProjectName: event.target.value });
+  };
+
+  renderInputNewProject = () => {
+    return this.state.isAddNewProject ? (
+      <div>
+        <input placeholder="New Project" onChange={this.inputChange} />
+        <button onClick={this.createNewProject}>+</button>
+      </div>
+    ) : (
+      <div />
+    );
   };
 
   render() {
@@ -61,6 +88,11 @@ class ProjectList extends Component<ProjectListProps, ProjectListState> {
           projects={projects}
           onProjectChange={this.handleChooseProjectChange}
         />
+
+        <div>
+          <button onClick={this.showNewProjectInput}>New Project</button>
+          {this.renderInputNewProject()}
+        </div>
       </div>
     );
   }

@@ -27,7 +27,7 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
     this.props.onChangeSubject(subject);
   };
 
-  showNewSubjectPopUp = () => {
+  showNewSubjectInput = () => {
     this.setState({ isAddNewSubject: true });
   };
 
@@ -65,7 +65,7 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
           );
         })}
         <div>
-          <button onClick={this.showNewSubjectPopUp}>New Subject</button>
+          <button onClick={this.showNewSubjectInput}>New Subject</button>
           {this.renderInputNewSubject()}
         </div>
       </div>
