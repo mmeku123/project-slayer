@@ -16,6 +16,14 @@ class Project {
   constructor(name: string) {
     this.name = name;
   }
+
+  addProjectTaskByMember() {
+    return this.members.forEach(member => {
+      member.tasks.forEach(task => {
+        this.tasks.push(task);
+      });
+    });
+  }
 }
 
 class ProjectProgress {
