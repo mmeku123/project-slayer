@@ -20,7 +20,7 @@ class ProjectMembers extends Component<IProjectMembersProps> {
 
         {members.map(member => {
           return (
-            <div>
+            <div key={member.id}>
               <b>{member.name}</b>
               <ul>
                 <li>id {member.id}</li>
@@ -31,7 +31,7 @@ class ProjectMembers extends Component<IProjectMembersProps> {
                   task
                   <ol>
                     {member.tasks.map(task => {
-                      return <li>{task.name}</li>;
+                      return <li key={task.name}>{task.name}</li>;
                     })}
                   </ol>
                 </li>

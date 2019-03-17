@@ -21,7 +21,7 @@ class ProjectTasks extends Component<IProjectTasksProps> {
 
         {tasks.map(task => {
           return (
-            <div>
+            <div key={task.name}>
               <div>{task.name}</div>
               <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
             </div>

@@ -18,7 +18,7 @@ class ProjectComments extends Component<IProjectCommentsProps> {
         <h5>Project Comments</h5>
         {comments.map(comment => {
           return (
-            <div>
+            <div key={comment.detail}>
               <div>{comment.detail}</div>
               <ul>
                 <li>{comment.owner.name}</li>

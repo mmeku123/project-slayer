@@ -27,7 +27,10 @@ class ProjectCardList extends Component<{
   render() {
     return this.props.projects.map(project => {
       return (
-        <button onClick={event => this.handleChangeProject(event, project)}>
+        <button
+          onClick={event => this.handleChangeProject(event, project)}
+          key={project.name}
+        >
           {project.name}
         </button>
       );

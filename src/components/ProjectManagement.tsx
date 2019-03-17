@@ -7,6 +7,7 @@ import ProjectList from './Project/ProjectList';
 import ProjectThing from './Project/ProjectThing';
 
 import subjects from '../mocks/subjects';
+import { simpleProjects, simpleProjects2 } from '../mocks/projects';
 
 interface IProjectManagementProps {}
 
@@ -42,6 +43,13 @@ class ProjectManagement extends Component<
       }
     };
   }
+
+  handleSubjectCreate = (subjectName: string) => {
+    let newSubject = new Subject(subjectName, subjectName);
+    newSubject.projects = simpleProjects;
+    this.state.subject.list.push(newSubject);
+    this.setState({});
+  };
 
   handleSubjectChange = (subject: Subject) => {
     this.setState(state => ({
@@ -79,6 +87,7 @@ class ProjectManagement extends Component<
           chooseSubject={subject.choose}
           isChooseSubject={subject.isChoose}
           onChangeSubject={this.handleSubjectChange}
+          onCreateSubject={this.handleSubjectCreate}
         />
 
         <ProjectList
