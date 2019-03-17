@@ -5,6 +5,8 @@ class Task {
   name: string;
   detail: string;
 
+  isDone: boolean;
+
   startDate?: Date;
   dueDate?: Date;
 

@@ -18,8 +18,14 @@ class ProjectTasks extends Component<IProjectTasksProps> {
     return (
       <div>
         <h5>Project Tasks </h5>
+
         {tasks.map(task => {
-          return <div>{task.name}</div>;
+          return (
+            <div>
+              <div>{task.name}</div>
+              <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
+            </div>
+          );
         })}
       </div>
     );
