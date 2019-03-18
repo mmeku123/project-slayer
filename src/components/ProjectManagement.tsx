@@ -10,6 +10,7 @@ import subjects from '../mocks/subjects';
 import { simpleProjects, simpleProjects2 } from '../mocks/projects';
 import { student, student2 } from '../mocks/students';
 import { simpleComment, simpleComment2 } from '../mocks/comments';
+import ProjectHeader from './Project/ProjectHeader';
 
 interface IProjectManagementProps {}
 
@@ -88,6 +89,16 @@ class ProjectManagement extends Component<
     }));
   };
 
+  handleProjectEdit = (editProject: Project) => {
+    let project = this.state.project.list.find(project => {
+      return project.name == editProject.name;
+    });
+
+    if (project) project = editProject;
+
+    this.setState({});
+  };
+
   render() {
     let subject = this.state.subject;
     let project = this.state.project;
@@ -108,7 +119,10 @@ class ProjectManagement extends Component<
           isChooseProject={project.isChoose}
           onChangeProject={this.handleProjectChange}
           onCreateProject={this.handleProjectCreate}
+          onEditProject={this.handleProjectEdit}
         />
+
+        <ProjectHeader project={project.choose} />
 
         <ProjectThing project={project.choose} />
       </div>

@@ -8,6 +8,7 @@ interface IProjectListProps {
   chooseProject: Project;
   onChangeProject: (project: Project) => void;
   onCreateProject: (projectName: string) => void;
+  onEditProject: (project: Project) => void;
 }
 
 interface IProjectListState {
@@ -58,6 +59,7 @@ class ProjectList extends Component<IProjectListProps, IProjectListState> {
 
   createNewProject = () => {
     this.props.onCreateProject(this.state.newProjectName);
+    this.setState({ isAddNewProject: false });
   };
 
   inputChange = event => {

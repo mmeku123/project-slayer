@@ -33,6 +33,7 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
 
   createNewSubject = () => {
     this.props.onCreateSubject(this.state.newSubjectName);
+    this.setState({ isAddNewSubject: false });
   };
 
   inputChange = event => {

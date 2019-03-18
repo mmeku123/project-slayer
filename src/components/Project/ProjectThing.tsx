@@ -9,16 +9,61 @@ import ProjectTime from './ProjectTime';
 import ProjectPercent from './ProjectPercent';
 import ProjectTasks from './ProjectTasks';
 
+enum ShowType {
+  DETAIL,
+  TASK,
+  MEMBER,
+  COMMENT,
+  PROGRESS,
+  TIMELINE
+}
+
 interface IProjectThingProps {
   project: Project;
 }
 
-class ProjectThing extends Component<IProjectThingProps> {
+interface IProjectThingStates {
+  showType: ShowType;
+}
+
+class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showType: ShowType.DETAIL
+    };
   }
-  render() {
+
+  changeShowType = (type: ShowType) => {
+    this.setState({ showType: type });
+  };
+
+  renderSelectedShowButtons = () => {
+    return (
+      <div>
+        <button onClick={event => this.changeShowType(ShowType.DETAIL)}>
+          Detail
+        </button>
+        <button onClick={event => this.changeShowType(ShowType.MEMBER)}>
+          Member
+        </button>
+        <button onClick={event => this.changeShowType(ShowType.TASK)}>
+          Task
+        </button>
+        <button onClick={event => this.changeShowType(ShowType.COMMENT)}>
+          Comment
+        </button>
+        <button onClick={event => this.changeShowType(ShowType.PROGRESS)}>
+          Progress
+        </button>
+        <button onClick={event => this.changeShowType(ShowType.TIMELINE)}>
+          Timeline
+        </button>
+      </div>
+    );
+  };
+
+  renderProjectShowing = () => {
     let project: Project = this.props.project;
     let {
       name,
@@ -30,14 +75,28 @@ class ProjectThing extends Component<IProjectThingProps> {
       schedule
     } = project;
 
+    switch (this.state.showType) {
+      case ShowType.DETAIL:
+        return <ProjectDetail name={name} detail={detail} />;
+      case ShowType.TASK:
+        return <ProjectTasks tasks={tasks} />;
+      case ShowType.COMMENT:
+        return <ProjectComments comments={comments} />;
+      case ShowType.MEMBER:
+        return <ProjectMembers members={members} />;
+      case ShowType.TIMELINE:
+        return <ProjectTime schedule={schedule} />;
+      case ShowType.PROGRESS:
+        return <ProjectPercent progress={progress} />;
+    }
+  };
+
+  render() {
     return (
       <div>
-        <ProjectDetail name={name} detail={detail} />
-        <ProjectMembers members={members} />
-        <ProjectTasks tasks={tasks} />
-        <ProjectComments comments={comments} />
-        <ProjectPercent progress={progress} />
-        <ProjectTime schedule={schedule} />
+        {this.renderSelectedShowButtons()}
+
+        {this.renderProjectShowing()}
       </div>
     );
   }
