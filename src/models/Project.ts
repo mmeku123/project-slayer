@@ -27,11 +27,13 @@ class Project {
 }
 
 class ProjectProgress {
-  progresses: progress[] = [];
+  progresses: Progress[] = [];
+  percentCompleted: number;
 }
 
-class progress {
+class Progress {
   name: string;
+  detail: string;
   isStart: boolean = false;
   isDone: boolean = false;
 
@@ -44,7 +46,7 @@ class ProjectSchedule {
   startDate: Date;
   endDate: Date;
 
-  sprints: Date[] = [];
+  sprints: ProjectProgress[] = [];
 
   constructor(startDate: Date, endDate: Date) {
     this.startDate = startDate;

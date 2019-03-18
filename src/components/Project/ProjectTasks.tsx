@@ -24,6 +24,23 @@ class ProjectTasks extends Component<IProjectTasksProps> {
             <div key={task.name}>
               <div>{task.name}</div>
               <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
+              <div> detail : {task.detail} </div>
+              {task.priority ? (
+                <div>priority: {task.priority}</div>
+              ) : (
+                <div>normal</div>
+              )}
+              {task.startDate ? (
+                <div>Start: {task.startDate.toISOString}</div>
+              ) : (
+                <div />
+              )}
+              {task.dueDate ? (
+                <div>End: {task.dueDate.toISOString}</div>
+              ) : (
+                <div />
+              )}
+              <br />
             </div>
           );
         })}
