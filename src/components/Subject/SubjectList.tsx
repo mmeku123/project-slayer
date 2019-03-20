@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import Subject from '../../models/Subject';
 
-import subjects from '../../mocks/subjects';
-
 interface ISubjectListProps {
   subjects: Subject[];
   isChooseSubject: boolean;

@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
 import './index.scss';
 import * as serviceWorker from './serviceWorker';
@@ -14,15 +15,21 @@ import SignInPage from './pages/SignIn';
 import SignUpPage from './pages/SignUp';
 import ProjectManagementPage from './pages/ProjectManagement';
 
+import reducers from './reducers';
+
+const middleware = [thunk];
+
 ReactDOM.render(
-  <BrowserRouter>
-    <App>
-      <Route path="/" exact component={HomePage} />
-      <Route path="/signup" component={SignUpPage} />
-      <Route path="/signin" component={SignInPage} />
-      <Route path="/project" component={ProjectManagementPage} />
-    </App>
-  </BrowserRouter>,
+  <Provider store={createStore(reducers, applyMiddleware(...middleware))}>
+    <BrowserRouter>
+      <App>
+        <Route path="/" exact component={HomePage} />
+        <Route path="/signup" component={SignUpPage} />
+        <Route path="/signin" component={SignInPage} />
+        <Route path="/project" component={ProjectManagementPage} />
+      </App>
+    </BrowserRouter>
+  </Provider>,
   document.getElementById('root')
 );
 

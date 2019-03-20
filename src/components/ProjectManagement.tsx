@@ -1,4 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import {
+  createSubject,
+  createProject,
+  changeSubject,
+  changeProject,
+  changeProjectBySubject
+} from '../actions';
 import Subject from '../models/Subject';
 import Project from '../models/Project';
 
@@ -6,128 +14,116 @@ import SubjectList from './Subject/SubjectList';
 import ProjectList from './Project/ProjectList';
 import ProjectThing from './Project/ProjectThing';
 
-import subjects from '../mocks/subjects';
-import { simpleProjects, simpleProjects2 } from '../mocks/projects';
-import { student, student2 } from '../mocks/students';
-import { simpleComment, simpleComment2 } from '../mocks/comments';
 import ProjectHeader from './Project/ProjectHeader';
+import { bindActionCreators } from 'redux';
 
-interface IProjectManagementProps {}
-
-interface IProjectManagementStates {
-  subject: {
-    list: Subject[];
-    choose: Subject;
-    isChoose: boolean;
+interface IProjectManagementProps {
+  subjects: {
+    subjects: Subject[];
+    focusSubject: Subject;
+    isFocusSubject: boolean;
   };
-  project: {
-    list: Project[];
-    choose: Project;
-    isChoose: boolean;
+  projects: {
+    projects: Project[];
+    focusProject: Project;
+    isFocusProject: boolean;
   };
+  createSubject: (subjectName: string) => void;
+  createProject: (projectName: string) => void;
+  changeSubject: (subjectName: string) => void;
+  changeProject: (projectName: string) => void;
+  changeProjectBySubject: (subject: Subject) => void;
 }
 
-class ProjectManagement extends Component<
-  IProjectManagementProps,
-  IProjectManagementStates
-> {
+class ProjectManagement extends Component<IProjectManagementProps> {
   constructor(props) {
     super(props);
-    this.state = {
-      subject: {
-        list: subjects,
-        choose: subjects[0],
-        isChoose: true
-      },
-      project: {
-        list: subjects[0].projects,
-        choose: subjects[0].projects[0],
-        isChoose: true
-      }
-    };
   }
 
   handleSubjectCreate = (subjectName: string) => {
-    let newSubject = new Subject(subjectName, subjectName);
-    newSubject.projects = simpleProjects;
-    this.state.subject.list.push(newSubject);
-    this.setState({});
+    this.props.createSubject(subjectName);
   };
 
   handleSubjectChange = (subject: Subject) => {
-    this.setState(state => ({
-      subject: {
-        list: state.subject.list,
-        choose: subject,
-        isChoose: true
-      },
-      project: {
-        list: subject.projects,
-        choose: subject.projects[0],
-        isChoose: true
-      }
-    }));
+    this.props.changeSubject(subject.name);
+
+    this.props.changeProjectBySubject(subject);
   };
 
   handleProjectCreate = (projectName: string) => {
-    let newProject = new Project(projectName);
-    newProject.comments = [simpleComment];
-    newProject.detail = 'project1';
-    newProject.members = [student, student2];
-    newProject.addProjectTaskByMember();
-    this.state.project.list.push(newProject);
-    this.setState({});
+    this.props.createProject(projectName);
   };
 
   handleProjectChange = (project: Project) => {
-    this.setState(state => ({
-      project: {
-        list: state.project.list,
-        choose: project,
-        isChoose: true
-      }
-    }));
+    this.props.changeProject(project.name);
   };
 
-  handleProjectEdit = (editProject: Project) => {
-    let project = this.state.project.list.find(project => {
-      return project.name == editProject.name;
-    });
-
-    if (project) project = editProject;
-
-    this.setState({});
-  };
+  handleProjectEdit = (editProject: Project) => {};
 
   render() {
-    let subject = this.state.subject;
-    let project = this.state.project;
+    let { subjects, focusSubject, isFocusSubject } = this.props.subjects;
+    let { projects, focusProject, isFocusProject } = this.props.projects;
 
     return (
       <div>
         <SubjectList
-          subjects={subject.list}
-          chooseSubject={subject.choose}
-          isChooseSubject={subject.isChoose}
+          subjects={subjects}
+          chooseSubject={focusSubject}
+          isChooseSubject={isFocusSubject}
           onChangeSubject={this.handleSubjectChange}
           onCreateSubject={this.handleSubjectCreate}
         />
 
-        <ProjectList
-          projects={project.list}
-          chooseProject={project.choose}
-          isChooseProject={project.isChoose}
-          onChangeProject={this.handleProjectChange}
-          onCreateProject={this.handleProjectCreate}
-          onEditProject={this.handleProjectEdit}
-        />
+        {isFocusSubject ? (
+          <div>
+            <ProjectList
+              projects={projects}
+              chooseProject={focusProject}
+              isChooseProject={isFocusProject}
+              onChangeProject={this.handleProjectChange}
+              onCreateProject={this.handleProjectCreate}
+              onEditProject={this.handleProjectEdit}
+            />
 
-        <ProjectHeader project={project.choose} />
-
-        <ProjectThing project={project.choose} />
+            {isFocusProject ? (
+              <div>
+                <ProjectHeader project={focusProject} />
+                <ProjectThing project={focusProject} />
+              </div>
+            ) : (
+              <div />
+            )}
+          </div>
+        ) : (
+          <div />
+        )}
       </div>
     );
   }
 }
 
-export default ProjectManagement;
+const mapStateToProps = state => {
+  console.log(state);
+  return {
+    subjects: state.subjects,
+    projects: state.projects
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      createSubject,
+      createProject,
+      changeSubject,
+      changeProject,
+      changeProjectBySubject
+    },
+    dispatch
+  );
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectManagement);

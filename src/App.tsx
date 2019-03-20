@@ -4,11 +4,11 @@ import Footer from './components/Footer';
 
 function App(props: { children: React.ReactNode }) {
   return (
-    <React.Fragment>
+    <div>
       <Header />
       {props.children}
       <Footer />
-    </React.Fragment>
+    </div>
   );
 }
 

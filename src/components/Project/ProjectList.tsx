@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Project from '../../models/Project';
-import { simpleProjects } from '../../mocks/projects';
 
 interface IProjectListProps {
   projects: Project[];
