@@ -2,7 +2,8 @@ import {
   ADD_PROJECT,
   FETCH_PROJECT,
   CHANGE_PROJECT_SUBJECT,
-  CHANGE_PROJECT
+  CHANGE_PROJECT,
+  EDIT_PROJECT
 } from '../actions/types';
 import Project from '../models/Project';
 import { student, student2 } from '../mocks/students';
@@ -20,9 +21,13 @@ function newProject(name: string): Project {
   return project;
 }
 
-const initialState = {
+const initialState: {
+  projects: Project[];
+  focusProject: Project;
+  isFocusProject: boolean;
+} = {
   projects: [],
-  focusProject: {},
+  focusProject: null,
   isFocusProject: false
 };
 
@@ -51,6 +56,31 @@ export default function projects(state = initialState, action) {
         focusProject: subject.projects[0],
         isFocusProject: false
       };
+
+    case EDIT_PROJECT:
+      console.log('redux' + action.payload);
+      switch (action.editType) {
+        case 'detail':
+          return {
+            ...state,
+            projects: state.projects.map(project => {
+              if (project.name == action.projectName) {
+                project.detail = action.payload;
+                return project;
+              } else return project;
+            })
+          };
+        case 'member':
+          return null;
+        case 'task':
+          return null;
+        case 'comment':
+          return null;
+        case 'progress':
+          return null;
+        case 'timeline':
+          return null;
+      }
     default:
       return state;
   }

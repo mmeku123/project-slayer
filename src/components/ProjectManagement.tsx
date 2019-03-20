@@ -64,6 +64,8 @@ class ProjectManagement extends Component<IProjectManagementProps> {
     let { subjects, focusSubject, isFocusSubject } = this.props.subjects;
     let { projects, focusProject, isFocusProject } = this.props.projects;
 
+    console.log(focusProject);
+
     return (
       <div>
         <SubjectList

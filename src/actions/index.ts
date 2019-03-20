@@ -4,7 +4,8 @@ import {
   ADD_SUBJECT,
   CHANGE_SUBJECT,
   CHANGE_PROJECT_SUBJECT,
-  CHANGE_PROJECT
+  CHANGE_PROJECT,
+  EDIT_PROJECT
 } from './types';
 
 export const createProject = projectName => ({
@@ -30,4 +31,8 @@ export const changeProject = projectName => {
 
 export const changeProjectBySubject = subject => {
   return { type: CHANGE_PROJECT_SUBJECT, subject };
+};
+
+export const editProject = (projectName, editType, value) => {
+  return { type: EDIT_PROJECT, projectName, editType, payload: value };
 };

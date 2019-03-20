@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import { Comment, Project } from '../../models';
 import { ProjectProgress, ProjectSchedule } from '../../models/Project';
 
+import { editProject } from '../../actions';
+
+import { connect } from 'react-redux';
+
 import ProjectMembers from './ProjectMembers';
 import ProjectComments from './ProjectComments';
 import ProjectDetail from './ProjectDetail';
 import ProjectTime from './ProjectTime';
 import ProjectPercent from './ProjectPercent';
 import ProjectTasks from './ProjectTasks';
+import { bindActionCreators } from 'redux';
 
 enum ShowType {
   DETAIL,
@@ -15,11 +20,13 @@ enum ShowType {
   MEMBER,
   COMMENT,
   PROGRESS,
-  TIMELINE
+  TIMELINE,
+  NONE
 }
 
 interface IProjectThingProps {
   project: Project;
+  editProject: (editType: string, projectName: string, value: any) => void;
 }
 
 interface IProjectThingStates {
@@ -30,7 +37,7 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
   constructor(props) {
     super(props);
     this.state = {
-      showType: ShowType.DETAIL
+      showType: ShowType.NONE
     };
   }
 
@@ -77,17 +84,19 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
 
     switch (this.state.showType) {
       case ShowType.DETAIL:
-        return <ProjectDetail name={name} detail={detail} />;
+        return <ProjectDetail />;
+      case ShowType.MEMBER:
+        return <ProjectMembers members={members} />;
       case ShowType.TASK:
         return <ProjectTasks tasks={tasks} />;
       case ShowType.COMMENT:
         return <ProjectComments comments={comments} />;
-      case ShowType.MEMBER:
-        return <ProjectMembers members={members} />;
-      case ShowType.TIMELINE:
-        return <ProjectTime schedule={schedule} />;
       case ShowType.PROGRESS:
         return <ProjectPercent progress={progress} />;
+      case ShowType.TIMELINE:
+        return <ProjectTime schedule={schedule} />;
+      default:
+        return <div />;
     }
   };
 
@@ -102,4 +111,11 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
   }
 }
 
-export default ProjectThing;
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ editProject }, dispatch);
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ProjectThing);
