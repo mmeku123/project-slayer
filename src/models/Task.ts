@@ -2,12 +2,14 @@ import { Project } from './Project';
 import Comment from './Comment';
 
 class Task {
-  priority?: number;
+  priority: number;
   name: string;
   detail: string;
 
+  owners: string[] = [];
+
   isDone: boolean;
-  comments: Comment[];
+  comments: Comment[] = [];
 
   startDate?: Date;
   dueDate?: Date;

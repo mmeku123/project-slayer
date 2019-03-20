@@ -20,6 +20,8 @@ class Project {
   addProjectTaskByMember() {
     return this.members.forEach(member => {
       member.tasks.forEach(task => {
+        if (!task.owners.find(owner => owner == member.name))
+          task.owners.push(member.name);
         this.tasks.push(task);
       });
     });

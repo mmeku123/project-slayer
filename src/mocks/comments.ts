@@ -1,9 +1,9 @@
 import Comment from '../models/Comment';
 import { student, student2 } from './students';
 
-let simpleComment = new Comment(student, new Date(), 'test comment');
+let simpleComment = new Comment(student.name, new Date(), 'test comment');
 let simpleComment2 = new Comment(
-  student2,
+  student2.name,
   new Date(),
   'test comment from student2'
 );

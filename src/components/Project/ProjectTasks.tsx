@@ -23,6 +23,7 @@ class ProjectTasks extends Component<IProjectTasksProps> {
           return (
             <div key={task.name}>
               <div>{task.name}</div>
+              <div>{task.owners}</div>
               <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
               <div> detail : {task.detail} </div>
               {task.priority ? (
@@ -40,6 +41,17 @@ class ProjectTasks extends Component<IProjectTasksProps> {
               ) : (
                 <div />
               )}
+              <ul>
+                comment
+                {task.comments.map(comment => {
+                  return (
+                    <li key={comment.detail}>
+                      {comment.detail} - {comment.ownerName} :
+                      {comment.time.toLocaleDateString()}
+                    </li>
+                  );
+                })}
+              </ul>
               <br />
             </div>
           );

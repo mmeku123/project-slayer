@@ -31,7 +31,11 @@ class ProjectMembers extends Component<IProjectMembersProps> {
                   task
                   <ol>
                     {member.tasks.map(task => {
-                      return <li key={task.name}>{task.name}</li>;
+                      return (
+                        <li key={task.name}>
+                          {task.name} {task.isDone ? 'completed' : 'active'}
+                        </li>
+                      );
                     })}
                   </ol>
                 </li>
