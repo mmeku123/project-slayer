@@ -7,7 +7,7 @@ import { editProject } from '../../actions';
 import { connect } from 'react-redux';
 
 import ProjectMembers from './ProjectMembers';
-import ProjectComments from './ProjectComments';
+import ProjectChat from './ProjectChat';
 import ProjectDetail from './ProjectDetail';
 import ProjectTime from './ProjectTime';
 import ProjectPercent from './ProjectPercent';
@@ -18,7 +18,7 @@ enum ShowType {
   DETAIL,
   TASK,
   MEMBER,
-  COMMENT,
+  CHAT,
   PROGRESS,
   TIMELINE,
   NONE
@@ -57,12 +57,12 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
         <button onClick={event => this.changeShowType(ShowType.TASK)}>
           Task
         </button>
-        <button onClick={event => this.changeShowType(ShowType.COMMENT)}>
-          Comment
+        <button onClick={event => this.changeShowType(ShowType.CHAT)}>
+          Chat
         </button>
-        <button onClick={event => this.changeShowType(ShowType.PROGRESS)}>
+        {/* <button onClick={event => this.changeShowType(ShowType.PROGRESS)}>
           Progress
-        </button>
+        </button> */}
         <button onClick={event => this.changeShowType(ShowType.TIMELINE)}>
           Timeline
         </button>
@@ -89,10 +89,10 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
         return <ProjectMembers members={members} />;
       case ShowType.TASK:
         return <ProjectTasks tasks={tasks} />;
-      case ShowType.COMMENT:
-        return <ProjectComments comments={comments} />;
-      case ShowType.PROGRESS:
-        return <ProjectPercent progress={progress} />;
+      case ShowType.CHAT:
+        return <ProjectChat comments={comments} />;
+      // case ShowType.PROGRESS:
+      //   return <ProjectPercent progress={progress} />;
       case ShowType.TIMELINE:
         return <ProjectTime schedule={schedule} />;
       default:

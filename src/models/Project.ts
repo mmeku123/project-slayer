@@ -42,17 +42,27 @@ class Progress {
   }
 }
 
+class ProjectSprint {
+  name: string;
+  detail: string;
+  dueDate: Date;
+
+  constructor(name: string, detail: string, dueDate: string) {
+    this.name = name;
+    this.detail = detail;
+    this.dueDate = new Date(dueDate);
+  }
+}
+
 class ProjectSchedule {
   startDate: Date;
-  endDate: Date;
 
-  sprints: ProjectProgress[] = [];
+  sprints: ProjectSprint[] = [];
 
-  constructor(startDate: Date, endDate: Date) {
+  constructor(startDate: Date) {
     this.startDate = startDate;
-    this.endDate = endDate;
   }
 }
 
 export default Project;
-export { Project, ProjectProgress, ProjectSchedule };
+export { Project, ProjectProgress, ProjectSchedule, ProjectSprint };

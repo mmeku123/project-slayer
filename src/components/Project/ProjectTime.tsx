@@ -18,7 +18,29 @@ class ProjectTime extends Component<IProjectTimeProps> {
       return (
         <div>
           <h5>Project Schedule</h5>
-          {schedule ? <div> Schedule </div> : <div />}
+          {schedule ? (
+            <div>
+              Schedule
+              <div>
+                start: {schedule.startDate.toISOString()}
+                {
+                  <div>
+                    Timeline :
+                    {schedule.sprints.map(sprint => {
+                      return (
+                        <div key={sprint.detail}>
+                          {sprint.detail} {sprint.detail}{' '}
+                          {sprint.dueDate.toISOString()}
+                        </div>
+                      );
+                    })}
+                  </div>
+                }
+              </div>
+            </div>
+          ) : (
+            <div />
+          )}
         </div>
       );
     } else {

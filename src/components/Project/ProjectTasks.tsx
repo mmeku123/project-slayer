@@ -31,12 +31,12 @@ class ProjectTasks extends Component<IProjectTasksProps> {
                 <div>normal</div>
               )}
               {task.startDate ? (
-                <div>Start: {task.startDate.toISOString}</div>
+                <div>Start: {task.startDate.toISOString()}</div>
               ) : (
                 <div />
               )}
               {task.dueDate ? (
-                <div>End: {task.dueDate.toISOString}</div>
+                <div>End: {task.dueDate.toISOString()}</div>
               ) : (
                 <div />
               )}

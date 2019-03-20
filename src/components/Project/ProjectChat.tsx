@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Comment } from '../../models/index';
 
-interface IProjectCommentsProps {
+interface IProjectChatProps {
   comments: Comment[];
 }
 
-class ProjectComments extends Component<IProjectCommentsProps> {
+class ProjectChat extends Component<IProjectChatProps> {
   constructor(props) {
     super(props);
     this.state = {};
@@ -32,4 +32,4 @@ class ProjectComments extends Component<IProjectCommentsProps> {
   }
 }
 
-export default ProjectComments;
+export default ProjectChat;

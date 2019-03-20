@@ -1,4 +1,5 @@
 import { Project } from './Project';
+import Comment from './Comment';
 
 class Task {
   priority?: number;
@@ -6,6 +7,7 @@ class Task {
   detail: string;
 
   isDone: boolean;
+  comments: Comment[];
 
   startDate?: Date;
   dueDate?: Date;
