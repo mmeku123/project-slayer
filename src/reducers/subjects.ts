@@ -1,12 +1,12 @@
 import { ADD_SUBJECT, CHANGE_SUBJECT } from '../actions/types';
-import subjectData from '../mocks/subjects';
+import subjectData, { _subjectId } from '../mocks/subjects';
 import Subject from '../models/Subject';
 import { simpleProjects } from '../mocks/projects';
 
 function newSubject(subjectName: string) {
   let subject = new Subject(subjectName, subjectName);
   subject.projects = simpleProjects;
-
+  subject._id = _subjectId;
   return subject;
 }
 

@@ -64,8 +64,6 @@ class ProjectManagement extends Component<IProjectManagementProps> {
     let { subjects, focusSubject, isFocusSubject } = this.props.subjects;
     let { projects, focusProject, isFocusProject } = this.props.projects;
 
-    console.log(focusProject);
-
     return (
       <div>
         <SubjectList
@@ -105,7 +103,6 @@ class ProjectManagement extends Component<IProjectManagementProps> {
 }
 
 const mapStateToProps = state => {
-  console.log(state);
   return {
     subjects: state.subjects,
     projects: state.projects

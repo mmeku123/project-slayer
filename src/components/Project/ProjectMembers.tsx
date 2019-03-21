@@ -11,6 +11,7 @@ class ProjectMembers extends Component<IProjectMembersProps> {
     super(props);
     this.state = {};
   }
+
   render() {
     let members: Student[] = this.props.members;
 
@@ -20,7 +21,7 @@ class ProjectMembers extends Component<IProjectMembersProps> {
 
         {members.map(member => {
           return (
-            <div key={member.id}>
+            <div key={member._id}>
               <b>{member.name}</b>
               <ul>
                 <li>id {member.id}</li>
@@ -32,7 +33,7 @@ class ProjectMembers extends Component<IProjectMembersProps> {
                   <ol>
                     {member.tasks.map(task => {
                       return (
-                        <li key={task.name}>
+                        <li key={task._id}>
                           {task.name} {task.isDone ? 'completed' : 'active'}
                         </li>
                       );

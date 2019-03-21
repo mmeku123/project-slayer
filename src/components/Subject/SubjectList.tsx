@@ -21,7 +21,6 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
   }
 
   handleChangeSubject = (event, subject: Subject) => {
-    console.log(event);
     this.props.onChangeSubject(subject);
   };
 

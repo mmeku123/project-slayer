@@ -8,7 +8,12 @@ import {
 import Project from '../models/Project';
 import { student, student2 } from '../mocks/students';
 import { simpleComment, simpleComment2 } from '../mocks/comments';
-import { simpleProjects, simpleProjects2 } from '../mocks/projects';
+import {
+  simpleProjects,
+  simpleProjects2,
+  _projectId,
+  _timelineId
+} from '../mocks/projects';
 import { Subject } from '../models';
 
 function newProject(name: string): Project {
@@ -17,7 +22,7 @@ function newProject(name: string): Project {
   project.detail = 'project1';
   project.members = [student, student2];
   project.addProjectTaskByMember();
-
+  project._id = _projectId;
   return project;
 }
 
@@ -73,7 +78,20 @@ export default function projects(state = initialState, action) {
         case 'member':
           return null;
         case 'task':
-          return null;
+          return {
+            ...state,
+            projects: state.projects.map(project => {
+              if (project.name == action.projectName) {
+                project.tasks.map(task => {
+                  if (task.name == action.payload.taskName) {
+                    task.detail = action.payload.editDetail.detail;
+                    return task;
+                  }
+                  return task;
+                });
+              }
+            })
+          };
         case 'comment':
           return null;
         case 'progress':

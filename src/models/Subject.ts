@@ -3,6 +3,7 @@ import Student from './User/Student';
 import Project from './Project';
 
 class Subject {
+  _id: number;
   id: string;
   name: string;
   owner?: Teacher;

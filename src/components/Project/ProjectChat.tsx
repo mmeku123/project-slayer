@@ -18,7 +18,7 @@ class ProjectChat extends Component<IProjectChatProps> {
         <h5>Project Comments</h5>
         {comments.map(comment => {
           return (
-            <div key={comment.detail}>
+            <div key={comment._id}>
               <div>{comment.detail}</div>
               <ul>
                 <li>{comment.ownerName}</li>

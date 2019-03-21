@@ -23,4 +23,8 @@ let student2 = new Student(
 
 student2.tasks = [tasks[0]];
 
-export { student, student2 };
+let _studentId = 0;
+student._id = _studentId++;
+student2._id = _studentId++;
+
+export { student, student2, _studentId };

@@ -19,6 +19,10 @@ task2.comments = [
   new Comment('tusave', new Date('2014-11-12'), 'finished!')
 ];
 
+let _taskId = 0;
+task1._id = _taskId++;
+task2._id = _taskId++;
+
 let tasks = [task1, task2];
 
-export { tasks };
+export { tasks, _taskId };

@@ -28,7 +28,7 @@ class ProjectTime extends Component<IProjectTimeProps> {
                     Timeline :
                     {schedule.sprints.map(sprint => {
                       return (
-                        <div key={sprint.detail}>
+                        <div key={sprint._id}>
                           {sprint.detail} {sprint.detail}{' '}
                           {sprint.dueDate.toISOString()}
                         </div>

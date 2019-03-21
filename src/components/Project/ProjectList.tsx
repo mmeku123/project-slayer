@@ -24,20 +24,20 @@ class ProjectCardList extends Component<{
   }
 
   handleChangeProject = (event, project: Project) => {
-    console.log(event);
     this.props.onProjectChange(project);
   };
 
   render() {
     return this.props.projects.map(project => {
-      return (
-        <button
-          onClick={event => this.handleChangeProject(event, project)}
-          key={project.name}
-        >
-          {project.name}
-        </button>
-      );
+      if (project)
+        return (
+          <button
+            onClick={event => this.handleChangeProject(event, project)}
+            key={project._id}
+          >
+            {project.name}
+          </button>
+        );
     });
   }
 }

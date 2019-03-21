@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 
 interface IProjectDetailProps {
   focusProject: Project;
-  editProject: (projectName: string, editType: string, detail: string) => void;
+  editProject: (projectName: string, editType: string, detail) => void;
 }
 
 interface IProjectDetailStates {

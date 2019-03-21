@@ -3,6 +3,7 @@ import Comment from './Comment';
 import Student from './User/Student';
 
 class Project {
+  _id: number;
   name: string;
   detail: string = '';
 
@@ -29,11 +30,13 @@ class Project {
 }
 
 class ProjectProgress {
+  _id: number;
   progresses: Progress[] = [];
   percentCompleted: number;
 }
 
 class Progress {
+  _id: number;
   name: string;
   detail: string;
   isStart: boolean = false;
@@ -45,6 +48,7 @@ class Progress {
 }
 
 class ProjectSprint {
+  _id: number;
   name: string;
   detail: string;
   dueDate: Date;
@@ -57,6 +61,7 @@ class ProjectSprint {
 }
 
 class ProjectSchedule {
+  _id: number;
   startDate: Date;
 
   sprints: ProjectSprint[] = [];

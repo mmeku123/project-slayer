@@ -2,6 +2,7 @@ import Task from '../Task';
 import User from './User';
 
 class Student implements User {
+  _id: number;
   id: string;
   name: string;
   nickname?: string;
