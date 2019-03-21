@@ -101,6 +101,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
       <div key={task._id}>
         task name:
         <input
+          className="form-control"
           type="text"
           name="name"
           value={editDetail.name}
@@ -110,6 +111,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
         <div>
           finish :
           <input
+            className="form-control"
             type="radio"
             name="finish"
             checked={editDetail.isDone}
@@ -152,8 +154,12 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           })}
         </ul>
         <br />
-        <button onClick={this.cancelEdit}>Cancel</button>
-        <button onClick={this.confirmEdit}>Confirm</button>
+        <button className="btn btn-info" onClick={this.cancelEdit}>
+          Cancel
+        </button>
+        <button className="btn btn-info" onClick={this.confirmEdit}>
+          Confirm
+        </button>
       </div>
     );
   };
@@ -185,22 +191,33 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           {this.state.isAddComment && task.name == this.state.editTask ? (
             <div>
               <input
+                className="form-control"
                 type="text"
                 value={this.state.newComment}
                 onChange={this.handleNewCommentChange}
               />
-              <button onClick={this.addNewComment}>ADD</button>
+              <button className="btn btn-info" onClick={this.addNewComment}>
+                ADD
+              </button>
             </div>
           ) : (
             <div />
           )}
-          <button onClick={() => this.showNewCommentDialog(task)}>
+          <button
+            className="btn btn-info"
+            onClick={() => this.showNewCommentDialog(task)}
+          >
             + Comment
           </button>
         </ul>
         <br />
 
-        <button onClick={() => this.showEditDialog(task)}>Edit</button>
+        <button
+          className="btn btn-info"
+          onClick={() => this.showEditDialog(task)}
+        >
+          Edit
+        </button>
       </div>
     );
   };

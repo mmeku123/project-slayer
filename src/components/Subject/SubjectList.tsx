@@ -40,8 +40,14 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
   renderInputNewSubject = () => {
     return this.state.isAddNewSubject ? (
       <div>
-        <input placeholder="New Subject" onChange={this.inputChange} />
-        <button onClick={this.createNewSubject}>+</button>
+        <input
+          className="form-control"
+          placeholder="New Subject"
+          onChange={this.inputChange}
+        />
+        <button className="btn btn-info" onClick={this.createNewSubject}>
+          +
+        </button>
       </div>
     ) : (
       <div />

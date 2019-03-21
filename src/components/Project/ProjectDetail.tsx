@@ -44,11 +44,14 @@ class ProjectDetail extends Component<
     return (
       <div>
         <input
+          className="form-control"
           type="text"
           value={this.state.editDetail}
           onChange={this.onChangeDetail}
         />
-        <button onClick={this.confirmEdit}>Confirm</button>
+        <button className="btn btn-info" onClick={this.confirmEdit}>
+          Confirm
+        </button>
       </div>
     );
   };
@@ -61,7 +64,9 @@ class ProjectDetail extends Component<
         ) : (
           <div>{this.props.focusProject.detail}</div>
         )}
-        <button onClick={this.showEditDialog}>Edit</button>
+        <button className="btn btn-info" onClick={this.showEditDialog}>
+          Edit
+        </button>
       </div>
     );
   };

@@ -82,8 +82,14 @@ class ProjectList extends Component<IProjectListProps, IProjectListState> {
   renderInputNewProject = () => {
     return this.state.isAddNewProject ? (
       <div>
-        <input placeholder="New Project" onChange={this.inputChange} />
-        <button onClick={this.createNewProject}>+</button>
+        <input
+          className="form-control"
+          placeholder="New Project"
+          onChange={this.inputChange}
+        />
+        <button className="btn btn-info" onClick={this.createNewProject}>
+          +
+        </button>
       </div>
     ) : (
       <div />
