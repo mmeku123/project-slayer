@@ -6,6 +6,7 @@ import {
   EDIT_PROJECT
 } from '../actions/types';
 import Project from '../models/Project';
+import Comment from '../models/Comment';
 import { student, student2 } from '../mocks/students';
 import { simpleComment, simpleComment2 } from '../mocks/comments';
 import {
@@ -15,6 +16,7 @@ import {
   _timelineId
 } from '../mocks/projects';
 import { Subject } from '../models';
+import { tasks } from '../mocks/tasks';
 
 function newProject(name: string): Project {
   let project = new Project(name);
@@ -73,25 +75,68 @@ export default function projects(state = initialState, action) {
                 project.detail = action.payload;
                 return project;
               } else return project;
-            })
+            }),
+            focusProject: state.projects.find(
+              project => project.name == action.projectName
+            )
           };
         case 'member':
           return null;
+
         case 'task':
+          return {
+            ...state,
+
+            projects: state.projects.map(project => {
+              if (project.name == action.projectName) {
+                return project.tasks.map(task => {
+                  return <Project>{
+                    ...project,
+                    tasks: tasks.map(task => {
+                      if (task.name == action.payload.taskName) {
+                        task.detail = action.payload.editDetail.detail;
+                        return task;
+                      } else return task;
+                    })
+                  };
+                });
+              } else return project;
+            }),
+            focusProject: state.projects.find(
+              project => project.name == action.projectName
+            )
+          };
+
+        case 'task_comment':
           return {
             ...state,
             projects: state.projects.map(project => {
               if (project.name == action.projectName) {
-                project.tasks.map(task => {
-                  if (task.name == action.payload.taskName) {
-                    task.detail = action.payload.editDetail.detail;
-                    return task;
-                  }
-                  return task;
-                });
-              }
-            })
+                return <Project>{
+                  ...project,
+                  tasks: tasks.map(task => {
+                    if (task.name == action.payload.taskName) {
+                      return {
+                        ...task,
+                        comments: [
+                          ...task.comments,
+                          new Comment(
+                            'test user',
+                            new Date(),
+                            action.payload.newComment
+                          )
+                        ]
+                      };
+                    } else return task;
+                  })
+                };
+              } else return project;
+            }),
+            focusProject: state.projects.find(
+              project => project.name == action.projectName
+            )
           };
+
         case 'comment':
           return null;
         case 'progress':
