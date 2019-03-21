@@ -31,12 +31,26 @@ class ProjectCardList extends Component<{
     return this.props.projects.map(project => {
       if (project)
         return (
-          <button
+          <div
             onClick={event => this.handleChangeProject(event, project)}
             key={project._id}
+            className="col-md-6 col-lg-4 wow bounceInUp"
+            data-wow-duration="1.4s"
+            style={{ cursor: 'pointer' }}
           >
-            {project.name}
-          </button>
+            <div className="box">
+              <div className="icon" style={{ background: '#fceef3' }}>
+                <i
+                  className="ion-ios-paper-outline"
+                  style={{ color: '#ff689b' }}
+                />
+              </div>
+              <h4 className="title">
+                <a href="">{project.name}</a>
+              </h4>
+              <p className="description">{project.detail}</p>
+            </div>
+          </div>
         );
     });
   }
@@ -82,18 +96,40 @@ class ProjectList extends Component<IProjectListProps, IProjectListState> {
 
     return (
       <div>
-        <div>Your Project is: {project.name}</div>
-        <div>Detail: {project.detail}</div>
+        <section id="projects" className="section-bg">
+          <div className="container">
+            <header className="section-header">
+              <h4>Choose your project</h4>
+              <br />
+            </header>
 
-        <ProjectCardList
-          projects={projects}
-          onProjectChange={this.handleChooseProjectChange}
-        />
-
-        <div>
-          <button onClick={this.showNewProjectInput}>New Project</button>
-          {this.renderInputNewProject()}
-        </div>
+            <div className="row">
+              <ProjectCardList
+                projects={projects}
+                onProjectChange={this.handleChooseProjectChange}
+              />
+              <div
+                onClick={this.showNewProjectInput}
+                className="col-md-6 col-lg-4 wow bounceInUp"
+                data-wow-duration="1.4s"
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="box">
+                  <div className="icon" style={{ background: 'white' }}>
+                    <i className="ion-ios-plus" style={{ color: '#ff689b' }} />
+                  </div>
+                  <h4 className="title">
+                    <a href="">New Subject</a>
+                  </h4>
+                </div>
+                {this.renderInputNewProject()}
+              </div>
+            </div>
+            <h3>
+              Your project is <strong> {this.props.chooseProject.name} </strong>
+            </h3>
+          </div>
+        </section>
       </div>
     );
   }

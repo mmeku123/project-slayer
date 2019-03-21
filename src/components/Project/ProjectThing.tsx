@@ -48,22 +48,42 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
   renderSelectedShowButtons = () => {
     return (
       <div>
-        <button onClick={event => this.changeShowType(ShowType.DETAIL)}>
+        <button
+          className="btn btn-primary btn-lg"
+          style={{ margin: '5px' }}
+          onClick={event => this.changeShowType(ShowType.DETAIL)}
+        >
           Detail
         </button>
-        <button onClick={event => this.changeShowType(ShowType.MEMBER)}>
+        <button
+          className="btn btn-primary btn-lg"
+          style={{ margin: '5px' }}
+          onClick={event => this.changeShowType(ShowType.MEMBER)}
+        >
           Member
         </button>
-        <button onClick={event => this.changeShowType(ShowType.TASK)}>
+        <button
+          className="btn btn-primary btn-lg"
+          style={{ margin: '5px' }}
+          onClick={event => this.changeShowType(ShowType.TASK)}
+        >
           Task
         </button>
-        <button onClick={event => this.changeShowType(ShowType.CHAT)}>
+        <button
+          className="btn btn-primary btn-lg"
+          style={{ margin: '5px' }}
+          onClick={event => this.changeShowType(ShowType.CHAT)}
+        >
           Chat
         </button>
         {/* <button onClick={event => this.changeShowType(ShowType.PROGRESS)}>
           Progress
         </button> */}
-        <button onClick={event => this.changeShowType(ShowType.TIMELINE)}>
+        <button
+          className="btn btn-primary btn-lg"
+          style={{ margin: '5px' }}
+          onClick={event => this.changeShowType(ShowType.TIMELINE)}
+        >
           Timeline
         </button>
       </div>
@@ -103,9 +123,16 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
   render() {
     return (
       <div>
-        {this.renderSelectedShowButtons()}
-
-        {this.renderProjectShowing()}
+        <section id="projects" className="section-bg">
+          <div className="container">
+            <header className="section-header">
+              <h2>Project</h2>
+              <br />
+            </header>
+            {this.renderSelectedShowButtons()}
+            {this.renderProjectShowing()}
+          </div>
+        </section>
       </div>
     );
   }

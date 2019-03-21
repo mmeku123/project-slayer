@@ -12,11 +12,7 @@ class ProjectHeader extends Component<IProjectHeaderProps> {
   render() {
     let project = this.props.project;
 
-    return (
-      <div>
-        <h3>{project.name}</h3>
-      </div>
-    );
+    return <div />;
   }
 }
 
