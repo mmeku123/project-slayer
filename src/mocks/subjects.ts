@@ -11,5 +11,9 @@ let _subjectId = 0;
 subject1._id = _subjectId++;
 subject2._id = _subjectId++;
 
+function subjectId() {
+  return _subjectId++;
+}
+
 export default subjects;
-export { _subjectId };
+export { _subjectId, subjectId };

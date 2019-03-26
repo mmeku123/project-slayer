@@ -82,14 +82,19 @@ class ProjectList extends Component<IProjectListProps, IProjectListState> {
 
     return (
       <div>
-        <div>Your Project is: {project.name}</div>
-        <div>Detail: {project.detail}</div>
+        {project ? (
+          <div>
+            <div>Your Project is: {project.name}</div>
+            <div>Detail: {project.detail}</div>
 
-        <ProjectCardList
-          projects={projects}
-          onProjectChange={this.handleChooseProjectChange}
-        />
-
+            <ProjectCardList
+              projects={projects}
+              onProjectChange={this.handleChooseProjectChange}
+            />
+          </div>
+        ) : (
+          <div />
+        )}
         <div>
           <button onClick={this.showNewProjectInput}>New Project</button>
           {this.renderInputNewProject()}
