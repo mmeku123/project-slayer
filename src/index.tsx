@@ -4,8 +4,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
+import 'firebase/firestore'; // make sure you add this for firestore
 
 import './index.scss';
 import * as serviceWorker from './serviceWorker';
@@ -17,10 +22,10 @@ import ProjectManagementPage from './pages/ProjectManagement';
 
 import reducers from './reducers';
 
-const middleware = [thunk];
+const store = createStore(reducers, applyMiddleware(thunk));
 
 ReactDOM.render(
-  <Provider store={createStore(reducers, applyMiddleware(...middleware))}>
+  <Provider store={store}>
     <BrowserRouter>
       <App>
         <Route path="/" exact component={HomePage} />

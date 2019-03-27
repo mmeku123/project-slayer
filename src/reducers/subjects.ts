@@ -1,24 +1,30 @@
-import { ADD_SUBJECT, CHANGE_SUBJECT } from '../actions/types';
-import subjectData, { _subjectId, subjectId } from '../mocks/subjects';
+import {
+  ADD_SUBJECT,
+  CHANGE_SUBJECT,
+  FETCH_SUBJECT,
+  ADD_PROJECT_SUBJECT
+} from '../actions/types';
 import Subject from '../models/Subject';
-import { simpleProjects } from '../mocks/projects';
 
 function newSubject(subjectName: string) {
   let subject = new Subject(subjectName, subjectName);
-  subject._id = subjectId();
   return subject;
 }
 
 const initialState = {
-  subjects: subjectData,
-  focusSubject: subjectData[0],
+  subjects: [],
+  focusSubject: null,
   isFocusSubject: false
 };
 
 export default function subjects(state = initialState, action) {
   switch (action.type) {
+    case FETCH_SUBJECT:
+      return { ...state, subjects: action.payload };
     case ADD_SUBJECT:
-      let subject = newSubject(action.subjectName);
+      const { id, name } = action.payload;
+      let subject = new Subject(id, name);
+      // ! : Fix this
       return {
         ...state,
         subjects: [...state.subjects, subject]
@@ -27,7 +33,7 @@ export default function subjects(state = initialState, action) {
       return {
         ...state,
         focusSubject: state.subjects.find(subject => {
-          return subject.name == action.subjectName;
+          return subject._id == action.subjectId;
         }),
         isFocusSubject: true
       };

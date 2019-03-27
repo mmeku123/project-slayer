@@ -76,8 +76,8 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
       name,
       detail,
       tasks,
-      members,
-      comments,
+      studentIds,
+      commentIds,
       progress,
       schedule
     } = project;
@@ -86,11 +86,11 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
       case ShowType.DETAIL:
         return <ProjectDetail />;
       case ShowType.MEMBER:
-        return <ProjectMembers members={members} />;
+        return <ProjectMembers members={null} />;
       case ShowType.TASK:
         return <ProjectTasks tasks={tasks} />;
       case ShowType.CHAT:
-        return <ProjectChat comments={comments} />;
+        return <ProjectChat comments={null} />;
       // case ShowType.PROGRESS:
       //   return <ProjectPercent progress={progress} />;
       case ShowType.TIMELINE:

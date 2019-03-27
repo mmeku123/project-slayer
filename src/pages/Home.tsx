@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 
-const HomePage = () => {
-  return <div>Home Page</div>;
-};
+import { connect } from 'react-redux';
+import firebase from 'firebase/app';
+
+class HomePage extends Component {
+  render() {
+    return <div>Home Page</div>;
+  }
+}
 
 export default HomePage;

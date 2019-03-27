@@ -5,8 +5,12 @@ import {
   createProject,
   changeSubject,
   changeProject,
+  fetchProjectByIds,
+  fetchSubject,
   changeProjectBySubject
 } from '../actions';
+
+import DocumentData from 'firebase/firebase-firestore';
 import Subject from '../models/Subject';
 import Project from '../models/Project';
 
@@ -17,6 +21,9 @@ import ProjectThing from './Project/ProjectThing';
 import ProjectHeader from './Project/ProjectHeader';
 import { bindActionCreators } from 'redux';
 
+interface IProjectManagementStates {
+  isFetchSubjectDone: boolean;
+}
 interface IProjectManagementProps {
   subjects: {
     subjects: Subject[];
@@ -28,16 +35,26 @@ interface IProjectManagementProps {
     focusProject: Project;
     isFocusProject: boolean;
   };
+  fetchProjectByIds: (projectIds: string[]) => (dispatch: any) => Promise<void>;
+  fetchSubject: () => (dispatch: any) => Promise<void>;
   createSubject: (subjectName: string) => void;
-  createProject: (projectName: string) => void;
-  changeSubject: (subjectName: string) => void;
+  createProject: (projectName: string, subjectId: string) => void;
+  changeSubject: (subjectName: string) => (dispatch: any) => void;
   changeProject: (projectName: string) => void;
   changeProjectBySubject: (subject: Subject) => void;
 }
 
-class ProjectManagement extends Component<IProjectManagementProps> {
+class ProjectManagement extends Component<
+  IProjectManagementProps,
+  IProjectManagementStates
+> {
   constructor(props) {
     super(props);
+    this.state = { isFetchSubjectDone: false };
+  }
+
+  componentWillMount() {
+    this.props.fetchSubject();
   }
 
   handleSubjectCreate = (subjectName: string) => {
@@ -45,13 +62,14 @@ class ProjectManagement extends Component<IProjectManagementProps> {
   };
 
   handleSubjectChange = (subject: Subject) => {
-    this.props.changeSubject(subject.name);
+    this.props.changeSubject(subject._id);
+    this.setState({ isFetchSubjectDone: true });
 
     this.props.changeProjectBySubject(subject);
   };
 
   handleProjectCreate = (projectName: string) => {
-    this.props.createProject(projectName);
+    this.props.createProject(projectName, this.props.subjects.focusSubject._id);
   };
 
   handleProjectChange = (project: Project) => {
@@ -63,6 +81,13 @@ class ProjectManagement extends Component<IProjectManagementProps> {
   render() {
     let { subjects, focusSubject, isFocusSubject } = this.props.subjects;
     let { projects, focusProject, isFocusProject } = this.props.projects;
+
+    console.log(isFocusSubject);
+
+    if (this.state.isFetchSubjectDone == true) {
+      this.props.fetchProjectByIds(this.props.subjects.focusSubject.projectIds);
+      this.setState({ isFetchSubjectDone: false });
+    }
 
     return (
       <div>
@@ -116,7 +141,9 @@ const mapDispatchToProps = dispatch => {
       createProject,
       changeSubject,
       changeProject,
-      changeProjectBySubject
+      changeProjectBySubject,
+      fetchProjectByIds,
+      fetchSubject
     },
     dispatch
   );

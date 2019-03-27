@@ -51,17 +51,28 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
   render() {
     return (
       <div>
-        <div>Your subject is: {this.props.chooseSubject.name}</div>
-        {this.props.subjects.map(subject => {
-          return (
-            <button
-              onClick={event => this.handleChangeSubject(event, subject)}
-              key={subject.id}
-            >
-              {subject.name}
-            </button>
-          );
-        })}
+        <div>
+          Your subject is:{' '}
+          {this.props.isChooseSubject
+            ? this.props.chooseSubject.name
+            : 'Choose one'}
+        </div>
+
+        {this.props.subjects && this.props.subjects != [] ? (
+          this.props.subjects.map(subject => {
+            return (
+              <button
+                onClick={event => this.handleChangeSubject(event, subject)}
+                key={subject._id}
+              >
+                {subject.name}
+              </button>
+            );
+          })
+        ) : (
+          <div />
+        )}
+
         <div>
           <button onClick={this.showNewSubjectInput}>New Subject</button>
           {this.renderInputNewSubject()}
