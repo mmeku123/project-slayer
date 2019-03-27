@@ -1,7 +1,7 @@
 import User from './User/User';
 
 class Comment {
-  _id: number;
+  _id: string;
   ownerName: string;
   time: Date;
   detail: string;

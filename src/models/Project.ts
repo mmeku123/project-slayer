@@ -3,40 +3,43 @@ import Comment from './Comment';
 import Student from './User/Student';
 
 class Project {
-  _id: number;
+  _id: string;
   name: string;
   detail: string = '';
 
   tasks: Task[] = [];
-  members: Student[] = [];
-  comments: Comment[] = [];
+  studentIds: string[] = [];
+  commentIds: string[] = [];
 
   progress?: ProjectProgress;
   schedule?: ProjectSchedule;
 
-  constructor(name: string) {
+  constructor(id: string, name: string) {
+    this._id = id;
     this.name = name;
   }
 
-  addProjectTaskByMember() {
-    return this.members.forEach(member => {
-      member.tasks.forEach(task => {
-        if (!task.owners.find(owner => owner == member.name))
-          task.owners.push(member.name);
-        this.tasks.push(task);
-      });
-    });
+  static toJson(name) {
+    return {
+      name,
+      detail: '',
+      tasks: [],
+      studentIds: [],
+      commentIds: [],
+      progress: null,
+      schedule: null
+    };
   }
 }
 
 class ProjectProgress {
-  _id: number;
+  _id: string;
   progresses: Progress[] = [];
   percentCompleted: number;
 }
 
 class Progress {
-  _id: number;
+  _id: string;
   name: string;
   detail: string;
   isStart: boolean = false;
@@ -48,7 +51,7 @@ class Progress {
 }
 
 class ProjectSprint {
-  _id: number;
+  _id: string;
   name: string;
   detail: string;
   dueDate: Date;
@@ -61,7 +64,7 @@ class ProjectSprint {
 }
 
 class ProjectSchedule {
-  _id: number;
+  _id: string;
   startDate: Date;
 
   sprints: ProjectSprint[] = [];

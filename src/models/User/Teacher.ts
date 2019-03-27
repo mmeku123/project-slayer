@@ -1,6 +1,6 @@
 import User from './User';
 class Teacher implements User {
-  _id: number;
+  _id: string;
 
   id: string;
   name: string;

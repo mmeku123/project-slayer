@@ -2,7 +2,7 @@ import { Project } from './Project';
 import Comment from './Comment';
 
 class Task {
-  _id: number;
+  _id: string;
   priority: number;
   name: string;
   detail: string;
