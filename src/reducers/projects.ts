@@ -4,7 +4,8 @@ import {
   CHANGE_PROJECT_SUBJECT,
   CHANGE_PROJECT,
   EDIT_PROJECT,
-  ADD_PROJECT_SUCCESS
+  ADD_PROJECT_SUCCESS,
+  EDIT_PROJECT_SUCCESS
 } from '../actions/types';
 import Project from '../models/Project';
 import Comment from '../models/Comment';
@@ -32,9 +33,17 @@ export default function projects(state = initialState, action) {
       const project = new Project(id, name);
       return { ...state, projects: [...state.projects, project] };
     case FETCH_PROJECT:
-      return { ...state, projects: action.payload };
+      console.log('fetch');
+      return { ...state, projects: action.payload.projects };
     case CHANGE_PROJECT:
-      console.log(state.projects);
+      console.log('change project');
+      console.log({
+        ...state,
+        focusProject: state.projects.find(project => {
+          return project._id == action.projectId;
+        }),
+        isFocusProject: true
+      });
       return {
         ...state,
         focusProject: state.projects.find(project => {
@@ -42,29 +51,27 @@ export default function projects(state = initialState, action) {
         }),
         isFocusProject: true
       };
-
-    case CHANGE_PROJECT_SUBJECT:
-      let subject: Subject = action.subject;
-      return null;
-
     case EDIT_PROJECT:
-      console.log('redux' + action.payload);
-      switch (action.editType) {
+      return { ...state, isLoading: true };
+    case EDIT_PROJECT_SUCCESS:
+      switch (action.payload.editType) {
         case EditType.DETAIL:
+          const { projectId, detail } = action.payload;
+
+          const editProject = state.projects.find(
+            project => project._id == projectId
+          );
+          editProject.detail = detail;
           return {
             ...state,
+            isLoading: false,
             projects: state.projects.map(project => {
-              if (project._id == action.projectId) {
-                project.detail = action.payload;
+              if (project._id == projectId) {
+                project.detail = detail;
                 return project;
               } else return project;
             }),
-            focusProject: state.projects.map(project => {
-              if (project._id == action.projectId) {
-                project.detail = action.payload;
-                return project;
-              }
-            })
+            focusProject: editProject
           };
         case EditType.COMMENT:
           return null;

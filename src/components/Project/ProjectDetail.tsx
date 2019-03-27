@@ -6,7 +6,12 @@ import { bindActionCreators } from 'redux';
 import { EditType } from '../../constant/editType';
 
 interface IProjectDetailProps {
-  focusProject: Project;
+  projects: {
+    projects: Project[];
+    focusProject: Project;
+    isFocusProject: boolean;
+    isLoading: boolean;
+  };
   editProject: (projectId: string, editType: EditType, detail) => void;
 }
 
@@ -26,17 +31,19 @@ class ProjectDetail extends Component<
   }
 
   showEditDialog = () => {
-    this.setState({ editDetail: this.props.focusProject.detail, isEdit: true });
+    this.setState({
+      editDetail: this.props.projects.focusProject.detail,
+      isEdit: true
+    });
   };
 
   confirmEdit = () => {
+    this.setState({ editDetail: '', isEdit: false });
     this.props.editProject(
-      this.props.focusProject._id,
+      this.props.projects.focusProject._id,
       EditType.DETAIL,
       this.state.editDetail
     );
-
-    this.setState({ editDetail: '', isEdit: false });
   };
 
   onChangeDetail = event => {
@@ -62,7 +69,7 @@ class ProjectDetail extends Component<
         {this.state.isEdit ? (
           this.renderEditDetail()
         ) : (
-          <div>{this.props.focusProject.detail}</div>
+          <div>{this.props.projects.focusProject.detail}</div>
         )}
         <button onClick={this.showEditDialog}>Edit</button>
       </div>
@@ -70,11 +77,14 @@ class ProjectDetail extends Component<
   };
 
   render() {
-    let { name } = this.props.focusProject;
+    let { name } = this.props.projects.focusProject;
 
     return (
       <div>
-        <h5>Project Name </h5>
+        <div>
+          {this.props.projects.isLoading ? <div>Loading</div> : <div />}
+        </div>
+        ;<h5>Project Name </h5>
         <div> {name} </div>
         <h5>Project Detail </h5>
         {this.renderProjectDetail()}
@@ -84,7 +94,7 @@ class ProjectDetail extends Component<
 }
 
 const mapStateToProps = state => {
-  return { focusProject: state.projects.focusProject };
+  return { projects: state.projects };
 };
 
 const mapDispatchToProps = dispatch => {

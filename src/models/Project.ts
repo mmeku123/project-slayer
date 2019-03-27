@@ -19,6 +19,18 @@ class Project {
     this.name = name;
   }
 
+  static fromMap(id, data) {
+    const newProject = new Project(id, data.name);
+    newProject.detail = data.detail;
+    newProject.tasks = data.tasks;
+    newProject.studentIds = data.studentIds;
+    newProject.commentIds = data.commentIds;
+    newProject.progress = data.progress;
+    newProject.schedule = data.schedule;
+
+    return newProject;
+  }
+
   static toJson(name) {
     return {
       name,

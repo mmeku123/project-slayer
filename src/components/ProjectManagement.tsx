@@ -82,18 +82,11 @@ class ProjectManagement extends Component<
     let { subjects, focusSubject, isFocusSubject } = this.props.subjects;
     let { projects, focusProject, isFocusProject } = this.props.projects;
 
-    console.log(isFocusSubject);
-
     if (this.state.isFetchSubjectDone == true) {
       this.props.fetchProjectByIds(this.props.subjects.focusSubject.projectIds);
       this.setState({ isFetchSubjectDone: false });
     }
 
-    {
-      this.props.subjects.isLoading
-        ? console.log(subjects)
-        : console.log(subjects);
-    }
     return (
       <div>
         {this.props.subjects.isLoading ? (

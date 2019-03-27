@@ -9,7 +9,8 @@ import {
   CHANGE_PROJECT,
   EDIT_PROJECT,
   FETCH_SUBJECT,
-  ADD_PROJECT_SUCCESS
+  ADD_PROJECT_SUCCESS,
+  EDIT_PROJECT_SUCCESS
 } from './types';
 
 import Project from '../models/Project';
@@ -57,12 +58,16 @@ export const addProjectToSubject = (
 export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
   const req = await projects.get();
 
-  const res = req.docs.map(doc => {
-    if (projectIds && projectIds.find(projectId => projectId == doc.id))
-      return new Project(doc.id, doc.data().name);
+  const projectList = [];
+
+  const resProjects = req.docs.forEach(doc => {
+    if (projectIds) {
+      if (projectIds.find(id => id == doc.id))
+        projectList.push(Project.fromMap(doc.id, doc.data()));
+    }
   });
 
-  return dispatch({ type: FETCH_PROJECT, payload: res });
+  return dispatch({ type: FETCH_PROJECT, payload: { projects: projectList } });
 };
 
 export const fetchSubject = () => async dispatch => {
@@ -100,23 +105,27 @@ export const editProject = (
   editType: EditType,
   value
 ) => async dispatch => {
+  dispatch({ type: EDIT_PROJECT });
+
   switch (editType) {
     case EditType.DETAIL:
-      const req = await projects.doc(projectId);
-      req
+      projects
+        .doc(projectId)
         .update({
           detail: value
         })
-        .then(res => {
+        .then(() => {
           projects
             .doc(projectId)
             .get()
             .then(doc => {
               return dispatch({
-                type: EDIT_PROJECT,
-                projectId,
-                editType,
-                payload: doc.data().detail
+                type: EDIT_PROJECT_SUCCESS,
+                payload: {
+                  projectId,
+                  editType,
+                  detail: doc.data().detail
+                }
               });
             });
         });
