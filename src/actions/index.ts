@@ -15,6 +15,7 @@ import Project from '../models/Project';
 import axios from 'axios';
 import firebase from '../firebase';
 import { Subject } from '../models';
+import { EditType } from '../constant/editType';
 
 const db = firebase.firestore();
 const projects = db.collection('projects');
@@ -74,14 +75,16 @@ export const changeSubject = subjectId => async dispatch => {
   return dispatch({ type: CHANGE_SUBJECT, subjectId });
 };
 
-export const changeProject = projectName => {
-  return { type: CHANGE_PROJECT, projectName };
+export const changeProject = projectId => {
+  return { type: CHANGE_PROJECT, projectId };
 };
 
 export const changeProjectBySubject = subject => {
   return { type: CHANGE_PROJECT_SUBJECT, subject };
 };
 
-export const editProject = (projectName, editType, value) => {
-  return { type: EDIT_PROJECT, projectName, editType, payload: value };
+export const editProject = (projectId, editType: EditType, value) => {
+  switch (editType) {
+  }
+  return { type: EDIT_PROJECT, projectId, editType, payload: value };
 };

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { ProjectSchedule } from '../../models/Project';
+import { EditType } from '../../constant/editType';
 
 interface IProjectTimeProps {
   schedule: ProjectSchedule;

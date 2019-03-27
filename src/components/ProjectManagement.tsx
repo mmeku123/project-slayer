@@ -39,8 +39,8 @@ interface IProjectManagementProps {
   fetchSubject: () => (dispatch: any) => Promise<void>;
   createSubject: (subjectName: string) => void;
   createProject: (projectName: string, subjectId: string) => void;
-  changeSubject: (subjectName: string) => (dispatch: any) => void;
-  changeProject: (projectName: string) => void;
+  changeSubject: (subjectId: string) => (dispatch: any) => void;
+  changeProject: (projectId: string) => void;
   changeProjectBySubject: (subject: Subject) => void;
 }
 
@@ -64,8 +64,6 @@ class ProjectManagement extends Component<
   handleSubjectChange = (subject: Subject) => {
     this.props.changeSubject(subject._id);
     this.setState({ isFetchSubjectDone: true });
-
-    this.props.changeProjectBySubject(subject);
   };
 
   handleProjectCreate = (projectName: string) => {
@@ -73,7 +71,7 @@ class ProjectManagement extends Component<
   };
 
   handleProjectChange = (project: Project) => {
-    this.props.changeProject(project.name);
+    this.props.changeProject(project._id);
   };
 
   handleProjectEdit = (editProject: Project) => {};

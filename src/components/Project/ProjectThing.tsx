@@ -13,6 +13,7 @@ import ProjectTime from './ProjectTime';
 import ProjectPercent from './ProjectPercent';
 import ProjectTasks from './ProjectTasks';
 import { bindActionCreators } from 'redux';
+import { EditType } from '../../constant/editType';
 
 enum ShowType {
   DETAIL,
@@ -26,7 +27,7 @@ enum ShowType {
 
 interface IProjectThingProps {
   project: Project;
-  editProject: (editType: string, projectName: string, value: any) => void;
+  editProject: (projectId: string, editType: EditType, value: any) => void;
 }
 
 interface IProjectThingStates {

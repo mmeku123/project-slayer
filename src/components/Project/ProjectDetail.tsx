@@ -3,10 +3,11 @@ import Project from '../../models/Project';
 import { connect } from 'react-redux';
 import { editProject } from '../../actions';
 import { bindActionCreators } from 'redux';
+import { EditType } from '../../constant/editType';
 
 interface IProjectDetailProps {
   focusProject: Project;
-  editProject: (projectName: string, editType: string, detail) => void;
+  editProject: (projectId: string, editType: EditType, detail) => void;
 }
 
 interface IProjectDetailStates {
@@ -29,8 +30,8 @@ class ProjectDetail extends Component<
 
   confirmEdit = () => {
     this.props.editProject(
-      this.props.focusProject.name,
-      'detail',
+      this.props.focusProject._id,
+      EditType.DETAIL,
       this.state.editDetail
     );
     this.setState({ editDetail: '', isEdit: false });

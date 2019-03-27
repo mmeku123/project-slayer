@@ -5,11 +5,12 @@ import Task from '../../models/Task';
 import { connect } from 'react-redux';
 import { editProject } from '../../actions';
 import { bindActionCreators } from 'redux';
+import { EditType } from '../../constant/editType';
 
 interface IProjectTasksProps {
   tasks: Task[];
   focusProject: Project;
-  editProject: (projectName: string, editType: string, detail) => void;
+  editProject: (projectId: string, editType: EditType, detail) => void;
 }
 
 interface IProjectTasksStates {
@@ -76,10 +77,14 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
 
   addNewComment = () => {
     let { editTask, newComment } = this.state;
-    this.props.editProject(this.props.focusProject.name, 'task_comment', {
-      taskName: editTask,
-      newComment
-    });
+    this.props.editProject(
+      this.props.focusProject.name,
+      EditType.TASK_COMMENT,
+      {
+        taskName: editTask,
+        newComment
+      }
+    );
   };
 
   cancelEdit = () => {
@@ -87,7 +92,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   };
 
   confirmEdit = () => {
-    this.props.editProject(this.props.focusProject.name, 'task', {
+    this.props.editProject(this.props.focusProject.name, EditType.TASK, {
       taskName: this.state.editTask,
       editDetail: this.state.editDetail
     });
