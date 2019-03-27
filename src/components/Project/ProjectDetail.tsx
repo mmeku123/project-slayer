@@ -13,6 +13,7 @@ interface IProjectDetailProps {
 interface IProjectDetailStates {
   editDetail: string;
   isEdit: boolean;
+  isEditDone: boolean;
 }
 
 class ProjectDetail extends Component<
@@ -21,7 +22,7 @@ class ProjectDetail extends Component<
 > {
   constructor(props) {
     super(props);
-    this.state = { editDetail: '', isEdit: false };
+    this.state = { editDetail: '', isEdit: false, isEditDone: false };
   }
 
   showEditDialog = () => {
@@ -34,6 +35,7 @@ class ProjectDetail extends Component<
       EditType.DETAIL,
       this.state.editDetail
     );
+
     this.setState({ editDetail: '', isEdit: false });
   };
 

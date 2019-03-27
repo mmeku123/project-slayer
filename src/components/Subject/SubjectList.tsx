@@ -49,6 +49,7 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
   };
 
   render() {
+    console.log('subject list', this.props.subjects);
     return (
       <div>
         <div>

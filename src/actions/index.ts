@@ -1,5 +1,6 @@
 import {
   ADD_PROJECT,
+  ADD_SUBJECT_SUCCESS,
   ADD_PROJECT_SUBJECT,
   FETCH_PROJECT,
   ADD_SUBJECT,
@@ -7,7 +8,8 @@ import {
   CHANGE_PROJECT_SUBJECT,
   CHANGE_PROJECT,
   EDIT_PROJECT,
-  FETCH_SUBJECT
+  FETCH_SUBJECT,
+  ADD_PROJECT_SUCCESS
 } from './types';
 
 import Project from '../models/Project';
@@ -26,11 +28,15 @@ export const createProject = (
   projectName: string,
   subjectId: string
 ) => async dispatch => {
+  dispatch({ type: ADD_PROJECT, payload: null });
+
   const req = await projects.add(Project.toJson(projectName));
 
-  const res = await req.id;
-  dispatch(addProjectToSubject(req.id, subjectId));
-  return dispatch({ type: ADD_PROJECT, payload: res });
+  dispatch({
+    type: ADD_PROJECT_SUCCESS,
+    payload: { id: req.id, name: projectName }
+  });
+  return dispatch(addProjectToSubject(req.id, subjectId));
 };
 
 export const addProjectToSubject = (
@@ -40,9 +46,12 @@ export const addProjectToSubject = (
   const req = await subjects.doc(subjectId);
   const doc = await req.get();
   const projectIds = await doc.data().projectIds;
-  const res = await req.update({ projectIds: [...projectIds, projectId] });
+  await req.update({ projectIds: [...projectIds, projectId] });
 
-  return dispatch({ type: ADD_PROJECT_SUBJECT, payload: res });
+  return dispatch({
+    type: ADD_PROJECT_SUBJECT,
+    payload: { projectId, subjectId }
+  });
 };
 
 export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
@@ -64,11 +73,14 @@ export const fetchSubject = () => async dispatch => {
 };
 
 export const createSubject = subjectName => async dispatch => {
-  const req = await subjects.add(Subject.toJson(subjectName));
+  dispatch({ type: ADD_SUBJECT });
 
-  const res = req.id;
-
-  return dispatch({ type: ADD_SUBJECT, payload: res });
+  const req = subjects.add(Subject.toJson(subjectName)).then(ref => {
+    return dispatch({
+      type: ADD_SUBJECT_SUCCESS,
+      payload: { id: ref.id, name: subjectName }
+    });
+  });
 };
 
 export const changeSubject = subjectId => async dispatch => {
@@ -83,8 +95,30 @@ export const changeProjectBySubject = subject => {
   return { type: CHANGE_PROJECT_SUBJECT, subject };
 };
 
-export const editProject = (projectId, editType: EditType, value) => {
+export const editProject = (
+  projectId,
+  editType: EditType,
+  value
+) => async dispatch => {
   switch (editType) {
+    case EditType.DETAIL:
+      const req = await projects.doc(projectId);
+      req
+        .update({
+          detail: value
+        })
+        .then(res => {
+          projects
+            .doc(projectId)
+            .get()
+            .then(doc => {
+              return dispatch({
+                type: EDIT_PROJECT,
+                projectId,
+                editType,
+                payload: doc.data().detail
+              });
+            });
+        });
   }
-  return { type: EDIT_PROJECT, projectId, editType, payload: value };
 };

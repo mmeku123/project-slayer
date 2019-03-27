@@ -11,3 +11,5 @@ export const EDIT_SUBJECT = 'edit_subject';
 export const FETCH_SUBJECT = 'fetch_subject';
 export const CHANGE_SUBJECT = 'change_subject';
 export const ADD_PROJECT_SUBJECT = 'add_project_subject';
+export const ADD_PROJECT_SUCCESS = 'add_project_success';
+export const ADD_SUBJECT_SUCCESS = 'add_subject_success';

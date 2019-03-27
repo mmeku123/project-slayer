@@ -29,11 +29,13 @@ interface IProjectManagementProps {
     subjects: Subject[];
     focusSubject: Subject;
     isFocusSubject: boolean;
+    isLoading: boolean;
   };
   projects: {
     projects: Project[];
     focusProject: Project;
     isFocusProject: boolean;
+    isLoading: boolean;
   };
   fetchProjectByIds: (projectIds: string[]) => (dispatch: any) => Promise<void>;
   fetchSubject: () => (dispatch: any) => Promise<void>;
@@ -87,15 +89,26 @@ class ProjectManagement extends Component<
       this.setState({ isFetchSubjectDone: false });
     }
 
+    {
+      this.props.subjects.isLoading
+        ? console.log(subjects)
+        : console.log(subjects);
+    }
     return (
       <div>
-        <SubjectList
-          subjects={subjects}
-          chooseSubject={focusSubject}
-          isChooseSubject={isFocusSubject}
-          onChangeSubject={this.handleSubjectChange}
-          onCreateSubject={this.handleSubjectCreate}
-        />
+        {this.props.subjects.isLoading ? (
+          <div>Loading</div>
+        ) : (
+          <div>
+            <SubjectList
+              subjects={subjects}
+              chooseSubject={focusSubject}
+              isChooseSubject={isFocusSubject}
+              onChangeSubject={this.handleSubjectChange}
+              onCreateSubject={this.handleSubjectCreate}
+            />
+          </div>
+        )}
 
         {isFocusSubject ? (
           <div>

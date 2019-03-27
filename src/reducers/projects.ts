@@ -3,7 +3,8 @@ import {
   FETCH_PROJECT,
   CHANGE_PROJECT_SUBJECT,
   CHANGE_PROJECT,
-  EDIT_PROJECT
+  EDIT_PROJECT,
+  ADD_PROJECT_SUCCESS
 } from '../actions/types';
 import Project from '../models/Project';
 import Comment from '../models/Comment';
@@ -14,15 +15,19 @@ const initialState: {
   projects: Project[];
   focusProject: Project;
   isFocusProject: boolean;
+  isLoading: boolean;
 } = {
   projects: [],
   focusProject: null,
-  isFocusProject: false
+  isFocusProject: false,
+  isLoading: false
 };
 
 export default function projects(state = initialState, action) {
   switch (action.type) {
     case ADD_PROJECT:
+      return { ...state, isLoading: true };
+    case ADD_PROJECT_SUCCESS:
       const { id, name } = action.payload;
       const project = new Project(id, name);
       return { ...state, projects: [...state.projects, project] };
@@ -54,9 +59,12 @@ export default function projects(state = initialState, action) {
                 return project;
               } else return project;
             }),
-            focusProject: state.projects.find(
-              project => project._id == action.projectId
-            )
+            focusProject: state.projects.map(project => {
+              if (project._id == action.projectId) {
+                project.detail = action.payload;
+                return project;
+              }
+            })
           };
         case EditType.COMMENT:
           return null;
