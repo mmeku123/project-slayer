@@ -18,14 +18,15 @@ import {
   FETCH_PROJECT_MEMBERS,
   TOGGLE_SHOW_PROJECT,
   FETCH_TASKS,
-  ADD_TASK
+  ADD_TASK,
+  EDIT_TASK
 } from './types';
 
 import Project from '../models/Project';
 
 import axios from 'axios';
 import firebase from '../firebase';
-import { Subject, Student, Task } from '../models';
+import { Subject, Student, Task, Comment } from '../models';
 import { EditType } from '../constant/editType';
 
 const db = firebase.firestore();
@@ -180,15 +181,41 @@ export const fetchTasks = (projectId: string) => async dispatch => {
       });
       return dispatch({ type: FETCH_TASKS, payload: { tasksByTime } });
     });
-  tasksByProject
-    .orderBy('owner')
-    .get()
-    .then(query => {
-      const tasksByMember = query.docs.map(doc => {
-        return Task.fromMap(doc.id, doc.data());
+};
+
+export const editTask = (taskId: string, editData) => async dispatch => {
+  const { name, isDone, detail, priority } = editData.editDetail;
+  console.log(editData, taskId);
+  switch (editData.type) {
+    case 'detail':
+      tasks
+        .doc(taskId)
+        .update({ name, isDone, detail, priority })
+        .then(() => {
+          tasks
+            .doc(taskId)
+            .get()
+            .then(doc => {
+              return dispatch({
+                type: EDIT_TASK,
+                payload: { id: doc.id, data: doc.data() }
+              });
+            });
+        });
+      break;
+    case 'add_comment':
+      tasks.doc(taskId).update({
+        comments: [
+          comments,
+          new Comment(
+            localStorage.getItem('auth_id'),
+            new Date(),
+            editData.newComment
+          )
+        ]
       });
-      return dispatch({ type: FETCH_TASKS, payload: { tasksByMember } });
-    });
+      break;
+  }
 };
 
 export const editProject = (

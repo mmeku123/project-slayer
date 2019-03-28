@@ -25,3 +25,4 @@ export const TOGGLE_SHOW_PROJECT = 'toggle_show_project';
 
 export const FETCH_TASKS = 'fetch_tasks';
 export const ADD_TASK = 'add_task';
+export const EDIT_TASK = 'edit_task';

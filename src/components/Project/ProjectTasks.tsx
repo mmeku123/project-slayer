@@ -3,7 +3,7 @@ import Project from '../../models/Project';
 
 import Task from '../../models/Task';
 import { connect } from 'react-redux';
-import { editProject, addTask } from '../../actions';
+import { editTask, addTask } from '../../actions';
 import { bindActionCreators } from 'redux';
 import { EditType } from '../../constant/editType';
 
@@ -11,12 +11,12 @@ interface IProjectTasksProps {
   tasks: Task[];
   focusProject: Project;
   addTask: (projectId: string) => void;
-  editProject: (projectId: string, editType: EditType, detail) => void;
+  editTask: (taskId: string, editData) => void;
 }
 
 interface IProjectTasksStates {
   editDetail: Task;
-  editTask: string;
+  editTaskId: string;
   isEdit: boolean;
   isAddComment: boolean;
   newComment: string;
@@ -27,7 +27,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     super(props);
     this.state = {
       editDetail: null,
-      editTask: '',
+      editTaskId: '',
       isEdit: false,
       isAddComment: false,
       newComment: ''
@@ -38,7 +38,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     this.setState(state => ({
       ...state,
       editDetail: task,
-      editTask: task.name,
+      editTaskId: task._id,
       isEdit: true
     }));
   };
@@ -46,7 +46,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   showNewCommentDialog = (task: Task) => {
     this.setState(state => ({
       ...state,
-      editTask: task.name,
+      editTaskId: task.name,
       isAddComment: true
     }));
   };
@@ -77,24 +77,20 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   };
 
   addNewComment = () => {
-    let { editTask, newComment } = this.state;
-    this.props.editProject(
-      this.props.focusProject.name,
-      EditType.TASK_COMMENT,
-      {
-        taskName: editTask,
-        newComment
-      }
-    );
+    let { editTaskId, newComment } = this.state;
+    this.props.editTask(editTaskId, {
+      type: 'add_comment',
+      newComment
+    });
   };
 
   cancelEdit = () => {
     this.setState(state => ({ ...state, editDetail: null, isEdit: false }));
   };
 
-  confirmEdit = () => {
-    this.props.editProject(this.props.focusProject.name, EditType.TASK, {
-      taskName: this.state.editTask,
+  confirmEdit = (task: Task) => {
+    this.props.editTask(task._id, {
+      type: 'detail',
       editDetail: this.state.editDetail
     });
     this.setState(state => ({ ...state, editDetail: null, isEdit: false }));
@@ -128,8 +124,8 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             rows={4}
             cols={30}
             name="detail"
-            onChange={this.handleTaskChange}
             value={editDetail.detail}
+            onChange={this.handleTaskChange}
           />
         </div>
         <div>
@@ -141,25 +137,25 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           </select>
         </div>
         {task.startDate ? (
-          <div>Start: {task.startDate.toISOString()}</div>
+          <div>Start: {task.startDate.toString()}</div>
         ) : (
           <div />
         )}
-        {task.dueDate ? <div>End: {task.dueDate.toISOString()}</div> : <div />}
+        {task.dueDate ? <div>End: {task.dueDate.toString()}</div> : <div />}
         <ul>
           comment
           {task.comments.map(comment => {
             return (
               <li key={comment._id + '$' + task._id}>
                 {comment.detail} - {comment.ownerName} :
-                {comment.time.toLocaleDateString()}
+                {comment.time.toString()}
               </li>
             );
           })}
         </ul>
         <br />
         <button onClick={this.cancelEdit}>Cancel</button>
-        <button onClick={this.confirmEdit}>Confirm</button>
+        <button onClick={() => this.confirmEdit(task)}>Confirm</button>
       </div>
     );
   };
@@ -188,7 +184,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               </li>
             );
           })}
-          {this.state.isAddComment && task.name == this.state.editTask ? (
+          {this.state.isAddComment && task.name == this.state.editTaskId ? (
             <div>
               <input
                 type="text"
@@ -212,11 +208,9 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   };
 
   render() {
-    let tasksByMember = this.props.tasks['byMember'];
     let tasksByTime = this.props.tasks['byTime'];
 
     console.log(this.props.tasks);
-    console.log(tasksByTime);
 
     return (
       <div>
@@ -229,8 +223,11 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           + Task
         </button>
         {tasksByTime != [] ? (
-          tasksByTime.map(task => {
-            if (task.name == this.state.editTask && this.state.isEdit == true) {
+          tasksByTime.map((task: Task) => {
+            if (
+              task._id == this.state.editTaskId &&
+              this.state.isEdit == true
+            ) {
               return this.renderTaskEdit(task);
             } else {
               return this.renderTaskDetail(task);
@@ -249,7 +246,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ editProject, addTask }, dispatch);
+  return bindActionCreators({ editTask, addTask }, dispatch);
 };
 
 export default connect(

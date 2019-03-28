@@ -1,7 +1,6 @@
-import { FETCH_TASKS, ADD_TASK } from '../actions/types';
+import { FETCH_TASKS, ADD_TASK, EDIT_TASK } from '../actions/types';
 
 const initialState = {
-  byMember: [],
   byTime: []
 };
 
@@ -12,13 +11,28 @@ export default function tasks(state = initialState, action) {
       console.log(newTask);
       return {
         ...state,
-        byMember: [...state.byMember, newTask],
         byTime: [...state.byTime, newTask]
       };
+
+    case EDIT_TASK:
+      const { name, isDone, detail, priority, comments } = action.payload.data;
+
+      return {
+        ...state,
+        byTime: state.byTime.map(task => {
+          if (task._id == action.payload.id) {
+            task.name = name;
+            task.isDone = isDone;
+            task.detail = detail;
+            task.priority = priority;
+            return task;
+          }
+          return task;
+        })
+      };
+
     case FETCH_TASKS:
-      const { tasksByMember, tasksByTime } = action.payload;
-      if (tasksByMember && tasksByMember != [])
-        return { ...state, byMember: [...tasksByMember] };
+      const { tasksByTime } = action.payload;
       if (tasksByTime && tasksByTime != [])
         return { ...state, byTime: [...tasksByTime] };
     default:
