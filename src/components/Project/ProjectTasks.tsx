@@ -56,12 +56,16 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     switch (event.target.name) {
       case 'name':
         name = event.target.value;
+        break;
       case 'finish':
         isDone = event.target.value;
+        break;
       case 'detail':
         detail = event.target.value;
+        break;
       case 'priority':
         priority = event.target.value;
+        break;
     }
     this.setState(state => {
       return {
