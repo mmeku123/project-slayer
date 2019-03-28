@@ -10,20 +10,28 @@ import {
   EDIT_PROJECT,
   FETCH_SUBJECT,
   ADD_PROJECT_SUCCESS,
-  EDIT_PROJECT_SUCCESS
+  EDIT_PROJECT_SUCCESS,
+  ADD_STUDENT,
+  CREATE_STUDENT,
+  AUTH_USER,
+  ADD_PROJECT_MEMBER,
+  FETCH_PROJECT_MEMBERS
 } from './types';
 
 import Project from '../models/Project';
 
 import axios from 'axios';
 import firebase from '../firebase';
-import { Subject } from '../models';
+import { Subject, Student } from '../models';
 import { EditType } from '../constant/editType';
 
 const db = firebase.firestore();
 const projects = db.collection('projects');
 const subjects = db.collection('subjects');
 const comments = db.collection('comments');
+const users = db.collection('users');
+
+const authId = localStorage.getItem('auth_id');
 
 export const createProject = (
   projectName: string,
@@ -31,11 +39,11 @@ export const createProject = (
 ) => async dispatch => {
   dispatch({ type: ADD_PROJECT, payload: null });
 
-  const req = await projects.add(Project.toJson(projectName));
+  const req = await projects.add(Project.toJson(projectName, authId));
 
   dispatch({
     type: ADD_PROJECT_SUCCESS,
-    payload: { id: req.id, name: projectName }
+    payload: { id: req.id, name: projectName, studentId: authId }
   });
   return dispatch(addProjectToSubject(req.id, subjectId));
 };
@@ -80,12 +88,36 @@ export const fetchSubject = () => async dispatch => {
 export const createSubject = subjectName => async dispatch => {
   dispatch({ type: ADD_SUBJECT });
 
-  const req = subjects.add(Subject.toJson(subjectName)).then(ref => {
+  const req = subjects.add(Subject.toJson(subjectName, authId)).then(ref => {
     return dispatch({
       type: ADD_SUBJECT_SUCCESS,
-      payload: { id: ref.id, name: subjectName }
+      payload: { id: ref.id, name: subjectName, studentId: authId }
     });
   });
+};
+
+export const fetchProjectMembers = projectId => async dispatch => {
+  const members = [];
+
+  projects
+    .doc(projectId)
+    .get()
+    .then(doc => {
+      doc.data().studentIds.forEach(studentId => {
+        users
+          .doc(studentId)
+          .get()
+          .then(doc => {
+            members.push(Student.fromMap(doc.id, doc.data()));
+          })
+          .then(() => {
+            return dispatch({
+              type: FETCH_PROJECT_MEMBERS,
+              payload: members
+            });
+          });
+      });
+    });
 };
 
 export const changeSubject = subjectId => async dispatch => {
@@ -98,6 +130,29 @@ export const changeProject = projectId => {
 
 export const changeProjectBySubject = subject => {
   return { type: CHANGE_PROJECT_SUBJECT, subject };
+};
+
+export const createStudent = () => {
+  return { type: CREATE_STUDENT };
+};
+
+export const authStudent = () => async dispatch => {
+  const studentId = '2dEeCuhsAft4cRkFa5px';
+
+  localStorage.setItem('auth_id', studentId);
+
+  return dispatch({ type: AUTH_USER });
+};
+
+export const addStudent = studentId => {
+  users
+    .doc(studentId)
+    .get()
+    .then(doc => {
+      const { id, name, nickname, email, phone, job } = doc.data();
+      const member = new Student(doc.id, id, name, nickname, email, phone, job);
+      return { type: ADD_PROJECT_MEMBER, payload: member };
+    });
 };
 
 export const editProject = (

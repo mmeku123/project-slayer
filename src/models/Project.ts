@@ -31,12 +31,14 @@ class Project {
     return newProject;
   }
 
-  static toJson(name) {
+  static toJson(name, studentId?) {
+    const studentIdList = studentId ? [studentId] : [studentId];
+
     return {
       name,
       detail: '',
       tasks: [],
-      studentIds: [],
+      studentIds: studentIdList,
       commentIds: [],
       progress: null,
       schedule: null

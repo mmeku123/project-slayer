@@ -24,12 +24,14 @@ class Subject {
     return newSubject;
   }
 
-  static toJson(name) {
+  static toJson(name, studentId?) {
+    const studentIdList = studentId ? [studentId] : [];
+
     return {
       name,
       id: '',
       owner: '',
-      studentIds: [],
+      studentIds: studentIdList,
       projectIds: []
     };
   }

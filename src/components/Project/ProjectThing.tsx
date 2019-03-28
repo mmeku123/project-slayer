@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Comment, Project } from '../../models';
+import { Comment, Project, Student } from '../../models';
 import { ProjectProgress, ProjectSchedule } from '../../models/Project';
 
-import { editProject } from '../../actions';
+import { editProject, fetchProjectMembers } from '../../actions';
 
 import { connect } from 'react-redux';
 
@@ -26,7 +26,9 @@ enum ShowType {
 }
 
 interface IProjectThingProps {
+  members: Student[];
   project: Project;
+  fetchProjectMembers: (projectId) => void;
   editProject: (projectId: string, editType: EditType, value: any) => void;
 }
 
@@ -40,6 +42,10 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
     this.state = {
       showType: ShowType.NONE
     };
+  }
+
+  componentWillMount() {
+    this.props.fetchProjectMembers(this.props.project._id);
   }
 
   changeShowType = (type: ShowType) => {
@@ -83,11 +89,13 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
       schedule
     } = project;
 
+    console.log('members', this.props.members);
+
     switch (this.state.showType) {
       case ShowType.DETAIL:
         return <ProjectDetail />;
       case ShowType.MEMBER:
-        return <ProjectMembers members={null} />;
+        return <ProjectMembers members={this.props.members} />;
       case ShowType.TASK:
         return <ProjectTasks tasks={tasks} />;
       case ShowType.CHAT:
@@ -111,12 +119,16 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
     );
   }
 }
-
+const mapStateToProps = state => {
+  return {
+    members: state.members
+  };
+};
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ editProject }, dispatch);
+  return bindActionCreators({ editProject, fetchProjectMembers }, dispatch);
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(ProjectThing);

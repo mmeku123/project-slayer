@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { Student, Teacher } from '../../models';
 import { EditType } from '../../constant/editType';
+import { connect } from 'react-redux';
 
 interface IProjectMembersProps {
   members: Student[];
@@ -19,7 +20,6 @@ class ProjectMembers extends Component<IProjectMembersProps> {
     return (
       <div>
         <h5>Project Members</h5>
-
         {members &&
           members.map(member => {
             return (
@@ -30,18 +30,7 @@ class ProjectMembers extends Component<IProjectMembersProps> {
                   <li>email {member.email}</li>
                   <li>nickname {member.nickname}</li>
                   <li>job {member.job}</li>
-                  <li>
-                    task
-                    <ol>
-                      {member.tasks.map(task => {
-                        return (
-                          <li key={task._id}>
-                            {task.name} {task.isDone ? 'completed' : 'active'}
-                          </li>
-                        );
-                      })}
-                    </ol>
-                  </li>
+                  <li>task</li>
                 </ul>
               </div>
             );

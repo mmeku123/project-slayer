@@ -24,8 +24,9 @@ export default function subjects(state = initialState, action) {
     case FETCH_SUBJECT:
       return { ...state, subjects: action.payload };
     case ADD_SUBJECT_SUCCESS:
-      const { id, name } = action.payload;
+      const { id, name, studentId } = action.payload;
       let subject = new Subject(id, name);
+      subject.studentIds = [studentId];
       return {
         ...state,
         isLoading: false,

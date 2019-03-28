@@ -1,6 +1,7 @@
 import {
   ADD_PROJECT,
   FETCH_PROJECT,
+  CHANGE_SUBJECT,
   CHANGE_PROJECT_SUBJECT,
   CHANGE_PROJECT,
   EDIT_PROJECT,
@@ -11,6 +12,8 @@ import Project from '../models/Project';
 import Comment from '../models/Comment';
 import { Subject } from '../models';
 import { EditType } from '../constant/editType';
+
+import members from './members';
 
 const initialState: {
   projects: Project[];
@@ -29,21 +32,14 @@ export default function projects(state = initialState, action) {
     case ADD_PROJECT:
       return { ...state, isLoading: true };
     case ADD_PROJECT_SUCCESS:
-      const { id, name } = action.payload;
+      const { id, name, studentId } = action.payload;
       const project = new Project(id, name);
+      project.studentIds = [studentId];
       return { ...state, projects: [...state.projects, project] };
     case FETCH_PROJECT:
       console.log('fetch');
       return { ...state, projects: action.payload.projects };
     case CHANGE_PROJECT:
-      console.log('change project');
-      console.log({
-        ...state,
-        focusProject: state.projects.find(project => {
-          return project._id == action.projectId;
-        }),
-        isFocusProject: true
-      });
       return {
         ...state,
         focusProject: state.projects.find(project => {
