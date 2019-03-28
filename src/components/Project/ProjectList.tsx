@@ -7,7 +7,6 @@ interface IProjectListProps {
   chooseProject: Project;
   onChangeProject: (project: Project) => void;
   onCreateProject: (projectName: string) => void;
-  onEditProject: (project: Project) => void;
 }
 
 interface IProjectListState {

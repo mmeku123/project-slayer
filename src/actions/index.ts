@@ -15,14 +15,17 @@ import {
   CREATE_STUDENT,
   AUTH_USER,
   ADD_PROJECT_MEMBER,
-  FETCH_PROJECT_MEMBERS
+  FETCH_PROJECT_MEMBERS,
+  TOGGLE_SHOW_PROJECT,
+  FETCH_TASKS,
+  ADD_TASK
 } from './types';
 
 import Project from '../models/Project';
 
 import axios from 'axios';
 import firebase from '../firebase';
-import { Subject, Student } from '../models';
+import { Subject, Student, Task } from '../models';
 import { EditType } from '../constant/editType';
 
 const db = firebase.firestore();
@@ -30,6 +33,7 @@ const projects = db.collection('projects');
 const subjects = db.collection('subjects');
 const comments = db.collection('comments');
 const users = db.collection('users');
+const tasks = db.collection('tasks');
 
 const authId = localStorage.getItem('auth_id');
 
@@ -121,11 +125,13 @@ export const fetchProjectMembers = projectId => async dispatch => {
 };
 
 export const changeSubject = subjectId => async dispatch => {
+  dispatch({ type: TOGGLE_SHOW_PROJECT });
   return dispatch({ type: CHANGE_SUBJECT, subjectId });
 };
 
-export const changeProject = projectId => {
-  return { type: CHANGE_PROJECT, projectId };
+export const changeProject = projectId => async dispatch => {
+  dispatch({ type: TOGGLE_SHOW_PROJECT });
+  return dispatch({ type: CHANGE_PROJECT, projectId });
 };
 
 export const changeProjectBySubject = subject => {
@@ -155,34 +161,70 @@ export const addStudent = studentId => {
     });
 };
 
+export const addTask = (projectId: string) => async dispatch => {
+  tasks.add(Task.toJson(projectId)).then(ref => {
+    const newTask = new Task('task', 'simple task');
+    newTask._id = ref.id;
+    return dispatch({ type: ADD_TASK, payload: { newTask } });
+  });
+};
+
+export const fetchTasks = (projectId: string) => async dispatch => {
+  const tasksByProject = await tasks.where('projectId', '==', projectId);
+  tasksByProject
+    .orderBy('startDate')
+    .get()
+    .then(query => {
+      const tasksByTime = query.docs.map(doc => {
+        return Task.fromMap(doc.id, doc.data());
+      });
+      return dispatch({ type: FETCH_TASKS, payload: { tasksByTime } });
+    });
+  tasksByProject
+    .orderBy('owner')
+    .get()
+    .then(query => {
+      const tasksByMember = query.docs.map(doc => {
+        return Task.fromMap(doc.id, doc.data());
+      });
+      return dispatch({ type: FETCH_TASKS, payload: { tasksByMember } });
+    });
+};
+
 export const editProject = (
   projectId,
   editType: EditType,
   value
 ) => async dispatch => {
   dispatch({ type: EDIT_PROJECT });
+  let editData = {};
+  let editResult = {};
 
   switch (editType) {
     case EditType.DETAIL:
+      editData = { detail: value };
+  }
+
+  projects
+    .doc(projectId)
+    .update(editData)
+    .then(() => {
       projects
         .doc(projectId)
-        .update({
-          detail: value
-        })
-        .then(() => {
-          projects
-            .doc(projectId)
-            .get()
-            .then(doc => {
-              return dispatch({
-                type: EDIT_PROJECT_SUCCESS,
-                payload: {
-                  projectId,
-                  editType,
-                  detail: doc.data().detail
-                }
-              });
-            });
+        .get()
+        .then(doc => {
+          switch (editType) {
+            case EditType.DETAIL:
+              editResult = { detail: doc.data().detail };
+          }
+          dispatch({
+            type: EDIT_PROJECT_SUCCESS,
+            payload: {
+              projectId,
+              editType,
+              ...editResult
+            }
+          });
         });
-  }
+    });
 };

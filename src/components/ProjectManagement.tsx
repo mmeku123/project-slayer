@@ -7,7 +7,9 @@ import {
   changeProject,
   fetchProjectByIds,
   fetchSubject,
-  changeProjectBySubject
+  changeProjectBySubject,
+  fetchProjectMembers,
+  fetchTasks
 } from '../actions';
 
 import DocumentData from 'firebase/firebase-firestore';
@@ -38,6 +40,8 @@ interface IProjectManagementProps {
     isLoading: boolean;
   };
   fetchProjectByIds: (projectIds: string[]) => (dispatch: any) => Promise<void>;
+  fetchProjectMembers: (projectId) => void;
+  fetchTasks: (projectId) => void;
   fetchSubject: () => (dispatch: any) => Promise<void>;
   createSubject: (subjectName: string) => void;
   createProject: (projectName: string, subjectId: string) => void;
@@ -74,9 +78,9 @@ class ProjectManagement extends Component<
 
   handleProjectChange = (project: Project) => {
     this.props.changeProject(project._id);
+    this.props.fetchProjectMembers(project._id);
+    this.props.fetchTasks(project._id);
   };
-
-  handleProjectEdit = (editProject: Project) => {};
 
   render() {
     let { subjects, focusSubject, isFocusSubject } = this.props.subjects;
@@ -111,7 +115,6 @@ class ProjectManagement extends Component<
               isChooseProject={isFocusProject}
               onChangeProject={this.handleProjectChange}
               onCreateProject={this.handleProjectCreate}
-              onEditProject={this.handleProjectEdit}
             />
 
             {isFocusProject ? (
@@ -147,7 +150,9 @@ const mapDispatchToProps = dispatch => {
       changeProject,
       changeProjectBySubject,
       fetchProjectByIds,
-      fetchSubject
+      fetchSubject,
+      fetchProjectMembers,
+      fetchTasks
     },
     dispatch
   );

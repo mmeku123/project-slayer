@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Comment, Project, Student } from '../../models';
+import { Comment, Project, Student, Task } from '../../models';
 import { ProjectProgress, ProjectSchedule } from '../../models/Project';
 
-import { editProject, fetchProjectMembers } from '../../actions';
+import { editProject } from '../../actions';
 
 import { connect } from 'react-redux';
 
@@ -26,9 +26,9 @@ enum ShowType {
 }
 
 interface IProjectThingProps {
+  tasks: Task[];
   members: Student[];
   project: Project;
-  fetchProjectMembers: (projectId) => void;
   editProject: (projectId: string, editType: EditType, value: any) => void;
 }
 
@@ -42,10 +42,6 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
     this.state = {
       showType: ShowType.NONE
     };
-  }
-
-  componentWillMount() {
-    this.props.fetchProjectMembers(this.props.project._id);
   }
 
   changeShowType = (type: ShowType) => {
@@ -79,15 +75,7 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
 
   renderProjectShowing = () => {
     let project: Project = this.props.project;
-    let {
-      name,
-      detail,
-      tasks,
-      studentIds,
-      commentIds,
-      progress,
-      schedule
-    } = project;
+    let { name, detail, studentIds, commentIds, progress, schedule } = project;
 
     console.log('members', this.props.members);
 
@@ -97,7 +85,7 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
       case ShowType.MEMBER:
         return <ProjectMembers members={this.props.members} />;
       case ShowType.TASK:
-        return <ProjectTasks tasks={tasks} />;
+        return <ProjectTasks tasks={this.props.tasks} />;
       case ShowType.CHAT:
         return <ProjectChat comments={null} />;
       // case ShowType.PROGRESS:
@@ -121,11 +109,12 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
 }
 const mapStateToProps = state => {
   return {
-    members: state.members
+    members: state.members,
+    tasks: state.tasks
   };
 };
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ editProject, fetchProjectMembers }, dispatch);
+  return bindActionCreators({ editProject }, dispatch);
 };
 
 export default connect(

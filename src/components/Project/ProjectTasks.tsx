@@ -3,13 +3,14 @@ import Project from '../../models/Project';
 
 import Task from '../../models/Task';
 import { connect } from 'react-redux';
-import { editProject } from '../../actions';
+import { editProject, addTask } from '../../actions';
 import { bindActionCreators } from 'redux';
 import { EditType } from '../../constant/editType';
 
 interface IProjectTasksProps {
   tasks: Task[];
   focusProject: Project;
+  addTask: (projectId: string) => void;
   editProject: (projectId: string, editType: EditType, detail) => void;
 }
 
@@ -111,7 +112,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           value={editDetail.name}
           onChange={this.handleTaskChange}
         />
-        <div>{task.owners}</div>
+        <div>{task.owner}</div>
         <div>
           finish :
           <input
@@ -149,7 +150,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           comment
           {task.comments.map(comment => {
             return (
-              <li key={comment.detail + '$' + task._id}>
+              <li key={comment._id + '$' + task._id}>
                 {comment.detail} - {comment.ownerName} :
                 {comment.time.toLocaleDateString()}
               </li>
@@ -167,12 +168,12 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     return (
       <div key={task._id}>
         <div>{task.name}</div>
-        <div>{task.owners}</div>
+        <div>{task.owner}</div>
         <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
         <div> detail : {task.detail} </div>
         <div>priority: {task.priority}</div>
         {task.startDate ? (
-          <div>Start: {task.startDate.toISOString()}</div>
+          <div>Start: {task.startDate.toString()}</div>
         ) : (
           <div />
         )}
@@ -181,7 +182,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           comment
           {task.comments.map(comment => {
             return (
-              <li key={comment.detail + '$' + task._id}>
+              <li key={comment._id + '$' + task._id}>
                 {comment.detail} - {comment.ownerName} :
                 {comment.time.toLocaleDateString()}
               </li>
@@ -211,21 +212,33 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   };
 
   render() {
-    let { tasks } = this.props.focusProject;
+    let tasksByMember = this.props.tasks['byMember'];
+    let tasksByTime = this.props.tasks['byTime'];
 
-    console.log(this.props.focusProject);
+    console.log(this.props.tasks);
+    console.log(tasksByTime);
 
     return (
       <div>
         <h5>Project Tasks </h5>
-
-        {tasks.map(task => {
-          if (task.name == this.state.editTask && this.state.isEdit == true) {
-            return this.renderTaskEdit(task);
-          } else {
-            return this.renderTaskDetail(task);
-          }
-        })}
+        <button
+          onClick={() => {
+            this.props.addTask(this.props.focusProject._id);
+          }}
+        >
+          + Task
+        </button>
+        {tasksByTime != [] ? (
+          tasksByTime.map(task => {
+            if (task.name == this.state.editTask && this.state.isEdit == true) {
+              return this.renderTaskEdit(task);
+            } else {
+              return this.renderTaskDetail(task);
+            }
+          })
+        ) : (
+          <div />
+        )}
       </div>
     );
   }
@@ -236,7 +249,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ editProject }, dispatch);
+  return bindActionCreators({ editProject, addTask }, dispatch);
 };
 
 export default connect(

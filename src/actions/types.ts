@@ -21,3 +21,7 @@ export const AUTH_USER = 'auth';
 
 export const ADD_PROJECT_MEMBER = 'add_project_member';
 export const FETCH_PROJECT_MEMBERS = 'fetch_project_members';
+export const TOGGLE_SHOW_PROJECT = 'toggle_show_project';
+
+export const FETCH_TASKS = 'fetch_tasks';
+export const ADD_TASK = 'add_task';

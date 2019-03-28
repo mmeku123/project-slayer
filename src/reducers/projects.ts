@@ -6,7 +6,8 @@ import {
   CHANGE_PROJECT,
   EDIT_PROJECT,
   ADD_PROJECT_SUCCESS,
-  EDIT_PROJECT_SUCCESS
+  EDIT_PROJECT_SUCCESS,
+  TOGGLE_SHOW_PROJECT
 } from '../actions/types';
 import Project from '../models/Project';
 import Comment from '../models/Comment';
@@ -39,6 +40,9 @@ export default function projects(state = initialState, action) {
     case FETCH_PROJECT:
       console.log('fetch');
       return { ...state, projects: action.payload.projects };
+    case TOGGLE_SHOW_PROJECT:
+      console.log('toggle');
+      return { ...state, isFocusProject: false };
     case CHANGE_PROJECT:
       return {
         ...state,

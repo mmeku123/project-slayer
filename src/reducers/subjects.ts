@@ -5,6 +5,8 @@ import {
   ADD_SUBJECT_SUCCESS,
   ADD_PROJECT_SUBJECT
 } from '../actions/types';
+
+import projects from './projects';
 import Subject from '../models/Subject';
 
 function newSubject(subjectName: string) {
