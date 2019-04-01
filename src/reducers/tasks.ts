@@ -1,4 +1,5 @@
 import { FETCH_TASKS, ADD_TASK, EDIT_TASK } from '../actions/types';
+import { Comment } from '../models';
 
 const initialState = {
   byTime: []
@@ -25,6 +26,9 @@ export default function tasks(state = initialState, action) {
             task.isDone = isDone;
             task.detail = detail;
             task.priority = priority;
+            task.comments = comments.map(comment => {
+              return Comment.fromMap(comment);
+            });
             return task;
           }
           return task;

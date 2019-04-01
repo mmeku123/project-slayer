@@ -23,7 +23,7 @@ class ProjectChat extends Component<IProjectChatProps> {
               <div key={comment._id}>
                 <div>{comment.detail}</div>
                 <ul>
-                  <li>{comment.ownerName}</li>
+                  <li>{comment.ownerId}</li>
                   <li>{comment.time.toUTCString()}</li>
                 </ul>
               </div>

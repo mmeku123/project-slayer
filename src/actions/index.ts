@@ -177,17 +177,21 @@ export const fetchTasks = (projectId: string) => async dispatch => {
     .get()
     .then(query => {
       const tasksByTime = query.docs.map(doc => {
-        return Task.fromMap(doc.id, doc.data());
+        const task = Task.fromMap(doc.id, doc.data());
+        task.comments = task.comments.map(comment => {
+          return Comment.fromMap(comment);
+        });
+        return task;
       });
       return dispatch({ type: FETCH_TASKS, payload: { tasksByTime } });
     });
 };
 
 export const editTask = (taskId: string, editData) => async dispatch => {
-  const { name, isDone, detail, priority } = editData.editDetail;
   console.log(editData, taskId);
   switch (editData.type) {
     case 'detail':
+      const { name, isDone, detail, priority } = editData.editDetail;
       tasks
         .doc(taskId)
         .update({ name, isDone, detail, priority })
@@ -204,16 +208,37 @@ export const editTask = (taskId: string, editData) => async dispatch => {
         });
       break;
     case 'add_comment':
-      tasks.doc(taskId).update({
-        comments: [
-          comments,
-          new Comment(
-            localStorage.getItem('auth_id'),
-            new Date(),
-            editData.newComment
-          )
-        ]
-      });
+      const { newComment } = editData;
+      tasks
+        .doc(taskId)
+        .get()
+        .then(doc => {
+          const existedComments = doc.data().comments;
+          console.log(doc.data());
+          tasks
+            .doc(taskId)
+            .update({
+              comments: [
+                ...existedComments,
+                Comment.toJson(
+                  localStorage.getItem('auth_id'),
+                  new Date(),
+                  newComment
+                )
+              ]
+            })
+            .then(() => {
+              tasks
+                .doc(taskId)
+                .get()
+                .then(doc => {
+                  return dispatch({
+                    type: EDIT_TASK,
+                    payload: { id: doc.id, data: doc.data() }
+                  });
+                });
+            });
+        });
       break;
   }
 };

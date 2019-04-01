@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Project from '../../models/Project';
-
+import { Comment } from '../../models';
 import Task from '../../models/Task';
 import { connect } from 'react-redux';
 import { editTask, addTask } from '../../actions';
@@ -46,7 +46,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   showNewCommentDialog = (task: Task) => {
     this.setState(state => ({
       ...state,
-      editTaskId: task.name,
+      editTaskId: task._id,
       isAddComment: true
     }));
   };
@@ -80,12 +80,17 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     this.setState(state => ({ ...state, newComment }));
   };
 
-  addNewComment = () => {
-    let { editTaskId, newComment } = this.state;
-    this.props.editTask(editTaskId, {
+  addNewComment = (task: Task) => {
+    let { newComment } = this.state;
+    this.props.editTask(task._id, {
       type: 'add_comment',
       newComment
     });
+    this.setState(state => ({
+      ...state,
+      editTaskId: task._id,
+      isAddComment: false
+    }));
   };
 
   cancelEdit = () => {
@@ -148,11 +153,10 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
         {task.dueDate ? <div>End: {task.dueDate.toString()}</div> : <div />}
         <ul>
           comment
-          {task.comments.map(comment => {
+          {task.comments.map((comment: Comment) => {
             return (
               <li key={comment._id + '$' + task._id}>
-                {comment.detail} - {comment.ownerName} :
-                {comment.time.toString()}
+                {comment.detail} - {comment.ownerId} :{comment.time.toString()}
               </li>
             );
           })}
@@ -177,25 +181,24 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
         ) : (
           <div />
         )}
-        {task.dueDate ? <div>End: {task.dueDate.toISOString()}</div> : <div />}
+        {task.dueDate ? <div>End: {task.dueDate.toString()}</div> : <div />}
         <ul>
           comment
-          {task.comments.map(comment => {
+          {task.comments.map((comment: Comment) => {
             return (
-              <li key={comment._id + '$' + task._id}>
-                {comment.detail} - {comment.ownerName} :
-                {comment.time.toLocaleDateString()}
+              <li key={comment.time.toString() + '@' + task._id + '$'}>
+                {comment.detail} - {comment.ownerId} :{comment.time.toString()}
               </li>
             );
           })}
-          {this.state.isAddComment && task.name == this.state.editTaskId ? (
+          {this.state.isAddComment && task._id == this.state.editTaskId ? (
             <div>
               <input
                 type="text"
                 value={this.state.newComment}
                 onChange={this.handleNewCommentChange}
               />
-              <button onClick={this.addNewComment}>ADD</button>
+              <button onClick={() => this.addNewComment(task)}>ADD</button>
             </div>
           ) : (
             <div />
