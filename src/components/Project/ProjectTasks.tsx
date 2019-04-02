@@ -11,7 +11,7 @@ interface IProjectTasksProps {
   tasks: Task[];
   focusProject: Project;
   addTask: (projectId: string) => void;
-  editTask: (taskId: string, editData) => void;
+  editTask: (projectId: string, taskId: string, editData) => void;
 }
 
 interface IProjectTasksStates {
@@ -80,9 +80,16 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     this.setState(state => ({ ...state, newComment }));
   };
 
+  handleDeleteComment = (taskId: string, commentId: string) => {
+    this.props.editTask(this.props.focusProject._id, taskId, {
+      type: 'delete_comment',
+      commentId
+    });
+  };
+
   addNewComment = (task: Task) => {
     let { newComment } = this.state;
-    this.props.editTask(task._id, {
+    this.props.editTask(this.props.focusProject._id, task._id, {
       type: 'add_comment',
       newComment
     });
@@ -98,7 +105,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   };
 
   confirmEdit = (task: Task) => {
-    this.props.editTask(task._id, {
+    this.props.editTask(this.props.focusProject._id, task._id, {
       type: 'detail',
       editDetail: this.state.editDetail
     });
@@ -157,6 +164,13 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             return (
               <li key={comment._id + '$' + task._id}>
                 {comment.detail} - {comment.ownerId} :{comment.time.toString()}
+                <button
+                  onClick={() =>
+                    this.handleDeleteComment(task._id, comment._id)
+                  }
+                >
+                  Delete
+                </button>
               </li>
             );
           })}
@@ -188,6 +202,13 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             return (
               <li key={comment.time.toString() + '@' + task._id + '$'}>
                 {comment.detail} - {comment.ownerId} :{comment.time.toString()}
+                <button
+                  onClick={() =>
+                    this.handleDeleteComment(task._id, comment._id)
+                  }
+                >
+                  Delete
+                </button>
               </li>
             );
           })}

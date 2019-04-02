@@ -212,7 +212,11 @@ export const fetchTasks = (projectId: string) => async dispatch => {
     });
 };
 
-export const editTask = (taskId: string, editData) => async dispatch => {
+export const editTask = (
+  projectId: string,
+  taskId: string,
+  editData
+) => async dispatch => {
   console.log(editData, taskId);
   switch (editData.type) {
     case 'detail':
@@ -221,15 +225,7 @@ export const editTask = (taskId: string, editData) => async dispatch => {
         .doc(taskId)
         .update({ name, isDone, detail, priority })
         .then(() => {
-          tasks
-            .doc(taskId)
-            .get()
-            .then(doc => {
-              return dispatch({
-                type: EDIT_TASK,
-                payload: { id: doc.id, data: doc.data() }
-              });
-            });
+          return dispatch(fetchTasks(projectId));
         });
       break;
     case 'add_comment':
@@ -254,16 +250,25 @@ export const editTask = (taskId: string, editData) => async dispatch => {
               ]
             })
             .then(() => {
-              tasks
-                .doc(taskId)
-                .get()
-                .then(doc => {
-                  return dispatch({
-                    type: EDIT_TASK,
-                    payload: { id: doc.id, data: doc.data() }
-                  });
-                });
+              return dispatch(fetchTasks(projectId));
             });
+        });
+    case 'delete_comment':
+      const { commentId } = editData;
+      tasks
+        .doc(taskId)
+        .get()
+        .then(doc => {
+          const remainedComments = [];
+
+          doc.data().comments.forEach(comment => {
+            if (comment._id != commentId) remainedComments.push(comment);
+          });
+
+          tasks
+            .doc(taskId)
+            .update({ comments: remainedComments })
+            .then(() => dispatch(fetchTasks(projectId)));
         });
       break;
   }
