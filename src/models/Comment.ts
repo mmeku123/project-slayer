@@ -6,14 +6,16 @@ class Comment {
   time: Date;
   detail: string;
 
-  constructor(owner: string, time: Date, detail: string) {
+  constructor(id: string, owner: string, time: Date, detail: string) {
+    this._id = id;
     this.ownerId = owner;
     this.time = time;
     this.detail = detail;
   }
 
-  static toJson(authId: string, time: Date, detail: string) {
+  static toJson(id: string, authId: string, time: Date, detail: string) {
     return {
+      _id: id,
       ownerId: authId,
       createTime: time,
       detail: detail
@@ -21,7 +23,12 @@ class Comment {
   }
 
   static fromMap(data) {
-    const newComment = new Comment(data.ownerId, data.createTime, data.detail);
+    const newComment = new Comment(
+      data._id,
+      data.ownerId,
+      data.createTime,
+      data.detail
+    );
     return newComment;
   }
 }

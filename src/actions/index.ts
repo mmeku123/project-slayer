@@ -2,7 +2,8 @@ import {
   ADD_PROJECT,
   ADD_SUBJECT_SUCCESS,
   ADD_PROJECT_SUBJECT,
-  FETCH_PROJECT,
+  UPDATE_PROJECT,
+  FETCH_PROJECTS,
   ADD_SUBJECT,
   CHANGE_SUBJECT,
   CHANGE_PROJECT_SUBJECT,
@@ -22,7 +23,7 @@ import {
   EDIT_TASK
 } from './types';
 
-import Project from '../models/Project';
+import Project, { ProjectSprint } from '../models/Project';
 
 import axios from 'axios';
 import firebase from '../firebase';
@@ -35,6 +36,7 @@ const subjects = db.collection('subjects');
 const comments = db.collection('comments');
 const users = db.collection('users');
 const tasks = db.collection('tasks');
+const schedules = db.collection('schedules');
 
 const authId = localStorage.getItem('auth_id');
 
@@ -68,6 +70,17 @@ export const addProjectToSubject = (
   });
 };
 
+export const updateProject = (projectId: string) => async dispatch => {
+  projects
+    .doc(projectId)
+    .get()
+    .then(doc => {
+      const project = Project.fromMap(doc.id, doc.data());
+
+      return dispatch({ type: UPDATE_PROJECT, payload: { project } });
+    });
+};
+
 export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
   const req = await projects.get();
 
@@ -75,12 +88,24 @@ export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
 
   const resProjects = req.docs.forEach(doc => {
     if (projectIds) {
-      if (projectIds.find(id => id == doc.id))
-        projectList.push(Project.fromMap(doc.id, doc.data()));
+      if (projectIds.find(id => id == doc.id)) {
+        const project = Project.fromMap(doc.id, doc.data());
+        project.schedule.sprints = project.schedule.sprints.map(
+          (sprint: ProjectSprint) => {
+            return new ProjectSprint(
+              sprint._id,
+              sprint.name,
+              sprint.detail,
+              sprint.dueDate
+            );
+          }
+        );
+        projectList.push(project);
+      }
     }
   });
 
-  return dispatch({ type: FETCH_PROJECT, payload: { projects: projectList } });
+  return dispatch({ type: FETCH_PROJECTS, payload: { projects: projectList } });
 };
 
 export const fetchSubject = () => async dispatch => {
@@ -214,13 +239,14 @@ export const editTask = (taskId: string, editData) => async dispatch => {
         .get()
         .then(doc => {
           const existedComments = doc.data().comments;
-          console.log(doc.data());
+          const commentId = doc.data().comments.length++;
           tasks
             .doc(taskId)
             .update({
               comments: [
                 ...existedComments,
                 Comment.toJson(
+                  commentId.toString(),
                   localStorage.getItem('auth_id'),
                   new Date(),
                   newComment
@@ -261,22 +287,38 @@ export const editProject = (
     .doc(projectId)
     .update(editData)
     .then(() => {
+      return dispatch(updateProject(projectId));
+    });
+};
+
+export const addSprint = (
+  projectId: string,
+  editType: EditType,
+  sprintDetail
+) => async dispatch => {
+  dispatch({ type: EDIT_PROJECT });
+
+  const { _id, name, detail, dueDate } = sprintDetail;
+  projects
+    .doc(projectId)
+    .get()
+    .then(doc => {
+      const projectSprints = doc.data().schedule.sprints;
+      const projectSchedule = doc.data().schedule;
+      const sprintId = doc.data().schedule.sprints.length++;
       projects
         .doc(projectId)
-        .get()
-        .then(doc => {
-          switch (editType) {
-            case EditType.DETAIL:
-              editResult = { detail: doc.data().detail };
+        .update({
+          schedule: {
+            ...projectSchedule,
+            sprints: [
+              ...projectSprints,
+              { _id: sprintId, name, detail, dueDate }
+            ]
           }
-          dispatch({
-            type: EDIT_PROJECT_SUCCESS,
-            payload: {
-              projectId,
-              editType,
-              ...editResult
-            }
-          });
+        })
+        .then(() => {
+          return dispatch(updateProject(projectId));
         });
     });
 };

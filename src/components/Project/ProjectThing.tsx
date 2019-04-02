@@ -7,7 +7,6 @@ import { editProject } from '../../actions';
 import { connect } from 'react-redux';
 
 import ProjectMembers from './ProjectMembers';
-import ProjectChat from './ProjectChat';
 import ProjectDetail from './ProjectDetail';
 import ProjectTime from './ProjectTime';
 import ProjectPercent from './ProjectPercent';
@@ -19,7 +18,6 @@ enum ShowType {
   DETAIL,
   TASK,
   MEMBER,
-  CHAT,
   PROGRESS,
   TIMELINE,
   NONE
@@ -60,9 +58,6 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
         <button onClick={event => this.changeShowType(ShowType.TASK)}>
           Task
         </button>
-        <button onClick={event => this.changeShowType(ShowType.CHAT)}>
-          Chat
-        </button>
         {/* <button onClick={event => this.changeShowType(ShowType.PROGRESS)}>
           Progress
         </button> */}
@@ -86,18 +81,16 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
         return <ProjectMembers members={this.props.members} />;
       case ShowType.TASK:
         return <ProjectTasks tasks={this.props.tasks} />;
-      case ShowType.CHAT:
-        return <ProjectChat comments={null} />;
-      // case ShowType.PROGRESS:
-      //   return <ProjectPercent progress={progress} />;
       case ShowType.TIMELINE:
-        return <ProjectTime schedule={schedule} />;
+        return <ProjectTime projectId={project._id} schedule={schedule} />;
       default:
         return <div />;
     }
   };
 
   render() {
+    console.log(this.props.project);
+
     return (
       <div>
         {this.renderSelectedShowButtons()}

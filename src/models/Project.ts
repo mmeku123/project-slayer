@@ -32,7 +32,7 @@ class Project {
   }
 
   static toJson(name, studentId?) {
-    const studentIdList = studentId ? [studentId] : [studentId];
+    const studentIdList = studentId ? [studentId] : [];
 
     return {
       name,
@@ -40,8 +40,7 @@ class Project {
       tasks: [],
       studentIds: studentIdList,
       commentIds: [],
-      progress: null,
-      schedule: null
+      schedule: ProjectSchedule.toJson(new ProjectSchedule())
     };
   }
 }
@@ -70,10 +69,20 @@ class ProjectSprint {
   detail: string;
   dueDate: Date;
 
-  constructor(name: string, detail: string, dueDate: string) {
+  constructor(id: string, name: string, detail: string, dueDate: Date) {
+    this._id = id;
     this.name = name;
     this.detail = detail;
-    this.dueDate = new Date(dueDate);
+    this.dueDate = dueDate;
+  }
+
+  static toJson(sprint: ProjectSprint) {
+    return {
+      _id: sprint._id,
+      name: sprint.name,
+      detail: sprint.detail,
+      dueDate: sprint.dueDate
+    };
   }
 }
 
@@ -83,8 +92,28 @@ class ProjectSchedule {
 
   sprints: ProjectSprint[] = [];
 
-  constructor(startDate: Date) {
+  constructor(_id?: string, startDate: Date = new Date()) {
+    if (_id) this._id = _id;
     this.startDate = startDate;
+  }
+
+  static toJson(schedule: ProjectSchedule) {
+    return {
+      startDate: schedule.startDate,
+      sprints: schedule.sprints
+    };
+  }
+
+  static fromMap(data) {
+    const schedule = new ProjectSchedule(data._id, data.startDate);
+    schedule.sprints = data.sprints.map((sprint: ProjectSprint) => {
+      return new ProjectSprint(
+        sprint._id,
+        sprint.name,
+        sprint.detail,
+        sprint.dueDate
+      );
+    });
   }
 }
 
