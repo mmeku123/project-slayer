@@ -23,7 +23,7 @@ import {
   EDIT_TASK
 } from './types';
 
-import Project, { ProjectSprint } from '../models/Project';
+import Project, { ProjectSprint, ProjectSchedule } from '../models/Project';
 
 import axios from 'axios';
 import firebase from '../firebase';
@@ -315,6 +315,35 @@ export const addSprint = (
               ...projectSprints,
               { _id: sprintId, name, detail, dueDate }
             ]
+          }
+        })
+        .then(() => {
+          return dispatch(updateProject(projectId));
+        });
+    });
+};
+
+export const deleteSprint = (
+  projectId: string,
+  sprintId: string
+) => async dispatch => {
+  projects
+    .doc(projectId)
+    .get()
+    .then(doc => {
+      const remainedSprints = [];
+      const projectSchedule = doc.data().schedule;
+
+      doc.data().schedule.sprints.forEach(sprint => {
+        if (sprint._id != sprintId) remainedSprints.push(sprint);
+      });
+
+      projects
+        .doc(projectId)
+        .update({
+          schedule: {
+            ...projectSchedule,
+            sprints: remainedSprints
           }
         })
         .then(() => {

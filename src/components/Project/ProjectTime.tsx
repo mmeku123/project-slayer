@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { ProjectSchedule, ProjectSprint } from '../../models/Project';
 import { EditType } from '../../constant/editType';
-import { addSprint } from '../../actions';
+import { addSprint, deleteSprint } from '../../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -10,6 +10,7 @@ interface IProjectTimeProps {
   projectId: string;
   schedule: ProjectSchedule;
   addSprint: (projectId: string, editType: EditType, sprintDetail) => void;
+  deleteSprint: (projectId: string, sprintId: string) => void;
 }
 
 class ProjectTime extends Component<IProjectTimeProps> {
@@ -24,6 +25,10 @@ class ProjectTime extends Component<IProjectTimeProps> {
       detail: 'clear all the work',
       dueDate: new Date()
     });
+  };
+
+  handleDeleteSprint = (sprintId: string) => {
+    this.props.deleteSprint(this.props.projectId, sprintId);
   };
 
   render() {
@@ -48,6 +53,11 @@ class ProjectTime extends Component<IProjectTimeProps> {
                           {sprint._id}
                           {sprint.detail} {sprint.detail}{' '}
                           {sprint.dueDate.toString()}
+                          <button
+                            onClick={() => this.handleDeleteSprint(sprint._id)}
+                          >
+                            DELETE
+                          </button>
                         </div>
                       );
                     })}
@@ -70,7 +80,7 @@ class ProjectTime extends Component<IProjectTimeProps> {
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ addSprint }, dispatch);
+  return bindActionCreators({ addSprint, deleteSprint }, dispatch);
 };
 
 export default connect(
