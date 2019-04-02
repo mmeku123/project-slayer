@@ -72,8 +72,6 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
     let project: Project = this.props.project;
     let { name, detail, studentIds, commentIds, progress, schedule } = project;
 
-    console.log('members', this.props.members);
-
     switch (this.state.showType) {
       case ShowType.DETAIL:
         return <ProjectDetail />;
@@ -89,8 +87,6 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
   };
 
   render() {
-    console.log(this.props.project);
-
     return (
       <div>
         {this.renderSelectedShowButtons()}

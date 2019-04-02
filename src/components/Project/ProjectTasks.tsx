@@ -238,8 +238,6 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   render() {
     let tasksByTime = this.props.tasks['byTime'];
 
-    console.log(this.props.tasks);
-
     return (
       <div>
         <h5>Project Tasks </h5>

@@ -217,7 +217,6 @@ export const editTask = (
   taskId: string,
   editData
 ) => async dispatch => {
-  console.log(editData, taskId);
   switch (editData.type) {
     case 'detail':
       const { name, isDone, detail, priority } = editData.editDetail;

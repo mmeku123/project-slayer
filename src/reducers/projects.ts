@@ -53,14 +53,12 @@ export default function projects(state = initialState, action) {
         focusProject: updateProject
       };
     case FETCH_PROJECTS:
-      console.log('fetch');
       return {
         ...state,
         isFocusProject: false,
         projects: action.payload.projects
       };
     case TOGGLE_SHOW_PROJECT:
-      console.log('toggle');
       return { ...state, isFocusProject: false };
     case CHANGE_PROJECT:
       return {
@@ -95,7 +93,6 @@ export default function projects(state = initialState, action) {
           };
         case EditType.TIMELINE:
           const { editResult } = action.payload;
-          console.log(editResult);
           const updateProject = state.projects.find(
             project => project._id == projectId
           );

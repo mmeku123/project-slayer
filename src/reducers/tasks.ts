@@ -9,9 +9,9 @@ export default function tasks(state = initialState, action) {
   switch (action.type) {
     case ADD_TASK:
       const { newTask } = action.payload;
-      console.log(newTask);
       return {
         ...state,
+
         byTime: [...state.byTime, newTask]
       };
 
