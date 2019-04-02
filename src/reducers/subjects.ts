@@ -24,7 +24,7 @@ const initialState = {
 export default function subjects(state = initialState, action) {
   switch (action.type) {
     case FETCH_SUBJECT:
-      return { ...state, subjects: action.payload };
+      return { ...state, isFocusSubject: false, subjects: action.payload };
     case ADD_SUBJECT_SUCCESS:
       const { id, name, studentId } = action.payload;
       let subject = new Subject(id, name);

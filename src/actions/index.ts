@@ -356,3 +356,34 @@ export const deleteSprint = (
         });
     });
 };
+
+export const deleteProject = (
+  projectId: string,
+  subjectId
+) => async dispatch => {
+  subjects
+    .doc(subjectId)
+    .get()
+    .then(doc => {
+      const subjectProjects = doc.data().projectIds;
+      const remainedProjects = [];
+
+      subjectProjects.forEach(project => {
+        if (project == projectId) remainedProjects.push(project);
+      });
+
+      subjects
+        .doc(subjectId)
+        .update({ projectIds: remainedProjects })
+        .then(() => dispatch(fetchProjectByIds(remainedProjects)));
+
+      projects.doc(projectId).delete();
+    });
+};
+
+export const deleteSubject = (subjectId: string) => async dispatch => {
+  subjects
+    .doc(subjectId)
+    .delete()
+    .then(() => dispatch(fetchSubject()));
+};

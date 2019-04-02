@@ -9,7 +9,9 @@ import {
   fetchSubject,
   changeProjectBySubject,
   fetchProjectMembers,
-  fetchTasks
+  fetchTasks,
+  deleteProject,
+  deleteSubject
 } from '../actions';
 
 import DocumentData from 'firebase/firebase-firestore';
@@ -48,6 +50,8 @@ interface IProjectManagementProps {
   changeSubject: (subjectId: string) => (dispatch: any) => void;
   changeProject: (projectId: string) => void;
   changeProjectBySubject: (subject: Subject) => void;
+  deleteProject: (projectId: string, subjectId: string) => void;
+  deleteSubject: (subjectId: string) => void;
 }
 
 class ProjectManagement extends Component<
@@ -82,6 +86,17 @@ class ProjectManagement extends Component<
     this.props.fetchTasks(project._id);
   };
 
+  handleDeleteSubject = () => {
+    this.props.deleteSubject(this.props.subjects.focusSubject._id);
+  };
+
+  handleDeleteProject = () => {
+    this.props.deleteProject(
+      this.props.projects.focusProject._id,
+      this.props.subjects.focusSubject._id
+    );
+  };
+
   render() {
     let { subjects, focusSubject, isFocusSubject } = this.props.subjects;
     let { projects, focusProject, isFocusProject } = this.props.projects;
@@ -112,6 +127,7 @@ class ProjectManagement extends Component<
 
         {isFocusSubject ? (
           <div>
+            <button onClick={this.handleDeleteSubject}>Delete Subject</button>
             <ProjectList
               projects={projects}
               chooseProject={focusProject}
@@ -124,6 +140,10 @@ class ProjectManagement extends Component<
               <div>
                 <ProjectHeader project={focusProject} />
                 <ProjectThing project={focusProject} />
+
+                <button onClick={this.handleDeleteProject}>
+                  Delete Project
+                </button>
               </div>
             ) : (
               <div />
@@ -155,7 +175,9 @@ const mapDispatchToProps = dispatch => {
       fetchProjectByIds,
       fetchSubject,
       fetchProjectMembers,
-      fetchTasks
+      fetchTasks,
+      deleteProject,
+      deleteSubject
     },
     dispatch
   );

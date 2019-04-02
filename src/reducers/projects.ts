@@ -54,7 +54,11 @@ export default function projects(state = initialState, action) {
       };
     case FETCH_PROJECTS:
       console.log('fetch');
-      return { ...state, projects: action.payload.projects };
+      return {
+        ...state,
+        isFocusProject: false,
+        projects: action.payload.projects
+      };
     case TOGGLE_SHOW_PROJECT:
       console.log('toggle');
       return { ...state, isFocusProject: false };
