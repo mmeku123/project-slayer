@@ -20,7 +20,8 @@ import {
   TOGGLE_SHOW_PROJECT,
   FETCH_TASKS,
   ADD_TASK,
-  EDIT_TASK
+  EDIT_TASK,
+  LOG_OUT_USER
 } from './types';
 
 import Project, { ProjectSprint, ProjectSchedule } from '../models/Project';
@@ -189,7 +190,7 @@ export const addStudent = studentId => {
 
 export const addTask = (projectId: string, newTask: Task) => async dispatch => {
   tasks.add(Task.toJson(projectId, newTask)).then(ref => {
-    return dispatch(fetchTasks(projectId));
+    return dispatch(fetchTasks);
   });
 };
 
@@ -383,4 +384,63 @@ export const deleteSubject = (subjectId: string) => async dispatch => {
     .doc(subjectId)
     .delete()
     .then(() => dispatch(fetchSubject()));
+};
+
+export const signUpUser = (
+  email: string,
+  password: string
+) => async dispatch => {
+  firebase
+    .auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then(() => {
+      dispatch(signInUser(email, password));
+    })
+    .catch(error => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
+};
+
+export const signInUser = (
+  email: string,
+  password: string
+) => async dispatch => {
+  firebase
+    .auth()
+    .signInWithEmailAndPassword(email, password)
+    .then(() => {
+      let user = firebase.auth().currentUser;
+
+      if (user) {
+        localStorage.setItem('auth_email', email);
+        localStorage.setItem('auth_password', password);
+        return dispatch({ type: AUTH_USER, payload: { userId: user.uid } });
+      }
+    })
+    .catch(error => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
+};
+
+export const autoAuth = () => async dispatch => {
+  const email = localStorage.getItem('auth_email');
+  const password = localStorage.getItem('auth_password');
+
+  if (email && password) {
+    return dispatch(signInUser(email, password));
+  }
+};
+
+export const logOutUser = () => async dispatch => {
+  localStorage.removeItem('auth_email');
+  localStorage.removeItem('auth_password');
+
+  firebase
+    .auth()
+    .signOut()
+    .then(() => {
+      return dispatch({ type: LOG_OUT_USER });
+    });
 };

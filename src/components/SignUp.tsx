@@ -1,27 +1,24 @@
 import React, { Component } from 'react';
-
-import { signInUser } from '../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { signUpUser, logOutUser } from '../actions';
 
-interface ISignInProps {
-  auth: { isAuth: boolean; authId: string };
-  signInUser: (email: string, password: string) => void;
-}
-
-interface ISignInStates {
-  auth: { email: string; password: string };
-}
-
-class SignIn extends Component<ISignInProps, ISignInStates> {
+class SignUp extends Component<
+  {
+    auth: { isAuth: boolean; authId: string };
+    signUpUser: (email: string, password: string) => void;
+    logOutUser: () => void;
+  },
+  { auth: { email: string; password: string } }
+> {
   constructor(props) {
     super(props);
     this.state = { auth: { email: '', password: '' } };
   }
 
-  handleUserSignIn = () => {
+  handleSubmitSignUp = () => {
     const { email, password } = this.state.auth;
-    this.props.signInUser(email, password);
+    this.props.signUpUser(email, password);
   };
 
   handleInputChange = event => {
@@ -41,11 +38,13 @@ class SignIn extends Component<ISignInProps, ISignInStates> {
     this.setState(state => ({ ...state, auth: { email, password } }));
   };
 
+  handleUserLogOut = () => {
+    this.props.logOutUser();
+  };
+
   render() {
-    console.log(this.props.auth);
     return (
       <div>
-        Sign In
         {!this.props.auth.isAuth ? (
           <div>
             <input
@@ -60,10 +59,12 @@ class SignIn extends Component<ISignInProps, ISignInStates> {
               onChange={this.handleInputChange}
               value={this.state.auth.password}
             />
-            <button onClick={this.handleUserSignIn}>Submit</button>
+            <button onClick={this.handleSubmitSignUp}>Submit</button>
           </div>
         ) : (
-          <div />
+          <div>
+            <button onClick={this.handleUserLogOut}>Log out</button>
+          </div>
         )}
       </div>
     );
@@ -71,21 +72,14 @@ class SignIn extends Component<ISignInProps, ISignInStates> {
 }
 
 const mapStateToProps = state => {
-  return {
-    auth: state.auth
-  };
+  return { auth: state.auth };
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      signInUser
-    },
-    dispatch
-  );
+  return bindActionCreators({ signUpUser, logOutUser }, dispatch);
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SignIn);
+)(SignUp);
