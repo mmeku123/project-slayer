@@ -28,9 +28,21 @@ class Student implements User {
     this.nickname = nickname;
   }
 
-  static fromMap(id, data) {
+  static toJson(_id, email) {
+    return {
+      _id,
+      email,
+      id: '',
+      name: '',
+      nickname: '',
+      phone: '',
+      job: ''
+    };
+  }
+
+  static fromMap(_id, data) {
     const newStudent = new Student(
-      id,
+      _id,
       data.id,
       data.name,
       data.nickname,

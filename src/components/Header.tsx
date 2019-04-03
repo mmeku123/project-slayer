@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { autoAuth, logOutUser } from '../actions';
+import { Student } from '../models';
 
 interface IHeaderProps {
-  auth: { isAuth: boolean; authId: string };
+  auth: { user: Student; isAuth: boolean; authId: string };
   logOutUser: () => void;
   autoAuth: () => void;
 }

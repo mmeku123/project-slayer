@@ -19,6 +19,7 @@ export const ADD_SUBJECT_SUCCESS = 'add_subject_success';
 export const ADD_STUDENT = 'add_student';
 export const CREATE_STUDENT = 'create_student';
 
+export const FETCH_USER = 'fetch_user';
 export const AUTH_USER = 'auth';
 export const LOG_OUT_USER = 'logout';
 

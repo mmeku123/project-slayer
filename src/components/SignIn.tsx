@@ -3,9 +3,10 @@ import React, { Component } from 'react';
 import { signInUser } from '../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Student } from '../models';
 
 interface ISignInProps {
-  auth: { isAuth: boolean; authId: string };
+  auth: { user: Student; isAuth: boolean; authId: string };
   signInUser: (email: string, password: string) => void;
 }
 

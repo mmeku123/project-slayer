@@ -21,7 +21,8 @@ import {
   FETCH_TASKS,
   ADD_TASK,
   EDIT_TASK,
-  LOG_OUT_USER
+  LOG_OUT_USER,
+  FETCH_USER
 } from './types';
 
 import Project, { ProjectSprint, ProjectSchedule } from '../models/Project';
@@ -34,10 +35,8 @@ import { EditType } from '../constant/editType';
 const db = firebase.firestore();
 const projects = db.collection('projects');
 const subjects = db.collection('subjects');
-const comments = db.collection('comments');
 const users = db.collection('users');
 const tasks = db.collection('tasks');
-const schedules = db.collection('schedules');
 
 const authId = localStorage.getItem('auth_id');
 
@@ -386,6 +385,24 @@ export const deleteSubject = (subjectId: string) => async dispatch => {
     .then(() => dispatch(fetchSubject()));
 };
 
+const createUser = (user: firebase.User) => async dispatch => {
+  users
+    .doc(user.uid)
+    .set(Student.toJson(user.uid, user.email))
+    .then(() => dispatch(fetchUser(user.uid)));
+};
+
+const fetchUser = (userId: string) => async dispatch => {
+  users
+    .doc(userId)
+    .get()
+    .then(doc => {
+      const user = Student.fromMap(doc.id, doc.data());
+
+      return dispatch({ type: FETCH_USER, payload: { user } });
+    });
+};
+
 export const signUpUser = (
   email: string,
   password: string
@@ -393,7 +410,8 @@ export const signUpUser = (
   firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
-    .then(() => {
+    .then(user => {
+      dispatch(createUser(user.user));
       dispatch(signInUser(email, password));
     })
     .catch(error => {
@@ -413,6 +431,7 @@ export const signInUser = (
       let user = firebase.auth().currentUser;
 
       if (user) {
+        localStorage.setItem('auth_id', user.uid);
         localStorage.setItem('auth_email', email);
         localStorage.setItem('auth_password', password);
         return dispatch({ type: AUTH_USER, payload: { userId: user.uid } });
@@ -421,6 +440,7 @@ export const signInUser = (
     .catch(error => {
       const errorCode = error.code;
       const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
     });
 };
 
@@ -434,6 +454,7 @@ export const autoAuth = () => async dispatch => {
 };
 
 export const logOutUser = () => async dispatch => {
+  localStorage.removeItem('auth_id');
   localStorage.removeItem('auth_email');
   localStorage.removeItem('auth_password');
 

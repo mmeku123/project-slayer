@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { signUpUser, logOutUser } from '../actions';
+import { Student } from '../models';
 
 class SignUp extends Component<
   {
-    auth: { isAuth: boolean; authId: string };
+    auth: { user: Student; isAuth: boolean; authId: string };
     signUpUser: (email: string, password: string) => void;
     logOutUser: () => void;
   },
@@ -43,6 +44,7 @@ class SignUp extends Component<
   };
 
   render() {
+    console.log(this.props.auth);
     return (
       <div>
         {!this.props.auth.isAuth ? (
