@@ -187,11 +187,9 @@ export const addStudent = studentId => {
     });
 };
 
-export const addTask = (projectId: string) => async dispatch => {
-  tasks.add(Task.toJson(projectId)).then(ref => {
-    const newTask = new Task('task', 'simple task');
-    newTask._id = ref.id;
-    return dispatch({ type: ADD_TASK, payload: { newTask } });
+export const addTask = (projectId: string, newTask: Task) => async dispatch => {
+  tasks.add(Task.toJson(projectId, newTask)).then(ref => {
+    return dispatch(fetchTasks(projectId));
   });
 };
 

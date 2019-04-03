@@ -10,13 +10,15 @@ import { EditType } from '../../constant/editType';
 interface IProjectTasksProps {
   tasks: Task[];
   focusProject: Project;
-  addTask: (projectId: string) => void;
+  addTask: (projectId: string, taskDetail) => void;
   editTask: (projectId: string, taskId: string, editData) => void;
 }
 
 interface IProjectTasksStates {
+  newTask: Task;
   editDetail: Task;
   editTaskId: string;
+  isAddingTask: boolean;
   isEdit: boolean;
   isAddComment: boolean;
   newComment: string;
@@ -26,6 +28,8 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   constructor(props) {
     super(props);
     this.state = {
+      newTask: new Task('', '', this.props.focusProject._id),
+      isAddingTask: false,
       editDetail: null,
       editTaskId: '',
       isEdit: false,
@@ -75,6 +79,49 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     });
   };
 
+  handleNewTaskChange = event => {
+    let { name, isDone, detail, priority } = this.state.newTask;
+    switch (event.target.name) {
+      case 'name':
+        name = event.target.value;
+        break;
+      case 'finish':
+        isDone = event.target.value;
+        break;
+      case 'detail':
+        detail = event.target.value;
+        break;
+      case 'priority':
+        priority = event.target.value;
+        break;
+    }
+    this.setState(state => {
+      return {
+        ...state,
+        newTask: { ...state.editDetail, name, isDone, detail, priority }
+      };
+    });
+    console.log(this.state.newTask);
+  };
+
+  handleCreatingTask = () => {
+    this.setState(state => ({ ...state, isAddingTask: true }));
+  };
+
+  handleCreateTask = () => {
+    const {
+      name,
+      isDone,
+      detail,
+      priority,
+      startDate,
+      dueDate
+    } = this.state.newTask;
+    this.props.addTask(this.props.focusProject._id, this.state.newTask);
+
+    this.setState(state => ({ ...state, isAddingTask: false }));
+  };
+
   handleNewCommentChange = event => {
     let newComment = event.target.value;
     this.setState(state => ({ ...state, newComment }));
@@ -110,6 +157,55 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
       editDetail: this.state.editDetail
     });
     this.setState(state => ({ ...state, editDetail: null, isEdit: false }));
+  };
+
+  renderTaskCreate = () => {
+    const { newTask } = this.state;
+
+    return this.state.isAddingTask ? (
+      <div>
+        <input
+          type="text"
+          name="name"
+          value={newTask.name}
+          onChange={this.handleNewTaskChange}
+        />
+        <div>
+          finish :
+          <input
+            type="radio"
+            name="finish"
+            checked={newTask.isDone}
+            onChange={this.handleNewTaskChange}
+          />
+        </div>
+        <div>
+          detail :
+          <textarea
+            rows={4}
+            cols={30}
+            name="detail"
+            value={newTask.detail}
+            onChange={this.handleNewTaskChange}
+          />
+        </div>
+        <div>
+          priority:
+          <select
+            name="priority"
+            onChange={this.handleNewTaskChange}
+            value={newTask.priority}
+          >
+            <option value="1">High</option>
+            <option value="2">Normal</option>
+            <option value="3">Low</option>
+          </select>
+        </div>
+        <button onClick={this.handleCreateTask}>Create Task</button>
+      </div>
+    ) : (
+      <div />
+    );
   };
 
   renderTaskEdit = (task: Task) => {
@@ -241,13 +337,8 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     return (
       <div>
         <h5>Project Tasks </h5>
-        <button
-          onClick={() => {
-            this.props.addTask(this.props.focusProject._id);
-          }}
-        >
-          + Task
-        </button>
+        <button onClick={this.handleCreatingTask}>+ Task</button>
+        {this.renderTaskCreate()}
         {tasksByTime != [] ? (
           tasksByTime.map((task: Task) => {
             if (

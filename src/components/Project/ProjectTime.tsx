@@ -13,22 +13,71 @@ interface IProjectTimeProps {
   deleteSprint: (projectId: string, sprintId: string) => void;
 }
 
-class ProjectTime extends Component<IProjectTimeProps> {
+interface IProjectTimeStates {
+  isAddingSprint: boolean;
+  newSprint: { name: string; detail: string; dueDate: string };
+}
+
+class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isAddingSprint: false,
+      newSprint: { name: '', detail: '', dueDate: '' }
+    };
   }
 
-  handleAddSprint = () => {
-    this.props.addSprint(this.props.projectId, EditType.TIMELINE, {
-      name: 'simple sprint',
-      detail: 'clear all the work',
-      dueDate: new Date()
-    });
+  handleAddingSprint = () => {
+    this.setState(state => ({ ...state, isAddingSprint: true }));
   };
 
   handleDeleteSprint = (sprintId: string) => {
     this.props.deleteSprint(this.props.projectId, sprintId);
+  };
+
+  handleInputChange = event => {
+    const target = event.target;
+    const type = target.name;
+
+    let { name, detail, dueDate } = this.state.newSprint;
+
+    switch (type) {
+      case 'sprint_name':
+        name = target.value;
+        break;
+      case 'sprint_detail':
+        detail = target.value;
+        break;
+      case 'sprint_dueDate':
+        dueDate = target.value;
+        break;
+    }
+
+    this.setState(state => ({
+      ...state,
+      newSprint: {
+        name,
+        detail,
+        dueDate
+      }
+    }));
+
+    console.log(this.state.newSprint);
+  };
+
+  handleCreateSprint = () => {
+    const { name, detail, dueDate } = this.state.newSprint;
+    this.props.addSprint(this.props.projectId, EditType.TIMELINE, {
+      name,
+      detail,
+      dueDate: new Date(dueDate)
+    });
+
+    this.setState(state => ({
+      ...state,
+      newSprint: { name: '', detail: '', dueDate: '' },
+      isAddingSprint: false
+    }));
   };
 
   render() {
@@ -63,8 +112,33 @@ class ProjectTime extends Component<IProjectTimeProps> {
                   </div>
                 }
               </div>
+              {this.state.isAddingSprint ? (
+                <div>
+                  <input
+                    type="text"
+                    name="sprint_name"
+                    value={this.state.newSprint.name}
+                    onChange={this.handleInputChange}
+                  />
+                  <input
+                    type="text"
+                    name="sprint_detail"
+                    value={this.state.newSprint.detail}
+                    onChange={this.handleInputChange}
+                  />
+                  <input
+                    type="datetime-local"
+                    name="sprint_dueDate"
+                    value={this.state.newSprint.dueDate}
+                    onChange={this.handleInputChange}
+                  />
+                  <button onClick={this.handleCreateSprint}>Create</button>
+                </div>
+              ) : (
+                <div />
+              )}
               <div>
-                <button onClick={this.handleAddSprint}> + Sprint </button>
+                <button onClick={this.handleAddingSprint}> + Sprint </button>
               </div>
             </div>
           ) : (
