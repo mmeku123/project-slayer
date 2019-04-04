@@ -110,9 +110,23 @@ export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
 
 export const fetchSubject = () => async dispatch => {
   const req = await subjects.get();
-  const res = req.docs.map(doc => Subject.fromMap(doc.id, doc.data()));
 
-  return dispatch({ type: FETCH_SUBJECT, payload: res });
+  const userSubjects: Subject[] = [];
+
+  req.docs.forEach(doc => {
+    const isStudentProject = doc
+      .data()
+      .studentIds.find(studentId => studentId == authId)
+      ? true
+      : false;
+
+    if (isStudentProject)
+      userSubjects.push(Subject.fromMap(doc.id, doc.data()));
+  });
+
+  console.log(userSubjects);
+
+  return dispatch({ type: FETCH_SUBJECT, payload: userSubjects });
 };
 
 export const createSubject = subjectName => async dispatch => {
