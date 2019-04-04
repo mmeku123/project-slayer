@@ -76,7 +76,12 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
       case ShowType.DETAIL:
         return <ProjectDetail />;
       case ShowType.MEMBER:
-        return <ProjectMembers members={this.props.members} />;
+        return (
+          <ProjectMembers
+            project={this.props.project}
+            members={this.props.members}
+          />
+        );
       case ShowType.TASK:
         return <ProjectTasks tasks={this.props.tasks} />;
       case ShowType.TIMELINE:

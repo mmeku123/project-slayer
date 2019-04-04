@@ -1,18 +1,46 @@
 import React, { Component } from 'react';
 
-import { Student, Teacher } from '../../models';
+import { Student, Teacher, Project } from '../../models';
 import { EditType } from '../../constant/editType';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { addProjectMember } from '../../actions';
+import { string } from 'prop-types';
 
 interface IProjectMembersProps {
   members: Student[];
+  project: Project;
+  addProjectMember: (projectId: string, memberEmail: string) => void;
 }
 
-class ProjectMembers extends Component<IProjectMembersProps> {
+interface IProjectMembersStates {
+  isAddingMember: boolean;
+  memberEmail: string;
+}
+
+class ProjectMembers extends Component<
+  IProjectMembersProps,
+  IProjectMembersStates
+> {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { isAddingMember: false, memberEmail: '' };
   }
+
+  handleInputChange = event => {
+    const email = event.target.value;
+    this.setState(state => ({ ...state, memberEmail: email }));
+  };
+
+  handleAddNewMember = () => {
+    this.setState({ isAddingMember: true, memberEmail: '' });
+  };
+
+  handleConfirmAddMember = () => {
+    this.props.addProjectMember(this.props.project._id, this.state.memberEmail);
+    this.setState({ isAddingMember: false, memberEmail: '' });
+  };
 
   render() {
     let members: Student[] = this.props.members;
@@ -20,6 +48,20 @@ class ProjectMembers extends Component<IProjectMembersProps> {
     return (
       <div>
         <h5>Project Members</h5>
+        <button onClick={this.handleAddNewMember}>+ Member</button>
+        {this.state.isAddingMember ? (
+          <div>
+            <input
+              type="text"
+              name="email"
+              value={this.state.memberEmail}
+              onChange={this.handleInputChange}
+            />
+            <button onClick={this.handleConfirmAddMember}>Confirm</button>
+          </div>
+        ) : (
+          <div />
+        )}
         {members &&
           members.map(member => {
             return (
@@ -40,4 +82,11 @@ class ProjectMembers extends Component<IProjectMembersProps> {
   }
 }
 
-export default ProjectMembers;
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ addProjectMember }, dispatch);
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ProjectMembers);

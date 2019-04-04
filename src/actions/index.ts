@@ -189,7 +189,7 @@ export const addStudent = studentId => {
 
 export const addTask = (projectId: string, newTask: Task) => async dispatch => {
   tasks.add(Task.toJson(projectId, newTask)).then(ref => {
-    return dispatch(fetchTasks);
+    return dispatch(fetchTasks(projectId));
   });
 };
 
@@ -200,6 +200,7 @@ export const fetchTasks = (projectId: string) => async dispatch => {
     .get()
     .then(query => {
       const tasksByTime = query.docs.map(doc => {
+        console.log(doc.data());
         const task = Task.fromMap(doc.id, doc.data());
         task.comments = task.comments.map(comment => {
           return Comment.fromMap(comment);
@@ -463,5 +464,40 @@ export const logOutUser = () => async dispatch => {
     .signOut()
     .then(() => {
       return dispatch({ type: LOG_OUT_USER });
+    });
+};
+
+export const addProjectMember = (projectId, memberEmail) => async dispatch => {
+  projects
+    .doc(projectId)
+    .get()
+    .then(doc => {
+      const projectMembers: [] = doc.data().studentIds;
+
+      users
+        .where('email', '==', memberEmail)
+        .get()
+        .then(query => {
+          if (query.docs.length == 1) {
+            const member = query.docs[0];
+
+            const isDuplicate: boolean = projectMembers.find(
+              projectMember => projectMember == member.id
+            )
+              ? true
+              : false;
+
+            if (!isDuplicate)
+              projects
+                .doc(projectId)
+                .update({ studentIds: [...projectMembers, member.id] })
+                .then(() => dispatch(fetchProjectMembers(projectId)));
+            else {
+              console.log('member duplicate');
+            }
+          } else {
+            console.log('error with the email');
+          }
+        });
     });
 };
