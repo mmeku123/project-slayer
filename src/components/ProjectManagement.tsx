@@ -136,7 +136,7 @@ class ProjectManagement extends Component<
             {isFocusProject ? (
               <div>
                 <ProjectHeader project={focusProject} />
-                <ProjectThing project={focusProject} />
+                <ProjectThing project={focusProject} subject={focusSubject} />
 
                 <button onClick={this.handleDeleteProject}>
                   Delete Project

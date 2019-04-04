@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 
-import { Student, Teacher, Project } from '../../models';
+import { Student, Teacher, Project, Subject } from '../../models';
 import { EditType } from '../../constant/editType';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { addProjectMember } from '../../actions';
+import { addProjectMember, addSubjectMember } from '../../actions';
 import { string } from 'prop-types';
 
 interface IProjectMembersProps {
   members: Student[];
+  subject: Subject;
   project: Project;
   addProjectMember: (projectId: string, memberEmail: string) => void;
+  addSubjectMember: (projectId: string, memberEmail: string) => void;
 }
 
 interface IProjectMembersStates {
@@ -39,6 +41,7 @@ class ProjectMembers extends Component<
 
   handleConfirmAddMember = () => {
     this.props.addProjectMember(this.props.project._id, this.state.memberEmail);
+    this.props.addSubjectMember(this.props.subject._id, this.state.memberEmail);
     this.setState({ isAddingMember: false, memberEmail: '' });
   };
 
@@ -83,7 +86,7 @@ class ProjectMembers extends Component<
 }
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ addProjectMember }, dispatch);
+  return bindActionCreators({ addProjectMember, addSubjectMember }, dispatch);
 };
 
 export default connect(

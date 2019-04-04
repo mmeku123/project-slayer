@@ -82,13 +82,21 @@ export const updateProject = (projectId: string) => async dispatch => {
 };
 
 export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
-  const req = await projects.get();
+  console.log(projectIds);
 
-  const projectList = [];
+  const userProjects: Project[] = [];
 
-  const resProjects = req.docs.forEach(doc => {
-    if (projectIds) {
-      if (projectIds.find(id => id == doc.id)) {
+  const res = projectIds.forEach(projectId => {
+    projects
+      .doc(projectId)
+      .get()
+      .then(doc => {
+        const isStudentProject = doc
+          .data()
+          .studentIds.find(studentId => studentId == authId)
+          ? true
+          : false;
+
         const project = Project.fromMap(doc.id, doc.data());
         project.schedule.sprints = project.schedule.sprints.map(
           (sprint: ProjectSprint) => {
@@ -100,12 +108,15 @@ export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
             );
           }
         );
-        projectList.push(project);
-      }
-    }
-  });
 
-  return dispatch({ type: FETCH_PROJECTS, payload: { projects: projectList } });
+        if (isStudentProject) userProjects.push(project);
+
+        dispatch({
+          type: FETCH_PROJECTS,
+          payload: { projects: userProjects }
+        });
+      });
+  });
 };
 
 export const fetchSubject = () => async dispatch => {
@@ -114,13 +125,13 @@ export const fetchSubject = () => async dispatch => {
   const userSubjects: Subject[] = [];
 
   req.docs.forEach(doc => {
-    const isStudentProject = doc
+    const isStudentSubject = doc
       .data()
       .studentIds.find(studentId => studentId == authId)
       ? true
       : false;
 
-    if (isStudentProject)
+    if (isStudentSubject)
       userSubjects.push(Subject.fromMap(doc.id, doc.data()));
   });
 
@@ -481,6 +492,41 @@ export const logOutUser = () => async dispatch => {
     });
 };
 
+export const addSubjectMember = (subjectId, memberEmail) => async dispatch => {
+  subjects
+    .doc(subjectId)
+    .get()
+    .then(doc => {
+      const subjectMembers: [] = doc.data().studentIds;
+
+      users
+        .where('email', '==', memberEmail)
+        .get()
+        .then(query => {
+          if (query.docs.length == 1) {
+            const member = query.docs[0];
+
+            const isDuplicate: boolean = subjectMembers.find(
+              subjectMember => subjectMember == member.id
+            )
+              ? true
+              : false;
+
+            if (!isDuplicate) {
+              subjects
+                .doc(subjectId)
+                .update({ studentIds: [...subjectMembers, member.id] })
+                .then(() => dispatch(fetchSubject()));
+            } else {
+              console.log('member duplicate');
+            }
+          } else {
+            console.log('error with the email');
+          }
+        });
+    });
+};
+
 export const addProjectMember = (projectId, memberEmail) => async dispatch => {
   projects
     .doc(projectId)
@@ -501,12 +547,12 @@ export const addProjectMember = (projectId, memberEmail) => async dispatch => {
               ? true
               : false;
 
-            if (!isDuplicate)
+            if (!isDuplicate) {
               projects
                 .doc(projectId)
                 .update({ studentIds: [...projectMembers, member.id] })
                 .then(() => dispatch(fetchProjectMembers(projectId)));
-            else {
+            } else {
               console.log('member duplicate');
             }
           } else {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Comment, Project, Student, Task } from '../../models';
+import { Comment, Project, Student, Task, Subject } from '../../models';
 import { ProjectProgress, ProjectSchedule } from '../../models/Project';
 
 import { editProject } from '../../actions';
@@ -27,6 +27,7 @@ interface IProjectThingProps {
   tasks: Task[];
   members: Student[];
   project: Project;
+  subject: Subject;
   editProject: (projectId: string, editType: EditType, value: any) => void;
 }
 
@@ -78,6 +79,7 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
       case ShowType.MEMBER:
         return (
           <ProjectMembers
+            subject={this.props.subject}
             project={this.props.project}
             members={this.props.members}
           />
