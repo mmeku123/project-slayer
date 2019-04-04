@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { autoAuth, logOutUser } from '../actions';
+import { autoAuth } from '../actions';
 import { Student } from '../models';
 
 interface IHeaderProps {
   auth: { user: Student; isAuth: boolean; authId: string };
-  logOutUser: () => void;
   autoAuth: () => void;
 }
 
@@ -19,10 +18,6 @@ class Header extends Component<IHeaderProps, IHeaderStates> {
     this.props.autoAuth();
   }
 
-  handleUserLogOut = () => {
-    this.props.logOutUser();
-  };
-
   render() {
     return (
       <div>
@@ -31,7 +26,7 @@ class Header extends Component<IHeaderProps, IHeaderStates> {
 
         {this.props.auth.isAuth ? (
           <div>
-            <button onClick={this.handleUserLogOut}>Log out</button>
+            <Link to="/logout">Log out</Link>
           </div>
         ) : (
           <div>
@@ -54,8 +49,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      autoAuth,
-      logOutUser
+      autoAuth
     },
     dispatch
   );

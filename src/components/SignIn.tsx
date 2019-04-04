@@ -4,10 +4,12 @@ import { signInUser } from '../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Student } from '../models';
+import { withRouter } from 'react-router';
 
 interface ISignInProps {
   auth: { user: Student; isAuth: boolean; authId: string };
   signInUser: (email: string, password: string) => void;
+  history;
 }
 
 interface ISignInStates {
@@ -18,6 +20,11 @@ class SignIn extends Component<ISignInProps, ISignInStates> {
   constructor(props) {
     super(props);
     this.state = { auth: { email: '', password: '' } };
+  }
+
+  componentDidUpdate() {
+    console.log(this.props.auth.isAuth);
+    this.props.auth.isAuth ? this.props.history.push('/project') : null;
   }
 
   handleUserSignIn = () => {
@@ -43,7 +50,6 @@ class SignIn extends Component<ISignInProps, ISignInStates> {
   };
 
   render() {
-    console.log(this.props.auth);
     return (
       <div>
         Sign In
@@ -89,4 +95,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SignIn);
+)(withRouter(SignIn));

@@ -3,18 +3,23 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { signUpUser, logOutUser } from '../actions';
 import { Student } from '../models';
+import { withRouter } from 'react-router';
 
 class SignUp extends Component<
   {
     auth: { user: Student; isAuth: boolean; authId: string };
     signUpUser: (email: string, password: string) => void;
-    logOutUser: () => void;
+    history;
   },
   { auth: { email: string; password: string } }
 > {
   constructor(props) {
     super(props);
     this.state = { auth: { email: '', password: '' } };
+  }
+
+  componentDidUpdate() {
+    this.props.auth.isAuth ? this.props.history.push('/project') : null;
   }
 
   handleSubmitSignUp = () => {
@@ -39,10 +44,6 @@ class SignUp extends Component<
     this.setState(state => ({ ...state, auth: { email, password } }));
   };
 
-  handleUserLogOut = () => {
-    this.props.logOutUser();
-  };
-
   render() {
     console.log(this.props.auth);
     return (
@@ -64,9 +65,7 @@ class SignUp extends Component<
             <button onClick={this.handleSubmitSignUp}>Submit</button>
           </div>
         ) : (
-          <div>
-            <button onClick={this.handleUserLogOut}>Log out</button>
-          </div>
+          <div />
         )}
       </div>
     );
@@ -84,4 +83,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SignUp);
+)(withRouter(SignUp));

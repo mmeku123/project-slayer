@@ -484,6 +484,8 @@ export const logOutUser = () => async dispatch => {
   localStorage.removeItem('auth_email');
   localStorage.removeItem('auth_password');
 
+  console.log('logout');
+
   firebase
     .auth()
     .signOut()

@@ -24,11 +24,14 @@ import ProjectThing from './Project/ProjectThing';
 
 import ProjectHeader from './Project/ProjectHeader';
 import { bindActionCreators } from 'redux';
+import { Student } from '../models';
+import { Redirect } from 'react-router';
 
 interface IProjectManagementStates {
   isFetchSubjectDone: boolean;
 }
 interface IProjectManagementProps {
+  auth: { user: Student; isAuth: boolean; authId: string };
   subjects: {
     subjects: Subject[];
     focusSubject: Subject;
@@ -156,6 +159,7 @@ class ProjectManagement extends Component<
 
 const mapStateToProps = state => {
   return {
+    auth: state.auth,
     subjects: state.subjects,
     projects: state.projects
   };
