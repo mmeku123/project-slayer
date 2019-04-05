@@ -7,4 +7,4 @@ enum EditType {
   TASK_COMMENT
 }
 
-export { EditType };
+export default EditType;

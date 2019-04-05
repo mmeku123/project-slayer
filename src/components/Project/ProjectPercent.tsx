@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ProjectProgress } from '../../models/Project';
-import { EditType } from '../../constant/editType';
+import EditType from '../../constant/editType';
 
 interface IProjectPercentProps {
   progress: ProjectProgress;

@@ -5,7 +5,7 @@ import Task from '../../models/Task';
 import { connect } from 'react-redux';
 import { editTask, addTask } from '../../actions';
 import { bindActionCreators } from 'redux';
-import { EditType } from '../../constant/editType';
+import EditType from '../../constant/editType';
 
 interface IProjectTasksProps {
   tasks: Task[];

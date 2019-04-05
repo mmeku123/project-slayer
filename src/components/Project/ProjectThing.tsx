@@ -12,7 +12,7 @@ import ProjectTime from './ProjectTime';
 import ProjectPercent from './ProjectPercent';
 import ProjectTasks from './ProjectTasks';
 import { bindActionCreators } from 'redux';
-import { EditType } from '../../constant/editType';
+import EditType from '../../constant/editType';
 
 enum ShowType {
   DETAIL,

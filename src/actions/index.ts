@@ -30,7 +30,7 @@ import Project, { ProjectSprint, ProjectSchedule } from '../models/Project';
 import axios from 'axios';
 import firebase from '../firebase';
 import { Subject, Student, Task, Comment } from '../models';
-import { EditType } from '../constant/editType';
+import EditType from '../constant/editType';
 
 const db = firebase.firestore();
 const projects = db.collection('projects');

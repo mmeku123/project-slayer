@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Student, Teacher, Project, Subject } from '../../models';
-import { EditType } from '../../constant/editType';
+import EditType from '../../constant/editType';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 

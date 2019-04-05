@@ -13,7 +13,7 @@ import {
 import Project, { ProjectSprint } from '../models/Project';
 import Comment from '../models/Comment';
 import { Subject } from '../models';
-import { EditType } from '../constant/editType';
+import EditType from '../constant/editType';
 
 import members from './members';
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { ProjectSchedule, ProjectSprint } from '../../models/Project';
-import { EditType } from '../../constant/editType';
+import EditType from '../../constant/editType';
 import { addSprint, deleteSprint } from '../../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

@@ -3,7 +3,7 @@ import Project from '../../models/Project';
 import { connect } from 'react-redux';
 import { editProject } from '../../actions';
 import { bindActionCreators } from 'redux';
-import { EditType } from '../../constant/editType';
+import EditType from '../../constant/editType';
 
 interface IProjectDetailProps {
   projects: {
