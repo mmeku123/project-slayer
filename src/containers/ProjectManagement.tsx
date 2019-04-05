@@ -142,12 +142,12 @@ class ProjectManagement extends Component<
 
             {isFocusProject ? (
               <div>
-                <ProjectHeader project={focusProject} />
-                <ProjectThing project={focusProject} subject={focusSubject} />
-
                 <Button type="danger" onClick={this.handleDeleteProject}>
                   Delete This Project
                 </Button>
+
+                <ProjectHeader project={focusProject} />
+                <ProjectThing project={focusProject} subject={focusSubject} />
               </div>
             ) : (
               <div />

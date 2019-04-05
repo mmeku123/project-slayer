@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Comment, Project, Student, Task, Subject } from '../../models';
 import { ProjectProgress, ProjectSchedule } from '../../models/Project';
 
+import { Tabs } from 'antd';
+
+const TabPane = Tabs.TabPane;
 import { editProject } from '../../actions';
 
 import { connect } from 'react-redux';
@@ -39,32 +42,50 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
   constructor(props) {
     super(props);
     this.state = {
-      showType: ShowType.NONE
+      showType: ShowType.DETAIL
     };
   }
 
-  changeShowType = (type: ShowType) => {
-    this.setState({ showType: type });
+  changeShowType = type => {
+    let showType: ShowType = ShowType.DETAIL;
+
+    switch (type) {
+      case 'detail':
+        showType = ShowType.DETAIL;
+        break;
+      case 'member':
+        showType = ShowType.MEMBER;
+        break;
+      case 'task':
+        showType = ShowType.TASK;
+        break;
+      case 'timeline':
+        showType = ShowType.TIMELINE;
+        break;
+    }
+
+    this.setState({ showType });
   };
 
   renderSelectedShowButtons = () => {
+    const show = this.renderProjectShowing();
+
     return (
       <div>
-        <button onClick={event => this.changeShowType(ShowType.DETAIL)}>
-          Detail
-        </button>
-        <button onClick={event => this.changeShowType(ShowType.MEMBER)}>
-          Member
-        </button>
-        <button onClick={event => this.changeShowType(ShowType.TASK)}>
-          Task
-        </button>
-        {/* <button onClick={event => this.changeShowType(ShowType.PROGRESS)}>
-          Progress
-        </button> */}
-        <button onClick={event => this.changeShowType(ShowType.TIMELINE)}>
-          Timeline
-        </button>
+        <Tabs defaultActiveKey="1" onChange={this.changeShowType}>
+          <TabPane tab="Detail" key="detail">
+            {show}
+          </TabPane>
+          <TabPane tab="Member" key="member">
+            {show}
+          </TabPane>
+          <TabPane tab="Task" key="task">
+            {show}
+          </TabPane>
+          <TabPane tab="Timeline" key="timeline">
+            {show}
+          </TabPane>
+        </Tabs>
       </div>
     );
   };
@@ -94,13 +115,7 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
   };
 
   render() {
-    return (
-      <div>
-        {this.renderSelectedShowButtons()}
-
-        {this.renderProjectShowing()}
-      </div>
-    );
+    return <div>{this.renderSelectedShowButtons()}</div>;
   }
 }
 const mapStateToProps = state => {
