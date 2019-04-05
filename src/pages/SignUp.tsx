@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import SignUp from '../components/SignUp';
+import SignUp from '../containers/SignUp';
 
 const SignUpPage = () => {
   return (
     <div>
-      SignUp Page
       <SignUp />
     </div>
   );

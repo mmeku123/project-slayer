@@ -6,6 +6,11 @@ import { bindActionCreators } from 'redux';
 import { Student } from '../models';
 import { withRouter } from 'react-router';
 
+import SignInForm from '../components/Form/SignInForm';
+import { Typography } from 'antd';
+
+const { Title } = Typography;
+
 interface ISignInProps {
   auth: { user: Student; isAuth: boolean; authId: string };
   signInUser: (email: string, password: string) => void;
@@ -23,55 +28,22 @@ class SignIn extends Component<ISignInProps, ISignInStates> {
   }
 
   componentDidUpdate() {
-    console.log(this.props.auth.isAuth);
     this.props.auth.isAuth ? this.props.history.push('/project') : null;
   }
 
-  handleUserSignIn = () => {
-    const { email, password } = this.state.auth;
+  handleSubmitSignIn = (email: string, password: string) => {
     this.props.signInUser(email, password);
-  };
-
-  handleInputChange = event => {
-    const type = event.target.name;
-
-    let { email, password } = this.state.auth;
-
-    switch (type) {
-      case 'email':
-        email = event.target.value;
-        break;
-      case 'password':
-        password = event.target.value;
-        break;
-    }
-
-    this.setState(state => ({ ...state, auth: { email, password } }));
   };
 
   render() {
     return (
       <div>
-        Sign In
-        {!this.props.auth.isAuth ? (
-          <div>
-            <input
-              type="email"
-              name="email"
-              onChange={this.handleInputChange}
-              value={this.state.auth.email}
-            />
-            <input
-              type="password"
-              name="password"
-              onChange={this.handleInputChange}
-              value={this.state.auth.password}
-            />
-            <button onClick={this.handleUserSignIn}>Submit</button>
-          </div>
-        ) : (
-          <div />
-        )}
+        <div style={{ textAlign: 'center' }}>
+          <Title>Sign In</Title>
+        </div>
+        <div className="container" style={{ maxWidth: '500px' }}>
+          <SignInForm onSubmit={this.handleSubmitSignIn} />
+        </div>
       </div>
     );
   }

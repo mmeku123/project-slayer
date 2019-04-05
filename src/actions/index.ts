@@ -431,7 +431,8 @@ const fetchUser = (userId: string) => async dispatch => {
 
 export const signUpUser = (
   email: string,
-  password: string
+  password: string,
+  profile
 ) => async dispatch => {
   firebase
     .auth()
@@ -443,6 +444,8 @@ export const signUpUser = (
     .catch(error => {
       const errorCode = error.code;
       const errorMessage = error.message;
+
+      console.log(error.code, error.message);
     });
 };
 

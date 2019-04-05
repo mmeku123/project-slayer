@@ -6,7 +6,7 @@ function App(props: { children: React.ReactNode }) {
   return (
     <div>
       <Header />
-      {props.children}
+      <div className="container">{props.children}</div>
       <Footer />
     </div>
   );
