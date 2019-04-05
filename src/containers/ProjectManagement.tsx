@@ -18,14 +18,15 @@ import DocumentData from 'firebase/firebase-firestore';
 import Subject from '../models/Subject';
 import Project from '../models/Project';
 
-import SubjectList from './Subject/SubjectList';
-import ProjectList from './Project/ProjectList';
-import ProjectThing from './Project/ProjectThing';
+import SubjectList from '../components/Subject/SubjectList';
+import ProjectList from '../components/Project/ProjectList';
+import ProjectThing from '../components/Project/ProjectThing';
 
-import ProjectHeader from './Project/ProjectHeader';
+import ProjectHeader from '../components/Project/ProjectHeader';
 import { bindActionCreators } from 'redux';
 import { Student } from '../models';
 import { Redirect } from 'react-router';
+import { Button } from 'antd';
 
 interface IProjectManagementStates {
   isFetchSubjectDone: boolean;
@@ -127,7 +128,10 @@ class ProjectManagement extends Component<
 
         {isFocusSubject ? (
           <div>
-            <button onClick={this.handleDeleteSubject}>Delete Subject</button>
+            <Button type="danger" onClick={this.handleDeleteSubject}>
+              Delete This Subject
+            </Button>
+
             <ProjectList
               projects={projects}
               chooseProject={focusProject}
@@ -141,9 +145,9 @@ class ProjectManagement extends Component<
                 <ProjectHeader project={focusProject} />
                 <ProjectThing project={focusProject} subject={focusSubject} />
 
-                <button onClick={this.handleDeleteProject}>
-                  Delete Project
-                </button>
+                <Button type="danger" onClick={this.handleDeleteProject}>
+                  Delete This Project
+                </Button>
               </div>
             ) : (
               <div />

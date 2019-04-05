@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import ProjectManagement from '../components/ProjectManagement';
+import ProjectManagement from '../containers/ProjectManagement';
 
 const ProjectManagementPage = () => {
-  return <ProjectManagement />;
+  return (
+    <div>
+      <ProjectManagement />
+    </div>
+  );
 };
 
 export default ProjectManagementPage;

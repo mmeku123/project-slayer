@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import Subject from '../../models/Subject';
+import SubjectCard from './SubjectCard';
+import { Row, Col, Typography } from 'antd';
+
+const { Title } = Typography;
 
 interface ISubjectListProps {
   subjects: Subject[];
@@ -20,7 +24,8 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
     this.state = { isAddNewSubject: false, newSubjectName: '' };
   }
 
-  handleChangeSubject = (event, subject: Subject) => {
+  handleChangeSubject = (subject: Subject) => {
+    console.log(subject);
     this.props.onChangeSubject(subject);
   };
 
@@ -51,32 +56,39 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
   render() {
     return (
       <div>
-        <div>
+        <div style={{ textAlign: 'center' }}>
           Your subject is:{' '}
-          {this.props.isChooseSubject
-            ? this.props.chooseSubject.name
-            : 'Choose one'}
+          <Title>
+            {this.props.isChooseSubject
+              ? this.props.chooseSubject.name
+              : 'Choose one'}
+          </Title>
         </div>
 
-        {this.props.subjects && this.props.subjects != [] ? (
-          this.props.subjects.map(subject => {
-            return (
-              <button
-                onClick={event => this.handleChangeSubject(event, subject)}
-                key={subject._id}
-              >
-                {subject.name}
-              </button>
-            );
-          })
-        ) : (
-          <div />
-        )}
+        <Row>
+          {this.props.subjects && this.props.subjects != [] ? (
+            this.props.subjects.map(subject => {
+              return (
+                <Col span={6}>
+                  <div onClick={() => this.handleChangeSubject(subject)}>
+                    <SubjectCard subject={subject} key={subject._id} />
+                  </div>
+                </Col>
+              );
+            })
+          ) : (
+            <div />
+          )}
 
-        <div>
-          <button onClick={this.showNewSubjectInput}>New Subject</button>
-          {this.renderInputNewSubject()}
-        </div>
+          <Col>
+            <Col span={6}>
+              <div onClick={this.showNewSubjectInput}>
+                <SubjectCard key={'new_subject'} />
+              </div>
+            </Col>
+            {this.renderInputNewSubject()}
+          </Col>
+        </Row>
       </div>
     );
   }

@@ -21,7 +21,7 @@ import HomePage from './pages/Home';
 import SignInPage from './pages/SignIn';
 import SignUpPage from './pages/SignUp';
 import ProjectManagementPage from './pages/ProjectManagement';
-import LogOut from './components/LogOut';
+import LogOut from './containers/LogOut';
 
 import reducers from './reducers';
 

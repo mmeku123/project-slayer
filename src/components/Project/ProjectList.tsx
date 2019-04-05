@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import Project from '../../models/Project';
+import ProjectCard from './ProjectCard';
+import { Row, Col } from 'antd';
+import Title from 'antd/lib/typography/Title';
 
 interface IProjectListProps {
   projects: Project[];
@@ -22,7 +25,7 @@ class ProjectCardList extends Component<{
     super(props);
   }
 
-  handleChangeProject = (event, project: Project) => {
+  handleChangeProject = (project: Project) => {
     this.props.onProjectChange(project);
   };
 
@@ -30,12 +33,11 @@ class ProjectCardList extends Component<{
     return this.props.projects.map(project => {
       if (project)
         return (
-          <button
-            onClick={event => this.handleChangeProject(event, project)}
-            key={project._id}
-          >
-            {project.name}
-          </button>
+          <Col span={6}>
+            <div onClick={() => this.handleChangeProject(project)}>
+              <ProjectCard project={project} key={project._id} />
+            </div>
+          </Col>
         );
     });
   }
@@ -81,21 +83,32 @@ class ProjectList extends Component<IProjectListProps, IProjectListState> {
 
     return (
       <div>
-        {project ? (
-          <div>
-            <div>Your Project is: {project.name}</div>
-            <div>Detail: {project.detail}</div>
-          </div>
-        ) : (
-          <div />
-        )}
         <div>
-          <ProjectCardList
-            projects={projects}
-            onProjectChange={this.handleChooseProjectChange}
-          />
+          <div style={{ textAlign: 'center' }}>
+            Your Project is:{' '}
+            <Title>{project ? project.name : 'Choose Project'}</Title>
+          </div>
+          {project ? (
+            <div>
+              <Title level={3}>Detail: {project.detail}</Title>
+            </div>
+          ) : (
+            <div />
+          )}
+        </div>
+        <div>
+          <Row>
+            <ProjectCardList
+              projects={projects}
+              onProjectChange={this.handleChooseProjectChange}
+            />
 
-          <button onClick={this.showNewProjectInput}>New Project</button>
+            <Col span={6}>
+              <div onClick={() => this.showNewProjectInput}>
+                <ProjectCard key="new_project" />
+              </div>
+            </Col>
+          </Row>
           {this.renderInputNewProject()}
         </div>
       </div>
