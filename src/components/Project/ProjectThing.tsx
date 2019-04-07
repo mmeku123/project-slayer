@@ -71,7 +71,7 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
     const show = this.renderProjectShowing();
 
     return (
-      <div>
+      <div style={{ minHeight: '500px' }}>
         <Tabs defaultActiveKey="1" onChange={this.changeShowType}>
           <TabPane tab="Detail" key="detail">
             {show}

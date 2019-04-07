@@ -25,7 +25,7 @@ import ProjectThing from '../components/Project/ProjectThing';
 import ProjectHeader from '../components/Project/ProjectHeader';
 import { bindActionCreators } from 'redux';
 import { Student } from '../models';
-import { Redirect } from 'react-router';
+import { Redirect, withRouter } from 'react-router';
 import { Button } from 'antd';
 
 interface IProjectManagementStates {
@@ -56,6 +56,7 @@ interface IProjectManagementProps {
   changeProjectBySubject: (subject: Subject) => void;
   deleteProject: (projectId: string, subjectId: string) => void;
   deleteSubject: (subjectId: string) => void;
+  history;
 }
 
 class ProjectManagement extends Component<
@@ -68,6 +69,7 @@ class ProjectManagement extends Component<
   }
 
   componentWillMount() {
+    if (!this.props.auth.isAuth) this.props.history.push('/signin');
     this.props.fetchSubject();
   }
 
@@ -191,4 +193,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ProjectManagement);
+)(withRouter(ProjectManagement));

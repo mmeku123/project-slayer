@@ -5,6 +5,10 @@ import { editProject } from '../../actions';
 import { bindActionCreators } from 'redux';
 import EditType from '../../constant/editType';
 
+import { Typography } from 'antd';
+
+const { Title, Paragraph, Text } = Typography;
+
 interface IProjectDetailProps {
   projects: {
     projects: Project[];
@@ -27,18 +31,15 @@ class ProjectDetail extends Component<
 > {
   constructor(props) {
     super(props);
-    this.state = { editDetail: '', isEdit: false, isEditDone: false };
+    this.state = {
+      editDetail: this.props.projects.focusProject.detail,
+      isEdit: false,
+      isEditDone: false
+    };
   }
 
-  showEditDialog = () => {
-    this.setState({
-      editDetail: this.props.projects.focusProject.detail,
-      isEdit: true
-    });
-  };
-
   confirmEdit = () => {
-    this.setState({ editDetail: '', isEdit: false });
+    this.setState(state => ({ ...state, isEdit: false }));
     this.props.editProject(
       this.props.projects.focusProject._id,
       EditType.DETAIL,
@@ -46,19 +47,14 @@ class ProjectDetail extends Component<
     );
   };
 
-  onChangeDetail = event => {
-    this.setState({ editDetail: event.target.value });
+  onChangeDetail = str => {
+    this.setState({ isEdit: true, editDetail: str });
   };
 
-  renderEditDetail = () => {
+  showConfirmEditDetail = () => {
     return (
       <div>
-        <input
-          type="text"
-          value={this.state.editDetail}
-          onChange={this.onChangeDetail}
-        />
-        <button onClick={this.confirmEdit}>Confirm</button>
+        <button onClick={this.confirmEdit}>Save</button>
       </div>
     );
   };
@@ -66,12 +62,11 @@ class ProjectDetail extends Component<
   renderProjectDetail = () => {
     return (
       <div>
-        {this.state.isEdit ? (
-          this.renderEditDetail()
-        ) : (
-          <div>{this.props.projects.focusProject.detail}</div>
-        )}
-        <button onClick={this.showEditDialog}>Edit</button>
+        <Text editable={{ onChange: this.onChangeDetail }}>
+          {this.state.editDetail}
+        </Text>
+
+        {this.state.isEdit ? this.showConfirmEditDetail() : <div />}
       </div>
     );
   };
@@ -81,13 +76,13 @@ class ProjectDetail extends Component<
 
     return (
       <div>
-        <div>
-          {this.props.projects.isLoading ? <div>Loading</div> : <div />}
-        </div>
-        ;<h5>Project Name </h5>
+        <Title level={2}>Project Name </Title>
         <div> {name} </div>
-        <h5>Project Detail </h5>
-        {this.renderProjectDetail()}
+        <div>
+          {' '}
+          Project Detail
+          {this.renderProjectDetail()}
+        </div>
       </div>
     );
   }

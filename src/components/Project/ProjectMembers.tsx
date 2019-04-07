@@ -7,6 +7,9 @@ import { bindActionCreators } from 'redux';
 
 import { addProjectMember, addSubjectMember } from '../../actions';
 import { string } from 'prop-types';
+import { Button, Input, Row, Col } from 'antd';
+
+import avatar from '../../images/avatars/1575649.svg';
 
 interface IProjectMembersProps {
   members: Student[];
@@ -45,41 +48,84 @@ class ProjectMembers extends Component<
     this.setState({ isAddingMember: false, memberEmail: '' });
   };
 
+  handleCancelAddMember = () => {
+    this.setState({ isAddingMember: false, memberEmail: '' });
+  };
+
   render() {
     let members: Student[] = this.props.members;
 
     return (
       <div>
         <h5>Project Members</h5>
-        <button onClick={this.handleAddNewMember}>+ Member</button>
+        <Button onClick={this.handleAddNewMember}>+ Member</Button>
         {this.state.isAddingMember ? (
           <div>
-            <input
+            <Input
+              placeholder="User Email"
               type="text"
               name="email"
               value={this.state.memberEmail}
               onChange={this.handleInputChange}
             />
-            <button onClick={this.handleConfirmAddMember}>Confirm</button>
+            <Button type="danger" onClick={this.handleCancelAddMember}>
+              Cancel
+            </Button>
+            <Button type="primary" onClick={this.handleConfirmAddMember}>
+              Confirm
+            </Button>
           </div>
         ) : (
           <div />
         )}
-        {members &&
-          members.map(member => {
-            return (
-              <div key={member._id}>
-                <b>{member.name}</b>
-                <ul>
-                  <li>id {member.id}</li>
-                  <li>email {member.email}</li>
-                  <li>nickname {member.nickname}</li>
-                  <li>job {member.job}</li>
-                  <li>task</li>
-                </ul>
-              </div>
-            );
-          })}
+        <Row>
+          {members &&
+            members.map(member => {
+              return (
+                <Col span={6} offset={2}>
+                  <div key={member._id} style={{ textAlign: 'center' }}>
+                    <div>
+                      <img src={avatar} height={200} />
+                    </div>
+                    <table>
+                      <thead>
+                        <tr>
+                          <td>1</td>
+                          <td>2</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>name</td>
+                          <td>{member.name}</td>
+                        </tr>
+                        <tr>
+                          <td>id</td>
+                          <td>{member.id}</td>
+                        </tr>
+                        <tr>
+                          <td>email</td>
+                          <td>{member.email}</td>
+                        </tr>
+                        <tr>
+                          <td>nickname</td>
+                          <td>{member.nickname}</td>
+                        </tr>
+                        <tr>
+                          <td>job</td>
+                          <td>{member.job}</td>
+                        </tr>
+                        <tr>
+                          <td>task</td>
+                          <td />
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </Col>
+              );
+            })}
+        </Row>
       </div>
     );
   }

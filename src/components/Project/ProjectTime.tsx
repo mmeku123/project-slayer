@@ -6,6 +6,8 @@ import { addSprint, deleteSprint } from '../../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { Timeline, Icon, Input, Button, DatePicker } from 'antd';
+
 interface IProjectTimeProps {
   projectId: string;
   schedule: ProjectSchedule;
@@ -80,6 +82,13 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
     }));
   };
 
+  onChangeDate = (date, dateString) => {
+    this.setState(state => ({
+      ...state,
+      newSprint: { ...state.newSprint, dueDate: dateString }
+    }));
+  };
+
   render() {
     let schedule = this.props.schedule;
 
@@ -95,44 +104,52 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
                 {
                   <div>
                     Timeline :
-                    {schedule.sprints.map((sprint: ProjectSprint) => {
-                      return (
-                        <div key={sprint.dueDate.toString()}>
-                          {sprint._id}
-                          {sprint.detail} {sprint.detail}{' '}
-                          {sprint.dueDate.toString()}
-                          <button
-                            onClick={() => this.handleDeleteSprint(sprint._id)}
-                          >
-                            DELETE
-                          </button>
-                        </div>
-                      );
-                    })}
+                    <Timeline>
+                      {schedule.sprints.map((sprint: ProjectSprint) => {
+                        return (
+                          <Timeline.Item>
+                            <div key={sprint.dueDate.toString()}>
+                              {sprint._id}
+                              {sprint.name} {sprint.detail}{' '}
+                              {sprint.dueDate.toString()}
+                              <Icon
+                                style={{ color: 'red' }}
+                                type="close-circle"
+                                onClick={() =>
+                                  this.handleDeleteSprint(sprint._id)
+                                }
+                              />
+                            </div>
+                          </Timeline.Item>
+                        );
+                      })}
+                    </Timeline>
                   </div>
                 }
               </div>
               {this.state.isAddingSprint ? (
                 <div>
-                  <input
+                  <Input
+                    placeholder="Sprint Name"
                     type="text"
                     name="sprint_name"
                     value={this.state.newSprint.name}
                     onChange={this.handleInputChange}
                   />
-                  <input
+                  <Input
+                    placeholder="Sprint Detail"
                     type="text"
                     name="sprint_detail"
                     value={this.state.newSprint.detail}
                     onChange={this.handleInputChange}
                   />
-                  <input
-                    type="datetime-local"
+                  <DatePicker
                     name="sprint_dueDate"
-                    value={this.state.newSprint.dueDate}
-                    onChange={this.handleInputChange}
+                    onChange={this.onChangeDate}
                   />
-                  <button onClick={this.handleCreateSprint}>Create</button>
+                  <Button type="primary" onClick={this.handleCreateSprint}>
+                    Create
+                  </Button>
                 </div>
               ) : (
                 <div />

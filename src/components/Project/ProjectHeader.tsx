@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { Project } from '../../models';
 
+import { Typography } from 'antd';
+
+const { Title } = Typography;
+
 interface IProjectHeaderProps {
   project: Project;
 }
@@ -13,8 +17,8 @@ class ProjectHeader extends Component<IProjectHeaderProps> {
     let project = this.props.project;
 
     return (
-      <div>
-        <h3>{project.name}</h3>
+      <div style={{ textAlign: 'center' }}>
+        <Title>{project.name}</Title>
       </div>
     );
   }

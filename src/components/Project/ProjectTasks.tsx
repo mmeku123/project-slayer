@@ -6,6 +6,9 @@ import { connect } from 'react-redux';
 import { editTask, addTask } from '../../actions';
 import { bindActionCreators } from 'redux';
 import EditType from '../../constant/editType';
+import { Input, Radio, Select, Switch, Button } from 'antd';
+
+const Option = Select.Option;
 
 interface IProjectTasksProps {
   tasks: Task[];
@@ -164,7 +167,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
 
     return this.state.isAddingTask ? (
       <div>
-        <input
+        <Input
           type="text"
           name="name"
           value={newTask.name}
@@ -172,18 +175,19 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
         />
         <div>
           finish :
-          <input
-            type="radio"
-            name="finish"
-            checked={newTask.isDone}
-            onChange={this.handleNewTaskChange}
+          <Switch
+            defaultChecked={newTask.isDone}
+            onChange={checked => {
+              this.setState(state => ({
+                ...state,
+                newTask: { ...state.newTask, isDone: checked }
+              }));
+            }}
           />
         </div>
         <div>
           detail :
-          <textarea
-            rows={4}
-            cols={30}
+          <Input
             name="detail"
             value={newTask.detail}
             onChange={this.handleNewTaskChange}
@@ -191,17 +195,20 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
         </div>
         <div>
           priority:
-          <select
-            name="priority"
-            onChange={this.handleNewTaskChange}
-            value={newTask.priority}
+          <Select
+            onChange={value => {
+              this.setState(state => ({
+                ...state,
+                newTask: { ...state.newTask, priority: value.toString() }
+              }));
+            }}
           >
-            <option value="1">High</option>
-            <option value="2">Normal</option>
-            <option value="3">Low</option>
-          </select>
+            <Option value="High">High</Option>
+            <Option value="Normal">Normal</Option>
+            <Option value="Low">Low</Option>
+          </Select>
         </div>
-        <button onClick={this.handleCreateTask}>Create Task</button>
+        <Button onClick={this.handleCreateTask}>Create Task</Button>
       </div>
     ) : (
       <div />
@@ -214,7 +221,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     return (
       <div key={task._id}>
         task name:
-        <input
+        <Input
           type="text"
           name="name"
           value={editDetail.name}
@@ -223,18 +230,19 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
         <div>{task.owner}</div>
         <div>
           finish :
-          <input
-            type="radio"
-            name="finish"
+          <Switch
             checked={editDetail.isDone}
-            onChange={this.handleTaskChange}
+            onChange={checked => {
+              this.setState(state => ({
+                ...state,
+                editDetail: { ...state.editDetail, isDone: checked }
+              }));
+            }}
           />
         </div>
         <div>
           detail :
-          <textarea
-            rows={4}
-            cols={30}
+          <Input
             name="detail"
             value={editDetail.detail}
             onChange={this.handleTaskChange}
@@ -242,11 +250,18 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
         </div>
         <div>
           priority:
-          <select name="priority" onChange={this.handleTaskChange}>
-            <option value="1">High</option>
-            <option value="2">Normal</option>
-            <option value="3">Low</option>
-          </select>
+          <Select
+            onChange={value => {
+              this.setState(state => ({
+                ...state,
+                editDetail: { ...state.editDetail, priority: value.toString() }
+              }));
+            }}
+          >
+            <Option value="High">High</Option>
+            <Option value="Normal">Normal</Option>
+            <Option value="Low">Low</Option>
+          </Select>
         </div>
         {task.startDate ? (
           <div>Start: {task.startDate.toString()}</div>
@@ -260,13 +275,13 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             return (
               <li key={comment._id + '$' + task._id}>
                 {comment.detail} - {comment.ownerId} :{comment.time.toString()}
-                <button
+                <Button
                   onClick={() =>
                     this.handleDeleteComment(task._id, comment._id)
                   }
                 >
                   Delete
-                </button>
+                </Button>
               </li>
             );
           })}
@@ -310,7 +325,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           })}
           {this.state.isAddComment && task._id == this.state.editTaskId ? (
             <div>
-              <input
+              <Input
                 type="text"
                 value={this.state.newComment}
                 onChange={this.handleNewCommentChange}
@@ -337,7 +352,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     return (
       <div>
         <h5>Project Tasks </h5>
-        <button onClick={this.handleCreatingTask}>+ Task</button>
+        <Button onClick={this.handleCreatingTask}>+ Task</Button>
         {this.renderTaskCreate()}
         {tasksByTime != [] ? (
           tasksByTime.map((task: Task) => {
