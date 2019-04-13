@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Subject from '../../models/Subject';
 import SubjectCard from './SubjectCard';
-import { Row, Col, Typography, Button } from 'antd';
+import { Row, Col, Typography, Button, Input } from 'antd';
 
 const { Title } = Typography;
 
@@ -44,10 +44,12 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
 
   renderInputNewSubject = () => {
     return this.state.isAddNewSubject ? (
-      <div>
-        <input placeholder="New Subject" onChange={this.inputChange} />
-        <Button onClick={this.createNewSubject}>+</Button>
-      </div>
+      <Col md={6}>
+        <div>
+          <Input placeholder="New Subject" onChange={this.inputChange} />
+          <Button onClick={this.createNewSubject}>+</Button>
+        </div>
+      </Col>
     ) : (
       <div />
     );
@@ -56,37 +58,47 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
   render() {
     return (
       <div>
-        <div style={{ textAlign: 'center' }}>
-          Your subject is:{' '}
-          <Title>
-            {this.props.isChooseSubject
-              ? this.props.chooseSubject.name
-              : 'Choose one'}
-          </Title>
-        </div>
+        <Row type="flex" align="middle">
+          <Col md={12}>
+            <div style={{ textAlign: 'center' }}>
+              Your subject is:{' '}
+              <Title>
+                {this.props.isChooseSubject
+                  ? this.props.chooseSubject.name
+                  : 'Choose one'}
+              </Title>
+            </div>
+          </Col>
 
-        <Row>
-          {this.props.subjects && this.props.subjects != [] ? (
-            this.props.subjects.map(subject => {
-              return (
-                <Col span={6}>
-                  <div onClick={() => this.handleChangeSubject(subject)}>
-                    <SubjectCard subject={subject} key={subject._id} />
-                  </div>
-                </Col>
-              );
-            })
-          ) : (
-            <div />
-          )}
+          <Col md={12}>
+            <Row type="flex" align="middle">
+              {this.props.subjects && this.props.subjects != [] ? (
+                this.props.subjects.map(subject => {
+                  return (
+                    <Col md={8}>
+                      <div
+                        style={{ padding: '10px' }}
+                        onClick={() => this.handleChangeSubject(subject)}
+                      >
+                        <SubjectCard subject={subject} key={subject._id} />
+                      </div>
+                    </Col>
+                  );
+                })
+              ) : (
+                <div />
+              )}
 
-          <Col>
-            <Col span={6}>
-              <div onClick={this.showNewSubjectInput}>
-                <SubjectCard key={'new_subject'} />
-              </div>
-            </Col>
-            {this.renderInputNewSubject()}
+              <Col md={8}>
+                <div
+                  style={{ padding: '10px' }}
+                  onClick={this.showNewSubjectInput}
+                >
+                  <SubjectCard key={'new_subject'} />
+                </div>
+              </Col>
+              {this.renderInputNewSubject()}
+            </Row>
           </Col>
         </Row>
       </div>

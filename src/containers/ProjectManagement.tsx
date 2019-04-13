@@ -26,7 +26,8 @@ import ProjectHeader from '../components/Project/ProjectHeader';
 import { bindActionCreators } from 'redux';
 import { Student } from '../models';
 import { Redirect, withRouter } from 'react-router';
-import { Button } from 'antd';
+import { Button, Row, Col, Icon } from 'antd';
+import Text from 'antd/lib/typography/Text';
 
 interface IProjectManagementStates {
   isFetchSubjectDone: boolean;
@@ -103,6 +104,62 @@ class ProjectManagement extends Component<
     );
   };
 
+  renderSubjectActions = () => {
+    return (
+      <Row type="flex" justify="end">
+        <Col>
+          <Button
+            shape="circle"
+            size="large"
+            style={{ margin: '10px', border: 'transparent' }}
+            onClick={() => {
+              console.log('edit subject');
+            }}
+          >
+            <Icon style={{ fontSize: '24px' }} type="setting" />
+          </Button>
+
+          <Button
+            shape="circle"
+            size="large"
+            style={{ margin: '10px', border: 'transparent' }}
+            onClick={this.handleDeleteSubject}
+          >
+            <Icon style={{ fontSize: '24px' }} type="delete" />
+          </Button>
+        </Col>
+      </Row>
+    );
+  };
+
+  renderProjectActions = () => {
+    return (
+      <Row type="flex" justify="end">
+        <Col>
+          <Button
+            shape="circle"
+            size="large"
+            style={{ margin: '10px', border: 'transparent' }}
+            onClick={() => {
+              console.log('edit project');
+            }}
+          >
+            <Icon style={{ fontSize: '24px' }} type="setting" />
+          </Button>
+
+          <Button
+            shape="circle"
+            size="large"
+            style={{ margin: '10px', border: 'transparent' }}
+            onClick={this.handleDeleteProject}
+          >
+            <Icon style={{ fontSize: '24px' }} type="delete" />
+          </Button>
+        </Col>
+      </Row>
+    );
+  };
+
   render() {
     let { subjects, focusSubject, isFocusSubject } = this.props.subjects;
     let { projects, focusProject, isFocusProject } = this.props.projects;
@@ -130,9 +187,7 @@ class ProjectManagement extends Component<
 
         {isFocusSubject ? (
           <div>
-            <Button type="danger" onClick={this.handleDeleteSubject}>
-              Delete This Subject
-            </Button>
+            {this.renderSubjectActions()}
 
             <ProjectList
               projects={projects}
@@ -144,9 +199,7 @@ class ProjectManagement extends Component<
 
             {isFocusProject ? (
               <div>
-                <Button type="danger" onClick={this.handleDeleteProject}>
-                  Delete This Project
-                </Button>
+                {this.renderProjectActions()}
 
                 <ProjectHeader project={focusProject} />
                 <ProjectThing project={focusProject} subject={focusSubject} />

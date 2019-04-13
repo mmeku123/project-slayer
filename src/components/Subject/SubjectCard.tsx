@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Subject } from '../../models';
 
-import { Card } from 'antd';
+import { Card, Icon } from 'antd';
 
 const { Meta } = Card;
 
@@ -20,18 +20,14 @@ class SubjectCard extends Component<{ subject?: Subject }> {
         <div>
           <Card
             hoverable
-            style={{ width: 240, borderRadius: '10px' }}
-            cover={
-              <img
-                style={{ margin: '10px' }}
-                height="70"
-                alt="exampleSubject"
-                src={projectAvatar}
-              />
-            }
+            bodyStyle={{ padding: '12px', margin: '5px' }}
+            style={{ borderRadius: '10px', paddingTop: '10px' }}
+            cover={<img height="70" alt="exampleSubject" src={projectAvatar} />}
           >
             <Meta
-              style={{ textAlign: 'center' }}
+              style={{
+                textAlign: 'center'
+              }}
               title={name}
               description={owner || 'subject detail'}
             />
@@ -43,20 +39,16 @@ class SubjectCard extends Component<{ subject?: Subject }> {
         <div>
           <Card
             hoverable
-            style={{ width: 240, borderRadius: '10px' }}
-            cover={
-              <img
-                style={{ margin: '10px' }}
-                height="70"
-                alt="newSubject"
-                src={projectAvatar}
-              />
-            }
+            bodyStyle={{ padding: '12px', margin: '5px' }}
+            style={{ borderRadius: '10px', paddingTop: '10px' }}
+            cover={<Icon style={{ fontSize: '50px' }} type="plus-circle" />}
           >
             <Meta
-              style={{ textAlign: 'center' }}
-              title="Add Subject"
-              description={'Adding new Subject'}
+              style={{
+                textAlign: 'center'
+              }}
+              title="New"
+              description={'New Subject'}
             />
           </Card>
         </div>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Project } from '../../models';
 
-import { Card } from 'antd';
+import { Card, Icon } from 'antd';
 
 const { Meta } = Card;
 
@@ -20,7 +20,8 @@ class ProjectCard extends Component<{ project?: Project }> {
         <div>
           <Card
             hoverable
-            style={{ width: 240, borderRadius: '10px' }}
+            bodyStyle={{ padding: '12px', margin: '5px' }}
+            style={{ borderRadius: '10px', paddingTop: '10px' }}
             cover={
               <img
                 style={{ margin: '10px' }}
@@ -43,15 +44,9 @@ class ProjectCard extends Component<{ project?: Project }> {
         <div>
           <Card
             hoverable
-            style={{ width: 240, borderRadius: '10px' }}
-            cover={
-              <img
-                style={{ margin: '10px' }}
-                height="70"
-                alt="newProject"
-                src={projectAvatar}
-              />
-            }
+            bodyStyle={{ padding: '12px', margin: '5px' }}
+            style={{ borderRadius: '10px', paddingTop: '10px' }}
+            cover={<Icon style={{ fontSize: '50px' }} type="plus-circle" />}
           >
             <Meta
               style={{ textAlign: 'center' }}
