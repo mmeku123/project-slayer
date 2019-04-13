@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Project from '../../models/Project';
 import ProjectCard from './ProjectCard';
-import { Row, Col } from 'antd';
+import { Row, Col, Button } from 'antd';
 import Title from 'antd/lib/typography/Title';
 
 interface IProjectListProps {
@@ -70,7 +70,7 @@ class ProjectList extends Component<IProjectListProps, IProjectListState> {
     return this.state.isAddNewProject ? (
       <div>
         <input placeholder="New Project" onChange={this.inputChange} />
-        <button onClick={this.createNewProject}>+</button>
+        <Button onClick={this.createNewProject}>+</Button>
       </div>
     ) : (
       <div />

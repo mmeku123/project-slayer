@@ -172,6 +172,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           name="name"
           value={newTask.name}
           onChange={this.handleNewTaskChange}
+          placeholder="Task Name"
         />
         <div>
           finish :
@@ -191,11 +192,13 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             name="detail"
             value={newTask.detail}
             onChange={this.handleNewTaskChange}
+            placeholder="Task Detail"
           />
         </div>
         <div>
           priority:
           <Select
+            defaultValue="Normal"
             onChange={value => {
               this.setState(state => ({
                 ...state,
@@ -226,6 +229,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           name="name"
           value={editDetail.name}
           onChange={this.handleTaskChange}
+          placeholder="Task Name"
         />
         <div>{task.owner}</div>
         <div>
@@ -246,6 +250,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             name="detail"
             value={editDetail.detail}
             onChange={this.handleTaskChange}
+            placeholder="Task Detail"
           />
         </div>
         <div>
@@ -287,8 +292,8 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           })}
         </ul>
         <br />
-        <button onClick={this.cancelEdit}>Cancel</button>
-        <button onClick={() => this.confirmEdit(task)}>Confirm</button>
+        <Button onClick={this.cancelEdit}>Cancel</Button>
+        <Button onClick={() => this.confirmEdit(task)}>Confirm</Button>
       </div>
     );
   };
@@ -296,6 +301,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   renderTaskDetail = (task: Task) => {
     return (
       <div key={task._id}>
+        {task._id}
         <div>{task.name}</div>
         <div>{task.owner}</div>
         <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
@@ -313,13 +319,13 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             return (
               <li key={comment.time.toString() + '@' + task._id + '$'}>
                 {comment.detail} - {comment.ownerId} :{comment.time.toString()}
-                <button
+                <Button
                   onClick={() =>
                     this.handleDeleteComment(task._id, comment._id)
                   }
                 >
                   Delete
-                </button>
+                </Button>
               </li>
             );
           })}
@@ -329,19 +335,20 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
                 type="text"
                 value={this.state.newComment}
                 onChange={this.handleNewCommentChange}
+                placeholder="Write a reply..."
               />
-              <button onClick={() => this.addNewComment(task)}>ADD</button>
+              <Button onClick={() => this.addNewComment(task)}>ADD</Button>
             </div>
           ) : (
             <div />
           )}
-          <button onClick={() => this.showNewCommentDialog(task)}>
+          <Button onClick={() => this.showNewCommentDialog(task)}>
             + Comment
-          </button>
+          </Button>
         </ul>
         <br />
 
-        <button onClick={() => this.showEditDialog(task)}>Edit</button>
+        <Button onClick={() => this.showEditDialog(task)}>Edit</Button>
       </div>
     );
   };

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Subject from '../../models/Subject';
 import SubjectCard from './SubjectCard';
-import { Row, Col, Typography } from 'antd';
+import { Row, Col, Typography, Button } from 'antd';
 
 const { Title } = Typography;
 
@@ -46,7 +46,7 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
     return this.state.isAddNewSubject ? (
       <div>
         <input placeholder="New Subject" onChange={this.inputChange} />
-        <button onClick={this.createNewSubject}>+</button>
+        <Button onClick={this.createNewSubject}>+</Button>
       </div>
     ) : (
       <div />

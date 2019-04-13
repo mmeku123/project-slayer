@@ -5,7 +5,7 @@ import { editProject } from '../../actions';
 import { bindActionCreators } from 'redux';
 import EditType from '../../constant/editType';
 
-import { Typography } from 'antd';
+import { Typography, Button } from 'antd';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -54,7 +54,7 @@ class ProjectDetail extends Component<
   showConfirmEditDetail = () => {
     return (
       <div>
-        <button onClick={this.confirmEdit}>Save</button>
+        <Button onClick={this.confirmEdit}>Save</Button>
       </div>
     );
   };

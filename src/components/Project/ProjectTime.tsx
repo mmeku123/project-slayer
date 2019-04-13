@@ -155,7 +155,7 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
                 <div />
               )}
               <div>
-                <button onClick={this.handleAddingSprint}> + Sprint </button>
+                <Button onClick={this.handleAddingSprint}> + Sprint </Button>
               </div>
             </div>
           ) : (
