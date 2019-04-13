@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Subject from '../../models/Subject';
 import SubjectCard from './SubjectCard';
-import { Row, Col, Typography, Button, Input } from 'antd';
+import { Row, Col, Typography, Button, Input, Spin, Icon } from 'antd';
 
 const { Title } = Typography;
 
@@ -9,16 +9,20 @@ interface ISubjectListProps {
   subjects: Subject[];
   isChooseSubject: boolean;
   chooseSubject: Subject;
+  isLoading: boolean;
   onChangeSubject: (subject: Subject) => void;
   onCreateSubject: (subjectName: string) => void;
 }
 
-interface ISubjectListStates {
+interface ISubjectSectionStates {
   isAddNewSubject: boolean;
   newSubjectName: string;
 }
 
-class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
+class SubjectSection extends Component<
+  ISubjectListProps,
+  ISubjectSectionStates
+> {
   constructor(props: ISubjectListProps) {
     super(props);
     this.state = { isAddNewSubject: false, newSubjectName: '' };
@@ -44,12 +48,34 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
 
   renderInputNewSubject = () => {
     return this.state.isAddNewSubject ? (
-      <Col md={6}>
+      <Col lg={8} md={10} sm={12} xs={24}>
         <div>
           <Input placeholder="New Subject" onChange={this.inputChange} />
-          <Button onClick={this.createNewSubject}>+</Button>
+          <Row type="flex" justify="end">
+            <Col>
+              <Button
+                onClick={() => {
+                  this.setState({ isAddNewSubject: false });
+                }}
+              >
+                Cancel
+              </Button>
+            </Col>
+            <Button onClick={this.createNewSubject}>Add</Button>
+            <Col />
+          </Row>
         </div>
       </Col>
+    ) : (
+      <div />
+    );
+  };
+
+  renderLoadingIndicator = () => {
+    return this.props.isLoading ? (
+      <Row type="flex" align="middle" justify="center">
+        <Spin indicator={<Icon type="loading" />} />
+      </Row>
     ) : (
       <div />
     );
@@ -58,8 +84,8 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
   render() {
     return (
       <div>
-        <Row type="flex" align="middle">
-          <Col md={12}>
+        <Row style={{ minHeight: '300px' }} type="flex" align="middle">
+          <Col md={12} xs={24}>
             <div style={{ textAlign: 'center' }}>
               Your subject is:{' '}
               <Title>
@@ -70,12 +96,12 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
             </div>
           </Col>
 
-          <Col md={12}>
+          <Col md={12} xs={24}>
             <Row type="flex" align="middle">
               {this.props.subjects && this.props.subjects != [] ? (
                 this.props.subjects.map(subject => {
                   return (
-                    <Col md={8}>
+                    <Col lg={8} md={10} sm={12} xs={24}>
                       <div
                         style={{ padding: '10px' }}
                         onClick={() => this.handleChangeSubject(subject)}
@@ -89,7 +115,7 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
                 <div />
               )}
 
-              <Col md={8}>
+              <Col lg={8} md={10} sm={12} xs={24}>
                 <div
                   style={{ padding: '10px' }}
                   onClick={this.showNewSubjectInput}
@@ -101,9 +127,10 @@ class SubjectList extends Component<ISubjectListProps, ISubjectListStates> {
             </Row>
           </Col>
         </Row>
+        {this.renderLoadingIndicator()}
       </div>
     );
   }
 }
 
-export default SubjectList;
+export default SubjectSection;

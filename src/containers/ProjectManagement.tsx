@@ -18,15 +18,15 @@ import DocumentData from 'firebase/firebase-firestore';
 import Subject from '../models/Subject';
 import Project from '../models/Project';
 
-import SubjectList from '../components/Subject/SubjectList';
-import ProjectList from '../components/Project/ProjectList';
+import SubjectSection from '../components/Subject/SubjectSection';
+import ProjectSection from '../components/Project/ProjectSection';
 import ProjectThing from '../components/Project/ProjectThing';
 
 import ProjectHeader from '../components/Project/ProjectHeader';
 import { bindActionCreators } from 'redux';
 import { Student } from '../models';
 import { Redirect, withRouter } from 'react-router';
-import { Button, Row, Col, Icon } from 'antd';
+import { Button, Row, Col, Icon, Spin } from 'antd';
 import Text from 'antd/lib/typography/Text';
 
 interface IProjectManagementStates {
@@ -171,25 +171,22 @@ class ProjectManagement extends Component<
 
     return (
       <div>
-        {this.props.subjects.isLoading ? (
-          <div>Loading</div>
-        ) : (
-          <div>
-            <SubjectList
-              subjects={subjects}
-              chooseSubject={focusSubject}
-              isChooseSubject={isFocusSubject}
-              onChangeSubject={this.handleSubjectChange}
-              onCreateSubject={this.handleSubjectCreate}
-            />
-          </div>
-        )}
+        <div>
+          <SubjectSection
+            subjects={subjects}
+            chooseSubject={focusSubject}
+            isLoading={this.props.subjects.isLoading}
+            isChooseSubject={isFocusSubject}
+            onChangeSubject={this.handleSubjectChange}
+            onCreateSubject={this.handleSubjectCreate}
+          />
+        </div>
 
         {isFocusSubject ? (
           <div>
             {this.renderSubjectActions()}
 
-            <ProjectList
+            <ProjectSection
               projects={projects}
               chooseProject={focusProject}
               isChooseProject={isFocusProject}

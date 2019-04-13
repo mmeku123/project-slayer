@@ -1,5 +1,5 @@
 import {
-  ADD_SUBJECT,
+  LOAD_SUBJECT,
   CHANGE_SUBJECT,
   FETCH_SUBJECT,
   ADD_SUBJECT_SUCCESS,
@@ -23,8 +23,15 @@ const initialState = {
 
 export default function subjects(state = initialState, action) {
   switch (action.type) {
+    case LOAD_SUBJECT:
+      return { ...state, isLoading: true };
     case FETCH_SUBJECT:
-      return { ...state, isFocusSubject: false, subjects: action.payload };
+      return {
+        ...state,
+        isLoading: false,
+        isFocusSubject: false,
+        subjects: action.payload
+      };
     case ADD_SUBJECT_SUCCESS:
       const { id, name, studentId } = action.payload;
       let subject = new Subject(id, name);
@@ -34,10 +41,6 @@ export default function subjects(state = initialState, action) {
         isLoading: false,
         subjects: [...state.subjects, subject]
       };
-
-    case ADD_SUBJECT:
-      return { ...state, isLoading: true };
-
     case ADD_PROJECT_SUBJECT:
       const { subjectId, projectId } = action.payload;
       return {
