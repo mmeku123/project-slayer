@@ -109,16 +109,9 @@ class ProjectSection extends Component<
         <Row style={{ minHeight: '300px' }} type="flex" align="middle">
           <Col md={12} xs={24}>
             <div style={{ textAlign: 'center' }}>
-              Your Project is:{' '}
+              Your Project is:
               <Title>{project ? project.name : 'Choose Project'}</Title>
             </div>
-            {project ? (
-              <div>
-                <Title level={3}>Detail: {project.detail}</Title>
-              </div>
-            ) : (
-              <div />
-            )}
           </Col>
 
           <Col md={12} xs={24}>

@@ -22,11 +22,11 @@ import SubjectSection from '../components/Subject/SubjectSection';
 import ProjectSection from '../components/Project/ProjectSection';
 import ProjectThing from '../components/Project/ProjectThing';
 
-import ProjectHeader from '../components/Project/ProjectHeader';
+import ProjectTitle from '../components/Project/ProjectTitle';
 import { bindActionCreators } from 'redux';
 import { Student } from '../models';
 import { Redirect, withRouter } from 'react-router';
-import { Button, Row, Col, Icon, Spin } from 'antd';
+import { Button, Row, Col, Icon, Spin, Divider } from 'antd';
 import Text from 'antd/lib/typography/Text';
 
 interface IProjectManagementStates {
@@ -182,6 +182,8 @@ class ProjectManagement extends Component<
           />
         </div>
 
+        <Divider />
+
         {isFocusSubject ? (
           <div>
             {this.renderSubjectActions()}
@@ -194,16 +196,20 @@ class ProjectManagement extends Component<
               onCreateProject={this.handleProjectCreate}
             />
 
+            <Divider />
+
             {isFocusProject ? (
               <div>
                 {this.renderProjectActions()}
 
-                <ProjectHeader project={focusProject} />
+                <ProjectTitle project={focusProject} />
                 <ProjectThing project={focusProject} subject={focusSubject} />
               </div>
             ) : (
               <div />
             )}
+
+            <Divider />
           </div>
         ) : (
           <div />

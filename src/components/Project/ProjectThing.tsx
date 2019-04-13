@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Comment, Project, Student, Task, Subject } from '../../models';
 import { ProjectProgress, ProjectSchedule } from '../../models/Project';
 
-import { Tabs } from 'antd';
+import { Tabs, Icon } from 'antd';
 
 const TabPane = Tabs.TabPane;
 import { editProject } from '../../actions';
@@ -16,6 +16,8 @@ import ProjectPercent from './ProjectPercent';
 import ProjectTasks from './ProjectTasks';
 import { bindActionCreators } from 'redux';
 import EditType from '../../constant/editType';
+
+import { isMobile } from '../../utils/screen';
 
 enum ShowType {
   DETAIL,
@@ -70,19 +72,69 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
   renderSelectedShowButtons = () => {
     const show = this.renderProjectShowing();
 
+    const mode = isMobile() ? 'top' : 'left';
+
     return (
       <div style={{ minHeight: '500px' }}>
-        <Tabs defaultActiveKey="1" onChange={this.changeShowType}>
-          <TabPane tab="Detail" key="detail">
+        <Tabs
+          defaultActiveKey="detail"
+          tabPosition={mode}
+          onChange={this.changeShowType}
+        >
+          <TabPane
+            tab={
+              <span>
+                <Icon
+                  style={{ fontSize: '24px', verticalAlign: '0.1em' }}
+                  type="dashboard"
+                />
+                Detail
+              </span>
+            }
+            key="detail"
+          >
             {show}
           </TabPane>
-          <TabPane tab="Member" key="member">
+          <TabPane
+            tab={
+              <span>
+                <Icon
+                  style={{ fontSize: '24px', verticalAlign: '0.1em' }}
+                  type="team"
+                />
+                Member
+              </span>
+            }
+            key="member"
+          >
             {show}
           </TabPane>
-          <TabPane tab="Task" key="task">
+          <TabPane
+            tab={
+              <span>
+                <Icon
+                  style={{ fontSize: '24px', verticalAlign: '0.1em' }}
+                  type="ordered-list"
+                />
+                Task
+              </span>
+            }
+            key="task"
+          >
             {show}
           </TabPane>
-          <TabPane tab="Timeline" key="timeline">
+          <TabPane
+            tab={
+              <span>
+                <Icon
+                  style={{ fontSize: '24px', verticalAlign: '0.1em' }}
+                  type="calendar"
+                />
+                Timeline
+              </span>
+            }
+            key="timeline"
+          >
             {show}
           </TabPane>
         </Tabs>
