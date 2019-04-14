@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { editTask, addTask } from '../../actions';
 import { bindActionCreators } from 'redux';
 import EditType from '../../constant/editType';
-import { Input, Radio, Select, Switch, Button } from 'antd';
+import { Input, Radio, Select, Switch, Button, Card } from 'antd';
 
 const Option = Select.Option;
 
@@ -222,133 +222,172 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     let editDetail = this.state.editDetail;
 
     return (
-      <div key={task._id}>
-        task name:
-        <Input
-          type="text"
-          name="name"
-          value={editDetail.name}
-          onChange={this.handleTaskChange}
-          placeholder="Task Name"
-        />
-        <div>{task.owner}</div>
-        <div>
-          finish :
-          <Switch
-            checked={editDetail.isDone}
-            onChange={checked => {
-              this.setState(state => ({
-                ...state,
-                editDetail: { ...state.editDetail, isDone: checked }
-              }));
-            }}
-          />
-        </div>
-        <div>
-          detail :
-          <Input
-            name="detail"
-            value={editDetail.detail}
-            onChange={this.handleTaskChange}
-            placeholder="Task Detail"
-          />
-        </div>
-        <div>
-          priority:
-          <Select
-            onChange={value => {
-              this.setState(state => ({
-                ...state,
-                editDetail: { ...state.editDetail, priority: value.toString() }
-              }));
-            }}
-          >
-            <Option value="High">High</Option>
-            <Option value="Normal">Normal</Option>
-            <Option value="Low">Low</Option>
-          </Select>
-        </div>
-        {task.startDate ? (
-          <div>Start: {task.startDate.toString()}</div>
-        ) : (
-          <div />
-        )}
-        {task.dueDate ? <div>End: {task.dueDate.toString()}</div> : <div />}
-        <ul>
-          comment
-          {task.comments.map((comment: Comment) => {
-            return (
-              <li key={comment._id + '$' + task._id}>
-                {comment.detail} - {comment.ownerId} :{comment.time.toString()}
-                <Button
-                  onClick={() =>
-                    this.handleDeleteComment(task._id, comment._id)
-                  }
-                >
-                  Delete
-                </Button>
-              </li>
-            );
-          })}
-        </ul>
-        <br />
-        <Button onClick={this.cancelEdit}>Cancel</Button>
-        <Button onClick={() => this.confirmEdit(task)}>Confirm</Button>
+      <div key={task._id} style={{ margin: '12px' }}>
+        <Card
+          title={
+            <span>
+              <span style={{ fontWeight: 100 }}>Task</span>
+              <span style={{ fontSize: '24px' }}> {task.name}</span>
+            </span>
+          }
+          extra={
+            <span>
+              <span style={{ fontWeight: 100 }}> id </span>
+              {task._id}
+            </span>
+          }
+        >
+          <div style={{ lineHeight: '2.0em' }}>
+            task name:
+            <Input
+              type="text"
+              name="name"
+              value={editDetail.name}
+              onChange={this.handleTaskChange}
+              placeholder="Task Name"
+            />
+            <div>{task.owner}</div>
+            <div>
+              finish :
+              <Switch
+                checked={editDetail.isDone}
+                onChange={checked => {
+                  this.setState(state => ({
+                    ...state,
+                    editDetail: { ...state.editDetail, isDone: checked }
+                  }));
+                }}
+              />
+            </div>
+            <div>
+              detail :
+              <Input
+                name="detail"
+                value={editDetail.detail}
+                onChange={this.handleTaskChange}
+                placeholder="Task Detail"
+              />
+            </div>
+            <div>
+              priority:
+              <Select
+                defaultValue={this.state.editDetail.priority}
+                onChange={value => {
+                  this.setState(state => ({
+                    ...state,
+                    editDetail: {
+                      ...state.editDetail,
+                      priority: value.toString()
+                    }
+                  }));
+                }}
+              >
+                <Option value="High">High</Option>
+                <Option value="Normal">Normal</Option>
+                <Option value="Low">Low</Option>
+              </Select>
+            </div>
+            {task.startDate ? (
+              <div>Start: {task.startDate.toString()}</div>
+            ) : (
+              <div />
+            )}
+            {task.dueDate ? <div>End: {task.dueDate.toString()}</div> : <div />}
+            <ul>
+              comment
+              {task.comments.map((comment: Comment) => {
+                return (
+                  <li key={comment._id + '$' + task._id}>
+                    {comment.detail} - {comment.ownerId} :
+                    {comment.time.toString()}
+                    <Button
+                      onClick={() =>
+                        this.handleDeleteComment(task._id, comment._id)
+                      }
+                    >
+                      Delete
+                    </Button>
+                  </li>
+                );
+              })}
+            </ul>
+            <br />
+            <Button onClick={this.cancelEdit}>Cancel</Button>
+            <Button onClick={() => this.confirmEdit(task)}>Confirm</Button>
+          </div>
+        </Card>
       </div>
     );
   };
 
   renderTaskDetail = (task: Task) => {
     return (
-      <div key={task._id}>
-        {task._id}
-        <div>{task.name}</div>
-        <div>{task.owner}</div>
-        <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
-        <div> detail : {task.detail} </div>
-        <div>priority: {task.priority}</div>
-        {task.startDate ? (
-          <div>Start: {task.startDate.toString()}</div>
-        ) : (
-          <div />
-        )}
-        {task.dueDate ? <div>End: {task.dueDate.toString()}</div> : <div />}
-        <ul>
-          comment
-          {task.comments.map((comment: Comment) => {
-            return (
-              <li key={comment.time.toString() + '@' + task._id + '$'}>
-                {comment.detail} - {comment.ownerId} :{comment.time.toString()}
-                <Button
-                  onClick={() =>
-                    this.handleDeleteComment(task._id, comment._id)
-                  }
-                >
-                  Delete
-                </Button>
-              </li>
-            );
-          })}
-          {this.state.isAddComment && task._id == this.state.editTaskId ? (
-            <div>
-              <Input
-                type="text"
-                value={this.state.newComment}
-                onChange={this.handleNewCommentChange}
-                placeholder="Write a reply..."
-              />
-              <Button onClick={() => this.addNewComment(task)}>ADD</Button>
-            </div>
-          ) : (
-            <div />
-          )}
-          <Button onClick={() => this.showNewCommentDialog(task)}>
-            + Comment
-          </Button>
-        </ul>
-        <br />
+      <div key={task._id} style={{ margin: '12px' }}>
+        <Card
+          title={
+            <span>
+              <span style={{ fontWeight: 100 }}>Task</span>
+              <span style={{ fontSize: '24px' }}> {task.name}</span>
+            </span>
+          }
+          extra={
+            <span>
+              <span style={{ fontWeight: 100 }}> id </span>
+              {task._id}
+            </span>
+          }
+        >
+          <div style={{ lineHeight: '2.0em' }}>
+            <div>{task.name}</div>
+            <div>{task.owner}</div>
+            <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
+            <div> detail : {task.detail} </div>
+            <div>priority: {task.priority}</div>
+            {task.startDate ? (
+              <div>Start: {task.startDate.toString()}</div>
+            ) : (
+              <div />
+            )}
+            {task.dueDate ? <div>End: {task.dueDate.toString()}</div> : <div />}
+            <ul>
+              comment
+              {task.comments.map((comment: Comment) => {
+                return (
+                  <li key={comment.time.toString() + '@' + task._id + '$'}>
+                    {comment.detail} - {comment.ownerId} :
+                    {comment.time.toString()}
+                    <Button
+                      onClick={() =>
+                        this.handleDeleteComment(task._id, comment._id)
+                      }
+                    >
+                      Delete
+                    </Button>
+                  </li>
+                );
+              })}
+              {this.state.isAddComment && task._id == this.state.editTaskId ? (
+                <div>
+                  <Input
+                    type="text"
+                    value={this.state.newComment}
+                    onChange={this.handleNewCommentChange}
+                    placeholder="Write a reply..."
+                  />
+                  <Button onClick={() => this.addNewComment(task)}>ADD</Button>
+                </div>
+              ) : (
+                <div />
+              )}
+              <Button onClick={() => this.showNewCommentDialog(task)}>
+                + Comment
+              </Button>
+            </ul>
+            <br />
 
-        <Button onClick={() => this.showEditDialog(task)}>Edit</Button>
+            <Button onClick={() => this.showEditDialog(task)}>Edit</Button>
+          </div>
+        </Card>
       </div>
     );
   };

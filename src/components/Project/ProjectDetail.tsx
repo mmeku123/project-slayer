@@ -5,7 +5,7 @@ import { editProject } from '../../actions';
 import { bindActionCreators } from 'redux';
 import EditType from '../../constant/editType';
 
-import { Typography, Button } from 'antd';
+import { Typography, Button, Row, Col } from 'antd';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -65,7 +65,6 @@ class ProjectDetail extends Component<
         <Text editable={{ onChange: this.onChangeDetail }}>
           {this.state.editDetail}
         </Text>
-
         {this.state.isEdit ? this.showConfirmEditDetail() : <div />}
       </div>
     );
@@ -76,13 +75,32 @@ class ProjectDetail extends Component<
 
     return (
       <div>
-        <Title level={2}>Project Name </Title>
-        <div> {name} </div>
-        <div>
-          {' '}
-          Project Detail
-          {this.renderProjectDetail()}
-        </div>
+        <Row
+          type="flex"
+          justify="center"
+          align="middle"
+          style={{ textAlign: 'center' }}
+        >
+          <Col md={12} xs={24}>
+            <Title level={2}>NAME</Title>
+          </Col>
+          <Col md={12} xs={24}>
+            <Title level={3}>{name}</Title>
+          </Col>
+        </Row>
+        <Row
+          type="flex"
+          justify="center"
+          align="middle"
+          style={{ textAlign: 'center' }}
+        >
+          <Col md={12} xs={24}>
+            <Title level={2}>DETAIL</Title>
+          </Col>
+          <Col md={12} xs={24}>
+            <Title level={3}>{this.renderProjectDetail()}</Title>
+          </Col>
+        </Row>
       </div>
     );
   }

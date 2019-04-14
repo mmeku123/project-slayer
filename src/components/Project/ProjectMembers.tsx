@@ -7,9 +7,12 @@ import { bindActionCreators } from 'redux';
 
 import { addProjectMember, addSubjectMember } from '../../actions';
 import { string } from 'prop-types';
-import { Button, Input, Row, Col } from 'antd';
+import { Button, Input, Row, Col, Avatar, Icon } from 'antd';
 
 import avatar from '../../images/avatars/1575649.svg';
+import { Typography } from 'antd';
+import Title from 'antd/lib/typography/Title';
+import Text from 'antd/lib/typography/Text';
 
 interface IProjectMembersProps {
   members: Student[];
@@ -57,16 +60,19 @@ class ProjectMembers extends Component<
 
     return (
       <div>
-        <h5>Project Members</h5>
-        <Button onClick={this.handleAddNewMember}>+ Member</Button>
+        <Title>Project Members</Title>
+        <Button onClick={this.handleAddNewMember} style={{ height: '45px' }}>
+          <Icon style={{ fontSize: '24px' }} type="usergroup-add" /> Add Member
+        </Button>
         {this.state.isAddingMember ? (
-          <div>
+          <div style={{ margin: '20px' }}>
             <Input
               placeholder="User Email"
               type="text"
               name="email"
               value={this.state.memberEmail}
               onChange={this.handleInputChange}
+              style={{ width: '200px', marginLeft: '50px' }}
             />
             <Button type="danger" onClick={this.handleCancelAddMember}>
               Cancel
@@ -82,42 +88,52 @@ class ProjectMembers extends Component<
           {members &&
             members.map(member => {
               return (
-                <Col span={6} offset={2}>
-                  <div key={member._id} style={{ textAlign: 'center' }}>
+                <Col md={8} xs={12} style={{ margin: '24px' }}>
+                  <div
+                    key={member._id}
+                    style={{
+                      padding: '10px',
+                      textAlign: 'center',
+                      boxShadow:
+                        'rgba(0, 0, 0, 0.2) 0px 2px 2px 0px, rgba(0, 0, 0, 0.01) 0px 4px 4px 0px',
+                      borderRadius: '5px'
+                    }}
+                  >
                     <div>
-                      <img src={avatar} height={200} />
+                      <Avatar size={128} icon="user" />
                     </div>
-                    <table>
-                      <thead>
-                        <tr>
-                          <td>1</td>
-                          <td>2</td>
-                        </tr>
-                      </thead>
+                    <div style={{ height: '20px' }} />
+                    <table style={{ lineHeight: '2.5em' }}>
                       <tbody>
                         <tr>
-                          <td>name</td>
+                          <td>
+                            <Text strong>Name</Text>
+                          </td>
                           <td>{member.name}</td>
                         </tr>
                         <tr>
-                          <td>id</td>
+                          <td>
+                            <Text strong>Student ID</Text>
+                          </td>
                           <td>{member.id}</td>
                         </tr>
                         <tr>
-                          <td>email</td>
+                          <td>
+                            <Text strong>Email</Text>
+                          </td>
                           <td>{member.email}</td>
                         </tr>
                         <tr>
-                          <td>nickname</td>
+                          <td>
+                            <Text strong>Nickname</Text>
+                          </td>
                           <td>{member.nickname}</td>
                         </tr>
                         <tr>
-                          <td>job</td>
+                          <td>
+                            <Text strong>Role</Text>
+                          </td>
                           <td>{member.job}</td>
-                        </tr>
-                        <tr>
-                          <td>task</td>
-                          <td />
                         </tr>
                       </tbody>
                     </table>
