@@ -1,5 +1,5 @@
-export const ADD_PROJECT = 'add_project';
-export const LOAD_SUBJECT = 'add_subject';
+export const LOAD_PROJECT = 'load_project';
+export const LOAD_SUBJECT = 'load_subject';
 export const EDIT_PROJECT = 'edit_project';
 export const DELETE_PROJECT = 'delete_project';
 export const UPDATE_PROJECT = 'update_project';

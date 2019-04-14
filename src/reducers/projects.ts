@@ -1,5 +1,5 @@
 import {
-  ADD_PROJECT,
+  LOAD_PROJECT,
   UPDATE_PROJECT,
   FETCH_PROJECTS,
   CHANGE_SUBJECT,
@@ -31,7 +31,7 @@ const initialState: {
 
 export default function projects(state = initialState, action) {
   switch (action.type) {
-    case ADD_PROJECT:
+    case LOAD_PROJECT:
       return { ...state, isLoading: true };
     case ADD_PROJECT_SUCCESS:
       const { id, name, studentId } = action.payload;
@@ -68,8 +68,6 @@ export default function projects(state = initialState, action) {
         }),
         isFocusProject: true
       };
-    case EDIT_PROJECT:
-      return { ...state, isLoading: true };
     case EDIT_PROJECT_SUCCESS:
       const { projectId } = action.payload;
       switch (action.payload.editType) {
