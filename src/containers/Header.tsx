@@ -21,35 +21,39 @@ class Header extends Component<IHeaderProps, IHeaderStates> {
   render() {
     return (
       <div>
-        <header id="header" style={{ position: 'absolute' }}>
+        <header id="header">
           <div className="container">
             <div className="logo float-left">
               <h1 className="text-light">
-                <a href="/" className="scrollto">
+                <Link to="/" className="scrollto">
                   <span>Project Slayer</span>
-                </a>
+                </Link>
               </h1>
             </div>
             <nav className="main-nav float-right d-none d-lg-block">
               <ul>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
                 {this.props.auth.isAuth ? (
                   <li>
                     <Link to="/logout">Log out</Link>
                   </li>
                 ) : (
-                  <div>
-                    <li>
-                      <Link to="/signin">Sign In</Link>
-                    </li>
-
-                    <li>
-                      <Link to="/signup">Sign Up</Link>
-                    </li>
-                  </div>
+                  <li>
+                    <Link to="/signin">Sign In</Link>
+                  </li>
                 )}
-                <li>
-                  <Link to="/project">Project</Link>
-                </li>
+
+                {this.props.auth.isAuth ? (
+                  <li>
+                    <Link to="/project">Project</Link>
+                  </li>
+                ) : (
+                  <li>
+                    <Link to="/signup">Sign Up</Link>
+                  </li>
+                )}
               </ul>
             </nav>
           </div>

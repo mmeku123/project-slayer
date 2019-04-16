@@ -7,7 +7,7 @@ function App(props: { children: React.ReactNode }) {
   return (
     <div>
       <Header />
-      <div className="container such-a-big-device">{props.children}</div>
+      {props.children}
       <Footer />
     </div>
   );
