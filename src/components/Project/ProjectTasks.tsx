@@ -7,6 +7,7 @@ import { editTask, addTask } from '../../actions';
 import { bindActionCreators } from 'redux';
 import EditType from '../../constant/editType';
 import { Input, Radio, Select, Switch, Button, Card } from 'antd';
+import Title from 'antd/lib/typography/Title';
 
 const Option = Select.Option;
 
@@ -42,12 +43,19 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   }
 
   showEditDialog = (task: Task) => {
-    this.setState(state => ({
-      ...state,
-      editDetail: task,
-      editTaskId: task._id,
-      isEdit: true
-    }));
+    if (this.state.isEdit) {
+      this.setState(state => ({
+        ...state,
+        isEdit: false
+      }));
+    } else {
+      this.setState(state => ({
+        ...state,
+        editDetail: task,
+        editTaskId: task._id,
+        isEdit: true
+      }));
+    }
   };
 
   showNewCommentDialog = (task: Task) => {
@@ -111,6 +119,10 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     this.setState(state => ({ ...state, isAddingTask: true }));
   };
 
+  handleCancelCreate = () => {
+    this.setState(state => ({ ...state, isAddingTask: false }));
+  };
+
   handleCreateTask = () => {
     const {
       name,
@@ -166,52 +178,58 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     const { newTask } = this.state;
 
     return this.state.isAddingTask ? (
-      <div>
-        <Input
-          type="text"
-          name="name"
-          value={newTask.name}
-          onChange={this.handleNewTaskChange}
-          placeholder="Task Name"
-        />
-        <div>
-          finish :
-          <Switch
-            defaultChecked={newTask.isDone}
-            onChange={checked => {
-              this.setState(state => ({
-                ...state,
-                newTask: { ...state.newTask, isDone: checked }
-              }));
-            }}
-          />
-        </div>
-        <div>
-          detail :
-          <Input
-            name="detail"
-            value={newTask.detail}
-            onChange={this.handleNewTaskChange}
-            placeholder="Task Detail"
-          />
-        </div>
-        <div>
-          priority:
-          <Select
-            defaultValue="Normal"
-            onChange={value => {
-              this.setState(state => ({
-                ...state,
-                newTask: { ...state.newTask, priority: value.toString() }
-              }));
-            }}
-          >
-            <Option value="High">High</Option>
-            <Option value="Normal">Normal</Option>
-            <Option value="Low">Low</Option>
-          </Select>
-        </div>
-        <Button onClick={this.handleCreateTask}>Create Task</Button>
+      <div style={{ margin: '12px' }}>
+        <Card hoverable title="New Task">
+          <div style={{ lineHeight: '3.0em' }}>
+            <Input
+              type="text"
+              name="name"
+              value={newTask.name}
+              onChange={this.handleNewTaskChange}
+              placeholder="Task Name"
+            />
+            <div>
+              detail :
+              <Input
+                name="detail"
+                value={newTask.detail}
+                onChange={this.handleNewTaskChange}
+                placeholder="Task Detail"
+              />
+            </div>
+            <div>
+              finish :
+              <Switch
+                defaultChecked={newTask.isDone}
+                onChange={checked => {
+                  this.setState(state => ({
+                    ...state,
+                    newTask: { ...state.newTask, isDone: checked }
+                  }));
+                }}
+              />
+            </div>
+
+            <div>
+              priority:
+              <Select
+                defaultValue="Normal"
+                onChange={value => {
+                  this.setState(state => ({
+                    ...state,
+                    newTask: { ...state.newTask, priority: value.toString() }
+                  }));
+                }}
+              >
+                <Option value="High">High</Option>
+                <Option value="Normal">Normal</Option>
+                <Option value="Low">Low</Option>
+              </Select>
+            </div>
+            <Button onClick={this.handleCancelCreate}>Cancel</Button>
+            <Button onClick={this.handleCreateTask}>Create</Button>
+          </div>
+        </Card>
       </div>
     ) : (
       <div />
@@ -224,6 +242,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     return (
       <div key={task._id} style={{ margin: '12px' }}>
         <Card
+          hoverable
           title={
             <span>
               <span style={{ fontWeight: 100 }}>Task</span>
@@ -246,7 +265,16 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               onChange={this.handleTaskChange}
               placeholder="Task Name"
             />
-            <div>{task.owner}</div>
+            <div>Assign to: {task.owner}</div>
+            <div>
+              detail :
+              <Input
+                name="detail"
+                value={editDetail.detail}
+                onChange={this.handleTaskChange}
+                placeholder="Task Detail"
+              />
+            </div>
             <div>
               finish :
               <Switch
@@ -257,15 +285,6 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
                     editDetail: { ...state.editDetail, isDone: checked }
                   }));
                 }}
-              />
-            </div>
-            <div>
-              detail :
-              <Input
-                name="detail"
-                value={editDetail.detail}
-                onChange={this.handleTaskChange}
-                placeholder="Task Detail"
               />
             </div>
             <div>
@@ -287,19 +306,14 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
                 <Option value="Low">Low</Option>
               </Select>
             </div>
-            {task.startDate ? (
-              <div>Start: {task.startDate.toString()}</div>
-            ) : (
-              <div />
-            )}
-            {task.dueDate ? <div>End: {task.dueDate.toString()}</div> : <div />}
+            {task.startDate ? <div>Start: {task.startDate}</div> : <div />}
+            {task.dueDate ? <div>End: {task.dueDate}</div> : <div />}
             <ul>
               comment
               {task.comments.map((comment: Comment) => {
                 return (
                   <li key={comment._id + '$' + task._id}>
-                    {comment.detail} - {comment.ownerId} :
-                    {comment.time.toString()}
+                    {comment.detail} - {comment.ownerId} :{comment.time}
                     <Button
                       onClick={() =>
                         this.handleDeleteComment(task._id, comment._id)
@@ -324,6 +338,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     return (
       <div key={task._id} style={{ margin: '12px' }}>
         <Card
+          hoverable
           title={
             <span>
               <span style={{ fontWeight: 100 }}>Task</span>
@@ -340,22 +355,18 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           <div style={{ lineHeight: '2.0em' }}>
             <div>{task.name}</div>
             <div>{task.owner}</div>
-            <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
             <div> detail : {task.detail} </div>
+            <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
+
             <div>priority: {task.priority}</div>
-            {task.startDate ? (
-              <div>Start: {task.startDate.toString()}</div>
-            ) : (
-              <div />
-            )}
-            {task.dueDate ? <div>End: {task.dueDate.toString()}</div> : <div />}
+            {task.startDate ? <div>Start: {task.startDate}</div> : <div />}
+            {task.dueDate ? <div>End: {task.dueDate}</div> : <div />}
             <ul>
               comment
               {task.comments.map((comment: Comment) => {
                 return (
-                  <li key={comment.time.toString() + '@' + task._id + '$'}>
-                    {comment.detail} - {comment.ownerId} :
-                    {comment.time.toString()}
+                  <li key={comment.time + '@' + task._id + '$'}>
+                    {comment.detail} - {comment.ownerId} :{comment.time}
                     <Button
                       onClick={() =>
                         this.handleDeleteComment(task._id, comment._id)
@@ -374,13 +385,15 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
                     onChange={this.handleNewCommentChange}
                     placeholder="Write a reply..."
                   />
-                  <Button onClick={() => this.addNewComment(task)}>ADD</Button>
+                  <Button onClick={() => this.addNewComment(task)}>
+                    Enter
+                  </Button>
                 </div>
               ) : (
                 <div />
               )}
               <Button onClick={() => this.showNewCommentDialog(task)}>
-                + Comment
+                {this.state.isEdit ? <span>Cancel</span> : <span>Reply</span>}
               </Button>
             </ul>
             <br />
@@ -397,7 +410,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
 
     return (
       <div>
-        <h5>Project Tasks </h5>
+        <Title>Project Tasks </Title>
         <Button onClick={this.handleCreatingTask}>+ Task</Button>
         {this.renderTaskCreate()}
         {tasksByTime != [] ? (

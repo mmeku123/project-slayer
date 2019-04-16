@@ -2,6 +2,7 @@ import { FETCH_TASKS } from './types';
 
 import firebase from '../firebase';
 import { Task, Comment } from '../models';
+import moment from 'moment';
 
 const db = firebase.firestore();
 const tasks = db.collection('tasks');
@@ -60,7 +61,7 @@ export const editTask = (
                 Comment.toJson(
                   commentId.toString(),
                   localStorage.getItem('auth_id'),
-                  new Date(),
+                  moment().format('L'),
                   newComment
                 )
               ]

@@ -148,13 +148,18 @@ export const addSprint = (
   dispatch({ type: LOAD_PROJECT });
 
   const { name, detail, dueDate } = sprintDetail;
+
+  console.log(sprintDetail);
+
   projects
     .doc(projectId)
     .get()
     .then(doc => {
       const projectSprints = doc.data().schedule.sprints;
       const projectSchedule = doc.data().schedule;
-      const sprintId = doc.data().schedule.sprints.length++;
+      const sprintNo = doc.data().schedule.sprints.length;
+      const sprintId = sprintNo ? projectSprints[sprintNo - 1]._id + 1 : 0;
+
       projects
         .doc(projectId)
         .update({
@@ -162,7 +167,7 @@ export const addSprint = (
             ...projectSchedule,
             sprints: [
               ...projectSprints,
-              { _id: sprintId, name, detail, dueDate }
+              { _id: sprintId, name, detail, dueDate: dueDate }
             ]
           }
         })

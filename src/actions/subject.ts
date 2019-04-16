@@ -35,6 +35,10 @@ export const fetchSubject = () => async dispatch => {
 
 export const createSubject = subjectName => async dispatch => {
   dispatch({ type: LOAD_SUBJECT });
+
+  const req = subjects.add(Subject.toJson(subjectName, authId)).then(ref => {
+    return dispatch(fetchSubject());
+  });
 };
 
 export const changeSubject = subjectId => async dispatch => {

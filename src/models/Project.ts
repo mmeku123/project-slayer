@@ -1,6 +1,7 @@
 import Task from './Task';
 import Comment from './Comment';
 import Student from './User/Student';
+import moment from 'moment';
 
 class Project {
   _id: string;
@@ -67,9 +68,9 @@ class ProjectSprint {
   _id: string;
   name: string;
   detail: string;
-  dueDate: Date;
+  dueDate: string;
 
-  constructor(id: string, name: string, detail: string, dueDate: Date) {
+  constructor(id: string, name: string, detail: string, dueDate: string) {
     this._id = id;
     this.name = name;
     this.detail = detail;
@@ -88,11 +89,11 @@ class ProjectSprint {
 
 class ProjectSchedule {
   _id: string;
-  startDate: Date;
+  startDate: string;
 
   sprints: ProjectSprint[] = [];
 
-  constructor(_id?: string, startDate: Date = new Date()) {
+  constructor(_id?: string, startDate: string = moment().format('L')) {
     if (_id) this._id = _id;
     this.startDate = startDate;
   }

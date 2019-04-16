@@ -3,17 +3,17 @@ import User from './User/User';
 class Comment {
   _id: string;
   ownerId: string;
-  time: Date;
+  time: string;
   detail: string;
 
-  constructor(id: string, owner: string, time: Date, detail: string) {
+  constructor(id: string, owner: string, time: string, detail: string) {
     this._id = id;
     this.ownerId = owner;
     this.time = time;
     this.detail = detail;
   }
 
-  static toJson(id: string, authId: string, time: Date, detail: string) {
+  static toJson(id: string, authId: string, time: string, detail: string) {
     return {
       _id: id,
       ownerId: authId,

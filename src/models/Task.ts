@@ -1,5 +1,6 @@
 import { Project } from './Project';
 import Comment from './Comment';
+import moment from 'moment';
 
 class Task {
   _id: string;
@@ -14,8 +15,8 @@ class Task {
   isDone: boolean;
   comments: Comment[] = [];
 
-  startDate?: Date;
-  dueDate?: Date;
+  startDate?: string;
+  dueDate?: string;
 
   constructor(name: string, detail: string, projectId: string) {
     this.projectId = projectId;
@@ -24,8 +25,8 @@ class Task {
     this.isDone = false;
     this.priority = 'NORMAL';
     this.owner = localStorage.getItem('auth_id');
-    this.startDate = new Date();
-    this.dueDate = new Date();
+    this.startDate = moment().format('L');
+    this.dueDate = moment().format('L');
   }
 
   static toJson(projectId, task) {
@@ -37,8 +38,8 @@ class Task {
       owner: localStorage.getItem('auth_id'),
       isDone: task.isDone,
       comments: [],
-      startDate: new Date(task.startDate),
-      dueDate: new Date(task.dueDate)
+      startDate: moment(task.startDate, 'L'),
+      dueDate: moment(task.dueDate, 'L')
     };
   }
 

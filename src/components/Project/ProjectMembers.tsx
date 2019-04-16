@@ -100,7 +100,7 @@ class ProjectMembers extends Component<
                     }}
                   >
                     <div>
-                      <Avatar size={128} icon="user" />
+                      <Avatar size={128} shape="square" icon="user" />
                     </div>
                     <div style={{ height: '20px' }} />
                     <table style={{ lineHeight: '2.5em' }}>
