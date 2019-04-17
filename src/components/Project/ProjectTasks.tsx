@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import EditType from '../../constant/editType';
 import { Input, Radio, Select, Switch, Button, Card, Icon } from 'antd';
 import Title from 'antd/lib/typography/Title';
+import moment from 'moment';
 
 const Option = Select.Option;
 
@@ -259,7 +260,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           }
         >
           <div style={{ lineHeight: '2.0em' }}>
-            task name:
+            Task name :
             <Input
               type="text"
               name="name"
@@ -267,7 +268,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               onChange={this.handleTaskChange}
               placeholder="Task Name"
             />
-            <div>Assign to: {task.owner}</div>
+            <div>Assign to : {task.owner}</div>
             <div>
               detail :{' '}
               <Input
@@ -290,7 +291,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               />
             </div>
             <div>
-              priority:{' '}
+              priority :{' '}
               <Select
                 defaultValue={this.state.editDetail.priority}
                 onChange={value => {
@@ -308,8 +309,12 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
                 <Option value="Low">Low</Option>
               </Select>
             </div>
-            {task.startDate ? <div>Start: {task.startDate}</div> : <div />}
-            {task.dueDate ? <div>End: {task.dueDate}</div> : <div />}
+            {task.startDate ? (
+              <div>Start Date : {task.startDate}</div>
+            ) : (
+              <div />
+            )}
+            {task.dueDate ? <div>Due Date : {task.dueDate}</div> : <div />}
             <ul>
               comment
               {task.comments.map((comment: Comment) => {
@@ -341,6 +346,9 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
       <div key={task._id} style={{ margin: '12px' }}>
         <Card
           hoverable
+          style={{
+            borderRadius: '12px'
+          }}
           title={
             <span>
               <span style={{ fontWeight: 100 }}>Task</span>
@@ -360,9 +368,17 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             <div> detail : {task.detail} </div>
             <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
 
-            <div>priority: {task.priority}</div>
-            {task.startDate ? <div>Start: {task.startDate}</div> : <div />}
-            {task.dueDate ? <div>End: {task.dueDate}</div> : <div />}
+            <div>priority : {task.priority}</div>
+            {task.startDate ? (
+              <div>Start Date : {moment(task.startDate).format('LL')}</div>
+            ) : (
+              <div />
+            )}
+            {task.dueDate ? (
+              <div>End Date : {moment(task.dueDate).format('LL')}</div>
+            ) : (
+              <div />
+            )}
             <ul>
               comment
               {task.comments.map((comment: Comment) => {
@@ -411,11 +427,13 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     let tasksByTime = this.props.tasks['byTime'];
 
     return (
-      <div style={{ textAlign: 'center' }}>
-        <Title>Project Tasks </Title>
-        <Button onClick={this.handleCreatingTask} style={{ height: '45px' }}>
-          <Icon style={{ fontSize: '24px' }} type="file-add" /> Add Task
-        </Button>
+      <div>
+        <div style={{ textAlign: 'center' }}>
+          <Title>Project Tasks </Title>
+          <Button onClick={this.handleCreatingTask} style={{ height: '45px' }}>
+            <Icon style={{ fontSize: '24px' }} type="file-add" /> Add Task
+          </Button>
+        </div>
         {this.renderTaskCreate()}
         {tasksByTime != [] ? (
           tasksByTime.map((task: Task) => {

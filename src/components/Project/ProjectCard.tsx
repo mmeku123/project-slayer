@@ -22,14 +22,7 @@ class ProjectCard extends Component<{ project?: Project }> {
             hoverable
             bodyStyle={{ padding: '12px', margin: '5px' }}
             style={{ borderRadius: '10px', paddingTop: '10px' }}
-            cover={
-              <img
-                style={{ margin: '10px' }}
-                height="70"
-                alt="exampleSubject"
-                src={projectAvatar}
-              />
-            }
+            cover={<img height="70" alt="exampleSubject" src={projectAvatar} />}
           >
             <Meta
               style={{ textAlign: 'center' }}

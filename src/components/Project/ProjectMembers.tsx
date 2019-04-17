@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 
 import { addProjectMember, addSubjectMember } from '../../actions';
 import { string } from 'prop-types';
-import { Button, Input, Row, Col, Avatar, Icon } from 'antd';
+import { Button, Input, Row, Col, Avatar, Icon, Card } from 'antd';
 
 import avatar from '../../images/avatars/1575649.svg';
 import { Typography } from 'antd';
@@ -87,55 +87,54 @@ class ProjectMembers extends Component<
             members.map(member => {
               return (
                 <Col md={8} xs={12} style={{ margin: '24px' }}>
-                  <div
+                  <Card
+                    hoverable
                     key={member._id}
                     style={{
-                      padding: '10px',
-                      textAlign: 'center',
-                      boxShadow:
-                        'rgba(0, 0, 0, 0.2) 0px 2px 2px 0px, rgba(0, 0, 0, 0.01) 0px 4px 4px 0px',
-                      borderRadius: '5px'
+                      borderRadius: '12px'
                     }}
                   >
                     <div>
-                      <Avatar size={128} shape="square" icon="user" />
+                      <div>
+                        <Avatar size={128} shape="square" icon="user" />
+                      </div>
+                      <div style={{ height: '20px' }} />
+                      <table style={{ lineHeight: '2.5em' }}>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <Text strong>Name</Text>
+                            </td>
+                            <td>{member.name}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <Text strong>Student ID</Text>
+                            </td>
+                            <td>{member.id}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <Text strong>Email</Text>
+                            </td>
+                            <td>{member.email}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <Text strong>Nickname</Text>
+                            </td>
+                            <td>{member.nickname}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <Text strong>Role</Text>
+                            </td>
+                            <td>{member.job}</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
-                    <div style={{ height: '20px' }} />
-                    <table style={{ lineHeight: '2.5em' }}>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <Text strong>Name</Text>
-                          </td>
-                          <td>{member.name}</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <Text strong>Student ID</Text>
-                          </td>
-                          <td>{member.id}</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <Text strong>Email</Text>
-                          </td>
-                          <td>{member.email}</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <Text strong>Nickname</Text>
-                          </td>
-                          <td>{member.nickname}</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <Text strong>Role</Text>
-                          </td>
-                          <td>{member.job}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  </Card>
                 </Col>
               );
             })}
