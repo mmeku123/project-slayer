@@ -1,4 +1,7 @@
 export const isMobile = () => {
-  console.log(window.innerWidth);
   return window.innerWidth <= 768;
+};
+
+export const isMediumScreen = () => {
+  return window.innerWidth <= 850;
 };

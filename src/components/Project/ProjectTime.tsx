@@ -19,6 +19,7 @@ import {
 import Title from 'antd/lib/typography/Title';
 import moment from 'moment';
 import Meta from 'antd/lib/card/Meta';
+import Text from 'antd/lib/typography/Text';
 
 const dateFormat = 'MM/DD/YYYY';
 const nowMoment = () => moment().format(dateFormat);
@@ -97,6 +98,14 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
     }));
   };
 
+  handleCancelCreateSprint = () => {
+    this.setState(state => ({
+      ...state,
+      newSprint: { name: '', detail: '', dueDate: nowMoment() },
+      isAddingSprint: false
+    }));
+  };
+
   handleOnDateChange = (date, dateString) => {
     this.setState(state => ({
       ...state,
@@ -108,17 +117,41 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
     let schedule = this.props.schedule;
     console.log(schedule.sprints);
     return (
-      <div>
+      <div style={{ textAlign: 'center' }}>
         <Title>Project Schedule</Title>
         {schedule ? (
           <div>
-            Schedule
             <div>
-              start: {moment(schedule.startDate).format('LL')}
               {
                 <div>
-                  Timeline :
+                  <Title level={3} style={{ padding: '20px' }}>
+                    {' '}
+                    TIMELINE{' '}
+                  </Title>
                   <Timeline mode="alternate">
+                    <Timeline.Item>
+                      <Card
+                        style={{ borderRadius: '12px', textAlign: 'center' }}
+                        hoverable
+                        cover={
+                          <Avatar
+                            style={{ minHeight: '100px' }}
+                            shape="square"
+                            icon="user"
+                          />
+                        }
+                      >
+                        <div>
+                          <Title level={4}>Create Project</Title>
+                          <span>
+                            <Text strong>Start : </Text>
+                            <Text>
+                              {moment(schedule.startDate).format('LL')}
+                            </Text>
+                          </span>
+                        </div>
+                      </Card>
+                    </Timeline.Item>
                     {schedule.sprints.map((sprint: ProjectSprint) => {
                       const diffDay = moment(sprint.dueDate)
                         .startOf('day')
@@ -130,25 +163,41 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
                             key={sprint._id + '@' + sprint.dueDate}
                             style={{ margin: '12px' }}
                           >
-                            <div>
-                              <Card
-                                style={{ borderRadius: '12px' }}
-                                hoverable
-                                cover={
-                                  <Avatar
-                                    style={{ minHeight: '100px' }}
-                                    shape="square"
-                                    icon="user"
-                                  />
-                                }
-                              >
+                            <Card
+                              style={{
+                                borderRadius: '12px',
+                                textAlign: 'center'
+                              }}
+                              hoverable
+                              cover={
+                                <Avatar
+                                  style={{ minHeight: '100px' }}
+                                  shape="square"
+                                  icon="user"
+                                />
+                              }
+                            >
+                              <div>
+                                <Title level={4}>
+                                  {sprint.name || 'Noname sprint'}
+                                </Title>
                                 <div>
-                                  <div>{sprint.name || 'Noname sprint'}</div>
-                                  <div>{sprint.detail || 'TODO'}</div>
-                                  <div>
-                                    {moment(sprint.dueDate).format('LL')}
-                                  </div>
-                                  <div>{diffDay}</div>
+                                  <span>
+                                    <Text strong>Detail : </Text>
+                                    <Text>
+                                      {sprint.detail || 'sprint detail'}
+                                    </Text>
+                                  </span>
+                                </div>
+                                <div>
+                                  <span>
+                                    <Text strong>Due Date : </Text>
+                                    {moment(sprint.dueDate).format('LL')} (
+                                    {diffDay})
+                                  </span>
+                                </div>
+                                <Text />
+                                <div style={{ textAlign: 'end' }}>
                                   <Icon
                                     style={{ color: 'red' }}
                                     type="close-circle"
@@ -157,8 +206,8 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
                                     }
                                   />
                                 </div>
-                              </Card>
-                            </div>
+                              </div>
+                            </Card>
                           </div>
                         </Timeline.Item>
                       );
@@ -178,8 +227,12 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
           <div />
         )}
 
-        <div style={{ margin: '12px', lineHeight: '3.0em' }}>
-          {this.state.isAddingSprint ? (
+        {this.state.isAddingSprint ? (
+          <Card
+            hoverable
+            style={{ margin: '12px', lineHeight: '3.0em' }}
+            title="New Sprint"
+          >
             <div>
               <Input
                 placeholder="Sprint Name"
@@ -201,15 +254,23 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
                 defaultValue={moment(this.state.newSprint.dueDate, dateFormat)}
                 format={dateFormat}
               />
-              <Button type="primary" onClick={this.handleCreateSprint}>
-                Create
-              </Button>
+              <Button onClick={this.handleCreateSprint}>Create</Button>
+
+              <div>
+                <Button onClick={this.handleCancelCreateSprint}>Cancel</Button>
+                <Button type="primary" onClick={this.handleCreateSprint}>
+                  Confirm
+                </Button>
+              </div>
             </div>
-          ) : (
-            <div />
-          )}
-          <Button onClick={this.handleAddingSprint}> + Sprint </Button>
-        </div>
+          </Card>
+        ) : (
+          <div />
+        )}
+        <div style={{ height: '20px' }} />
+        <Button onClick={this.handleAddingSprint} style={{ height: '45px' }}>
+          <Icon style={{ fontSize: '24px' }} type="plus-circle" /> Sprint
+        </Button>
       </div>
     );
   }

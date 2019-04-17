@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 class HomePage extends Component {
   render() {
     return (
@@ -12,9 +13,9 @@ class HomePage extends Component {
                 for all of your <br /> <span>projects!</span>
               </h2>
               <div>
-                <a href="#about" className="btn-get-started scrollto">
+                <Link to="/project" className="btn-get-started scrollto">
                   Get Started
-                </a>
+                </Link>
               </div>
             </div>
             <div className="col-md-6 intro-img order-md-last order-first">

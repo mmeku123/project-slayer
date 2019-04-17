@@ -37,8 +37,8 @@ class SignIn extends Component<ISignInProps, ISignInStates> {
 
   render() {
     return (
-      <div>
-        <div style={{ textAlign: 'center' }}>
+      <div style={{ padding: '30px' }}>
+        <div style={{ textAlign: 'center', padding: '50px' }}>
           <Title>Sign In</Title>
         </div>
         <div className="container" style={{ maxWidth: '500px' }}>

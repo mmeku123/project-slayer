@@ -59,7 +59,7 @@ class ProjectMembers extends Component<
     let members: Student[] = this.props.members;
 
     return (
-      <div>
+      <div style={{ textAlign: 'center' }}>
         <Title>Project Members</Title>
         <Button onClick={this.handleAddNewMember} style={{ height: '45px' }}>
           <Icon style={{ fontSize: '24px' }} type="usergroup-add" /> Add Member
@@ -74,9 +74,7 @@ class ProjectMembers extends Component<
               onChange={this.handleInputChange}
               style={{ width: '200px', marginLeft: '50px' }}
             />
-            <Button type="danger" onClick={this.handleCancelAddMember}>
-              Cancel
-            </Button>
+            <Button onClick={this.handleCancelAddMember}>Cancel</Button>
             <Button type="primary" onClick={this.handleConfirmAddMember}>
               Confirm
             </Button>

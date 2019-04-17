@@ -170,8 +170,8 @@ class ProjectManagement extends Component<
     }
 
     return (
-      <div>
-        <div>
+      <div className="container">
+        <div style={{ padding: '30px' }}>
           <SubjectSection
             subjects={subjects}
             chooseSubject={focusSubject}
@@ -182,34 +182,34 @@ class ProjectManagement extends Component<
           />
         </div>
 
-        <Divider />
-
         {isFocusSubject ? (
           <div>
-            {this.renderSubjectActions()}
-
-            <ProjectSection
-              projects={projects}
-              chooseProject={focusProject}
-              isChooseProject={isFocusProject}
-              onChangeProject={this.handleProjectChange}
-              onCreateProject={this.handleProjectCreate}
-            />
-
             <Divider />
+            <div style={{ padding: '30px' }}>
+              {this.renderSubjectActions()}
+
+              <ProjectSection
+                projects={projects}
+                chooseProject={focusProject}
+                isChooseProject={isFocusProject}
+                onChangeProject={this.handleProjectChange}
+                onCreateProject={this.handleProjectCreate}
+              />
+            </div>
 
             {isFocusProject ? (
               <div>
+                <Divider />
                 {this.renderProjectActions()}
 
                 <ProjectTitle project={focusProject} />
                 <ProjectThing project={focusProject} subject={focusSubject} />
+
+                <Divider />
               </div>
             ) : (
-              <div />
+              <Divider />
             )}
-
-            <Divider />
           </div>
         ) : (
           <div />

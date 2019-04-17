@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { editTask, addTask } from '../../actions';
 import { bindActionCreators } from 'redux';
 import EditType from '../../constant/editType';
-import { Input, Radio, Select, Switch, Button, Card } from 'antd';
+import { Input, Radio, Select, Switch, Button, Card, Icon } from 'antd';
 import Title from 'antd/lib/typography/Title';
 
 const Option = Select.Option;
@@ -189,7 +189,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               placeholder="Task Name"
             />
             <div>
-              detail :
+              detail :{' '}
               <Input
                 name="detail"
                 value={newTask.detail}
@@ -198,7 +198,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               />
             </div>
             <div>
-              finish :
+              finish :{' '}
               <Switch
                 defaultChecked={newTask.isDone}
                 onChange={checked => {
@@ -211,7 +211,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             </div>
 
             <div>
-              priority:
+              priority:{' '}
               <Select
                 defaultValue="Normal"
                 onChange={value => {
@@ -227,7 +227,9 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               </Select>
             </div>
             <Button onClick={this.handleCancelCreate}>Cancel</Button>
-            <Button onClick={this.handleCreateTask}>Create</Button>
+            <Button type="primary" onClick={this.handleCreateTask}>
+              Create
+            </Button>
           </div>
         </Card>
       </div>
@@ -267,7 +269,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             />
             <div>Assign to: {task.owner}</div>
             <div>
-              detail :
+              detail :{' '}
               <Input
                 name="detail"
                 value={editDetail.detail}
@@ -276,7 +278,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               />
             </div>
             <div>
-              finish :
+              finish :{' '}
               <Switch
                 checked={editDetail.isDone}
                 onChange={checked => {
@@ -288,7 +290,7 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               />
             </div>
             <div>
-              priority:
+              priority:{' '}
               <Select
                 defaultValue={this.state.editDetail.priority}
                 onChange={value => {
@@ -409,9 +411,11 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     let tasksByTime = this.props.tasks['byTime'];
 
     return (
-      <div>
+      <div style={{ textAlign: 'center' }}>
         <Title>Project Tasks </Title>
-        <Button onClick={this.handleCreatingTask}>+ Task</Button>
+        <Button onClick={this.handleCreatingTask} style={{ height: '45px' }}>
+          <Icon style={{ fontSize: '24px' }} type="file-add" /> Add Task
+        </Button>
         {this.renderTaskCreate()}
         {tasksByTime != [] ? (
           tasksByTime.map((task: Task) => {

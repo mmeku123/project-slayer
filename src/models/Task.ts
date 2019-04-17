@@ -25,6 +25,7 @@ class Task {
     this.isDone = false;
     this.priority = 'NORMAL';
     this.owner = localStorage.getItem('auth_id');
+    // ! FIXME !!!!
     this.startDate = moment().format('L');
     this.dueDate = moment().format('L');
   }

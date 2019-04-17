@@ -154,11 +154,11 @@ h6 {
 --------------------------------------------------------------*/
 
 #header {
-  height: 80px;
+  height: 60px;
   transition: all 0.5s;
   z-index: 997;
   transition: all 0.5s;
-  padding: 20px 0;
+  padding: 12px 0;
   left: 0;
   top: 0;
   right: 0;
@@ -1548,13 +1548,13 @@ h6 {
   }
 
   #header {
-    height: 70px;
-    padding: 15px 0;
+    height: 60px;
+    padding: 12px 0;
   }
 
   #header .logo h1 {
-    font-size: 28px;
-    padding: 8px 0;
+    font-size: 22px;
+    padding: 12px 0;
   }
 
   #why-us .why-us-content {
