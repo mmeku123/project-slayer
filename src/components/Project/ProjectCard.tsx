@@ -5,7 +5,7 @@ import { Card, Icon } from 'antd';
 
 const { Meta } = Card;
 
-import projectAvatar from '../../images/projects/432386.svg';
+import projectAvatar from '../../images/projects/chat.svg';
 
 class ProjectCard extends Component<{ project?: Project }> {
   constructor(props) {
@@ -22,12 +22,14 @@ class ProjectCard extends Component<{ project?: Project }> {
             hoverable
             bodyStyle={{ padding: '12px', margin: '5px' }}
             style={{ borderRadius: '10px', paddingTop: '10px' }}
-            cover={<img height="70" alt="exampleSubject" src={projectAvatar} />}
+            cover={
+              <img height="50" alt="example Project" src={projectAvatar} />
+            }
           >
             <Meta
               style={{ textAlign: 'center' }}
               title={name}
-              description={detail || 'subject detail'}
+              description={detail || 'project detail'}
             />
           </Card>
         </div>

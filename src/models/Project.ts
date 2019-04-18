@@ -2,6 +2,7 @@ import Task from './Task';
 import Comment from './Comment';
 import Student from './User/Student';
 import moment from 'moment';
+import projects from '../reducers/projects';
 
 class Project {
   _id: string;
@@ -11,6 +12,8 @@ class Project {
   tasks: Task[] = [];
   studentIds: string[] = [];
   commentIds: string[] = [];
+
+  img: string;
 
   progress?: ProjectProgress;
   schedule?: ProjectSchedule;
@@ -28,11 +31,12 @@ class Project {
     newProject.commentIds = data.commentIds;
     newProject.progress = data.progress;
     newProject.schedule = data.schedule;
+    newProject.img = data.img;
 
     return newProject;
   }
 
-  static toJson(name, studentId?) {
+  static toJson(name, studentId) {
     const studentIdList = studentId ? [studentId] : [];
 
     return {

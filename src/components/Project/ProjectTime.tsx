@@ -113,6 +113,130 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
     }));
   };
 
+  renderAddingSprintCard = () => {
+    return this.state.isAddingSprint ? (
+      <Card
+        hoverable
+        style={{ margin: '12px', lineHeight: '3.0em' }}
+        title="New Sprint"
+      >
+        <div>
+          <Input
+            placeholder="Sprint Name"
+            type="text"
+            name="sprint_name"
+            value={this.state.newSprint.name}
+            onChange={this.handleInputChange}
+          />
+          <Input
+            placeholder="Sprint Detail"
+            type="text"
+            name="sprint_detail"
+            value={this.state.newSprint.detail}
+            onChange={this.handleInputChange}
+          />
+          <DatePicker
+            name="sprint_dueDate"
+            onChange={this.handleOnDateChange}
+            defaultValue={moment(this.state.newSprint.dueDate, dateFormat)}
+            format={dateFormat}
+          />
+          <Button onClick={this.handleCreateSprint}>Create</Button>
+
+          <div>
+            <Button onClick={this.handleCancelCreateSprint}>Cancel</Button>
+            <Button type="primary" onClick={this.handleCreateSprint}>
+              Confirm
+            </Button>
+          </div>
+        </div>
+      </Card>
+    ) : (
+      <div />
+    );
+  };
+
+  renderCreateProjectTimeline = startDate => {
+    return (
+      <Timeline.Item color="green">
+        <Card
+          style={{ borderRadius: '12px', textAlign: 'center' }}
+          hoverable
+          cover={
+            <Avatar style={{ minHeight: '100px' }} shape="square" icon="user" />
+          }
+        >
+          <div>
+            <Title level={4}>Create Project</Title>
+            <span>
+              <Text strong>Start : </Text>
+              <Text>{moment(startDate).format('LL')}</Text>
+            </span>
+          </div>
+        </Card>
+      </Timeline.Item>
+    );
+  };
+
+  renderTimelineItem = schedule => {
+    schedule;
+    return schedule.sprints.map((sprint: ProjectSprint) => {
+      const diffDay = moment(sprint.dueDate)
+        .startOf('day')
+        .fromNow();
+
+      const colorFilter = diffDay.toString().includes('ago') ? 'grey' : 'blue';
+
+      return (
+        <Timeline.Item color={colorFilter}>
+          <div
+            key={sprint._id + '@' + sprint.dueDate}
+            style={{ margin: '12px' }}
+          >
+            <Card
+              style={{
+                borderRadius: '12px',
+                textAlign: 'center'
+              }}
+              hoverable
+              cover={
+                <Avatar
+                  style={{ minHeight: '100px' }}
+                  shape="square"
+                  icon="user"
+                />
+              }
+            >
+              <div>
+                <Title level={4}>{sprint.name || 'Noname sprint'}</Title>
+                <div>
+                  <span>
+                    <Text strong>Detail : </Text>
+                    <Text>{sprint.detail || 'sprint detail'}</Text>
+                  </span>
+                </div>
+                <div>
+                  <span>
+                    <Text strong>Due Date : </Text>
+                    {moment(sprint.dueDate).format('LL')} ({diffDay})
+                  </span>
+                </div>
+                <Text />
+                <div style={{ textAlign: 'end' }}>
+                  <Icon
+                    style={{ color: 'red' }}
+                    type="close-circle"
+                    onClick={() => this.handleDeleteSprint(sprint._id)}
+                  />
+                </div>
+              </div>
+            </Card>
+          </div>
+        </Timeline.Item>
+      );
+    });
+  };
+
   render() {
     let schedule = this.props.schedule;
     console.log(schedule.sprints);
@@ -121,152 +245,20 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
         <Title>Project Schedule</Title>
         {schedule ? (
           <div>
-            <div>
-              {
-                <div>
-                  <Title level={3} style={{ padding: '20px' }}>
-                    {' '}
-                    TIMELINE{' '}
-                  </Title>
-                  <Timeline mode="alternate">
-                    <Timeline.Item>
-                      <Card
-                        style={{ borderRadius: '12px', textAlign: 'center' }}
-                        hoverable
-                        cover={
-                          <Avatar
-                            style={{ minHeight: '100px' }}
-                            shape="square"
-                            icon="user"
-                          />
-                        }
-                      >
-                        <div>
-                          <Title level={4}>Create Project</Title>
-                          <span>
-                            <Text strong>Start : </Text>
-                            <Text>
-                              {moment(schedule.startDate).format('LL')}
-                            </Text>
-                          </span>
-                        </div>
-                      </Card>
-                    </Timeline.Item>
-                    {schedule.sprints.map((sprint: ProjectSprint) => {
-                      const diffDay = moment(sprint.dueDate)
-                        .startOf('day')
-                        .fromNow();
-                      console.log(diffDay);
-                      return (
-                        <Timeline.Item>
-                          <div
-                            key={sprint._id + '@' + sprint.dueDate}
-                            style={{ margin: '12px' }}
-                          >
-                            <Card
-                              style={{
-                                borderRadius: '12px',
-                                textAlign: 'center'
-                              }}
-                              hoverable
-                              cover={
-                                <Avatar
-                                  style={{ minHeight: '100px' }}
-                                  shape="square"
-                                  icon="user"
-                                />
-                              }
-                            >
-                              <div>
-                                <Title level={4}>
-                                  {sprint.name || 'Noname sprint'}
-                                </Title>
-                                <div>
-                                  <span>
-                                    <Text strong>Detail : </Text>
-                                    <Text>
-                                      {sprint.detail || 'sprint detail'}
-                                    </Text>
-                                  </span>
-                                </div>
-                                <div>
-                                  <span>
-                                    <Text strong>Due Date : </Text>
-                                    {moment(sprint.dueDate).format('LL')} (
-                                    {diffDay})
-                                  </span>
-                                </div>
-                                <Text />
-                                <div style={{ textAlign: 'end' }}>
-                                  <Icon
-                                    style={{ color: 'red' }}
-                                    type="close-circle"
-                                    onClick={() =>
-                                      this.handleDeleteSprint(sprint._id)
-                                    }
-                                  />
-                                </div>
-                              </div>
-                            </Card>
-                          </div>
-                        </Timeline.Item>
-                      );
-                    })}
-                  </Timeline>
-                </div>
-              }
-            </div>
-            <div>Percent Complete</div>
-            <div>
-              <span>start</span>
-              {/* FIXME */}
-              <Progress percent={50} />
-            </div>
+            <Title level={3} style={{ padding: '20px' }}>
+              TIMELINE
+            </Title>
+            <Timeline mode="alternate">
+              {this.renderCreateProjectTimeline(schedule.startDate)}
+              {this.renderTimelineItem(schedule)}
+            </Timeline>
           </div>
         ) : (
           <div />
         )}
 
-        {this.state.isAddingSprint ? (
-          <Card
-            hoverable
-            style={{ margin: '12px', lineHeight: '3.0em' }}
-            title="New Sprint"
-          >
-            <div>
-              <Input
-                placeholder="Sprint Name"
-                type="text"
-                name="sprint_name"
-                value={this.state.newSprint.name}
-                onChange={this.handleInputChange}
-              />
-              <Input
-                placeholder="Sprint Detail"
-                type="text"
-                name="sprint_detail"
-                value={this.state.newSprint.detail}
-                onChange={this.handleInputChange}
-              />
-              <DatePicker
-                name="sprint_dueDate"
-                onChange={this.handleOnDateChange}
-                defaultValue={moment(this.state.newSprint.dueDate, dateFormat)}
-                format={dateFormat}
-              />
-              <Button onClick={this.handleCreateSprint}>Create</Button>
+        {this.renderAddingSprintCard()}
 
-              <div>
-                <Button onClick={this.handleCancelCreateSprint}>Cancel</Button>
-                <Button type="primary" onClick={this.handleCreateSprint}>
-                  Confirm
-                </Button>
-              </div>
-            </div>
-          </Card>
-        ) : (
-          <div />
-        )}
         <div style={{ height: '20px' }} />
         <Button onClick={this.handleAddingSprint} style={{ height: '45px' }}>
           <Icon style={{ fontSize: '24px' }} type="plus-circle" /> Sprint

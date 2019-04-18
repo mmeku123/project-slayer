@@ -37,10 +37,17 @@ export const editTask = (
 ) => async dispatch => {
   switch (editData.type) {
     case 'detail':
-      const { name, isDone, detail, priority } = editData.editDetail;
+      const {
+        name,
+        isDone,
+        detail,
+        priority,
+        startDate,
+        dueDate
+      } = editData.editDetail;
       tasks
         .doc(taskId)
-        .update({ name, isDone, detail, priority })
+        .update({ name, isDone, detail, priority, startDate, dueDate })
         .then(() => {
           return dispatch(fetchTasks(projectId));
         });

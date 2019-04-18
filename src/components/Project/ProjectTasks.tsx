@@ -6,12 +6,24 @@ import { connect } from 'react-redux';
 import { editTask, addTask } from '../../actions';
 import { bindActionCreators } from 'redux';
 import EditType from '../../constant/editType';
-import { Input, Radio, Select, Switch, Button, Card, Icon } from 'antd';
+import {
+  Input,
+  Radio,
+  Select,
+  Switch,
+  Button,
+  Card,
+  Icon,
+  DatePicker,
+  Row,
+  Col
+} from 'antd';
 import Title from 'antd/lib/typography/Title';
 import moment from 'moment';
+import Text from 'antd/lib/typography/Text';
 
 const Option = Select.Option;
-
+const dateFormat = 'MM/DD/YYYY';
 interface IProjectTasksProps {
   tasks: Task[];
   focusProject: Project;
@@ -150,6 +162,12 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     });
   };
 
+  cancelNewComment = () => {
+    this.setState(state => ({
+      ...state,
+      isAddComment: false
+    }));
+  };
   addNewComment = (task: Task) => {
     let { newComment } = this.state;
     this.props.editTask(this.props.focusProject._id, task._id, {
@@ -173,6 +191,20 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
       editDetail: this.state.editDetail
     });
     this.setState(state => ({ ...state, editDetail: null, isEdit: false }));
+  };
+
+  handleOnCreateStartDateChange = (date, dateString) => {
+    this.setState(state => ({
+      ...state,
+      newTask: { ...state.newTask, startDate: dateString }
+    }));
+  };
+
+  handleOnCreateDueDateChange = (date, dateString) => {
+    this.setState(state => ({
+      ...state,
+      newTask: { ...state.newTask, dueDate: dateString }
+    }));
   };
 
   renderTaskCreate = () => {
@@ -227,6 +259,22 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
                 <Option value="Low">Low</Option>
               </Select>
             </div>
+            <div>
+              Start Date :{' '}
+              <DatePicker
+                onChange={this.handleOnCreateStartDateChange}
+                defaultValue={moment(this.state.newTask.startDate, dateFormat)}
+                format={dateFormat}
+              />
+            </div>
+            <div>
+              Due Date :{' '}
+              <DatePicker
+                onChange={this.handleOnCreateDueDateChange}
+                defaultValue={moment(this.state.newTask.dueDate, dateFormat)}
+                format={dateFormat}
+              />
+            </div>
             <Button onClick={this.handleCancelCreate}>Cancel</Button>
             <Button type="primary" onClick={this.handleCreateTask}>
               Create
@@ -239,11 +287,25 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
     );
   };
 
+  handleOnStartDateChange = (date, dateString) => {
+    this.setState(state => ({
+      ...state,
+      editDetail: { ...state.editDetail, startDate: dateString }
+    }));
+  };
+
+  handleOnDueDateChange = (date, dateString) => {
+    this.setState(state => ({
+      ...state,
+      editDetail: { ...state.editDetail, dueDate: dateString }
+    }));
+  };
+
   renderTaskEdit = (task: Task) => {
     let editDetail = this.state.editDetail;
 
     return (
-      <div key={task._id} style={{ margin: '12px' }}>
+      <Col key={task._id} style={{ margin: '12px' }} md={11}>
         <Card
           hoverable
           title={
@@ -268,7 +330,6 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               onChange={this.handleTaskChange}
               placeholder="Task Name"
             />
-            <div>Assign to : {task.owner}</div>
             <div>
               detail :{' '}
               <Input
@@ -310,11 +371,35 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               </Select>
             </div>
             {task.startDate ? (
-              <div>Start Date : {task.startDate}</div>
+              <div>
+                Start Date :{' '}
+                <DatePicker
+                  onChange={this.handleOnStartDateChange}
+                  defaultValue={moment(
+                    this.state.editDetail.startDate,
+                    dateFormat
+                  )}
+                  format={dateFormat}
+                />
+              </div>
             ) : (
               <div />
             )}
-            {task.dueDate ? <div>Due Date : {task.dueDate}</div> : <div />}
+            {task.dueDate ? (
+              <div>
+                Due Date :{' '}
+                <DatePicker
+                  onChange={this.handleOnDueDateChange}
+                  defaultValue={moment(
+                    this.state.editDetail.dueDate,
+                    dateFormat
+                  )}
+                  format={dateFormat}
+                />
+              </div>
+            ) : (
+              <div />
+            )}
             <ul>
               comment
               {task.comments.map((comment: Comment) => {
@@ -337,13 +422,13 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             <Button onClick={() => this.confirmEdit(task)}>Confirm</Button>
           </div>
         </Card>
-      </div>
+      </Col>
     );
   };
 
   renderTaskDetail = (task: Task) => {
     return (
-      <div key={task._id} style={{ margin: '12px' }}>
+      <Col key={task._id} style={{ margin: '12px' }} md={11}>
         <Card
           hoverable
           style={{
@@ -363,24 +448,44 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           }
         >
           <div style={{ lineHeight: '2.0em' }}>
-            <div>{task.name}</div>
-            <div>{task.owner}</div>
-            <div> detail : {task.detail} </div>
-            <div> status : {task.isDone ? 'finish' : 'not finish'} </div>
+            <div>
+              <Title level={3}>{task.name}</Title>
+            </div>
+            <div>
+              {' '}
+              <Text strong>detail :</Text> {task.detail}{' '}
+            </div>
+            <div>
+              {' '}
+              <Text strong>status :</Text>{' '}
+              {task.isDone ? 'finish' : 'not finish'}{' '}
+            </div>
 
-            <div>priority : {task.priority}</div>
+            <div>
+              <Text strong>priority :</Text> {task.priority}
+            </div>
             {task.startDate ? (
-              <div>Start Date : {moment(task.startDate).format('LL')}</div>
+              <div>
+                <Text strong>Start Date :</Text>{' '}
+                {moment(task.startDate).format('LL')}
+              </div>
             ) : (
               <div />
             )}
             {task.dueDate ? (
-              <div>End Date : {moment(task.dueDate).format('LL')}</div>
+              <div>
+                <Text strong>Due Date :</Text>{' '}
+                {moment(task.dueDate).format('LL')} (
+                {moment(task.dueDate)
+                  .startOf('day')
+                  .fromNow()}
+                )
+              </div>
             ) : (
               <div />
             )}
             <ul>
-              comment
+              Comment
               {task.comments.map((comment: Comment) => {
                 return (
                   <li key={comment.time + '@' + task._id + '$'}>
@@ -398,12 +503,19 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               {this.state.isAddComment && task._id == this.state.editTaskId ? (
                 <div>
                   <Input
+                    style={{ width: '50%', margin: '12px' }}
                     type="text"
                     value={this.state.newComment}
                     onChange={this.handleNewCommentChange}
                     placeholder="Write a reply..."
                   />
-                  <Button onClick={() => this.addNewComment(task)}>
+                  <Button onClick={() => this.cancelNewComment()}>
+                    Cancel
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={() => this.addNewComment(task)}
+                  >
                     Enter
                   </Button>
                 </div>
@@ -416,10 +528,18 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             </ul>
             <br />
 
-            <Button onClick={() => this.showEditDialog(task)}>Edit</Button>
+            <div style={{ textAlign: 'end' }}>
+              <Button
+                shape="circle"
+                style={{ lineHeight: '0em' }}
+                onClick={() => this.showEditDialog(task)}
+              >
+                <Icon type="setting" />
+              </Button>
+            </div>
           </div>
         </Card>
-      </div>
+      </Col>
     );
   };
 
@@ -435,20 +555,22 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
           </Button>
         </div>
         {this.renderTaskCreate()}
-        {tasksByTime != [] ? (
-          tasksByTime.map((task: Task) => {
-            if (
-              task._id == this.state.editTaskId &&
-              this.state.isEdit == true
-            ) {
-              return this.renderTaskEdit(task);
-            } else {
-              return this.renderTaskDetail(task);
-            }
-          })
-        ) : (
-          <div />
-        )}
+        <Row type="flex" justify="space-around">
+          {tasksByTime != [] ? (
+            tasksByTime.map((task: Task) => {
+              if (
+                task._id == this.state.editTaskId &&
+                this.state.isEdit == true
+              ) {
+                return this.renderTaskEdit(task);
+              } else {
+                return this.renderTaskDetail(task);
+              }
+            })
+          ) : (
+            <div />
+          )}
+        </Row>
       </div>
     );
   }

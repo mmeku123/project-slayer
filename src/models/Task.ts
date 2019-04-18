@@ -15,8 +15,8 @@ class Task {
   isDone: boolean;
   comments: Comment[] = [];
 
-  startDate?: string;
-  dueDate?: string;
+  startDate: string;
+  dueDate: string;
 
   constructor(name: string, detail: string, projectId: string) {
     this.projectId = projectId;

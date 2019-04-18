@@ -26,7 +26,7 @@ import ProjectTitle from '../components/Project/ProjectTitle';
 import { bindActionCreators } from 'redux';
 import { Student } from '../models';
 import { Redirect, withRouter } from 'react-router';
-import { Button, Row, Col, Icon, Spin, Divider } from 'antd';
+import { Button, Row, Col, Icon, Spin, Divider, Popconfirm } from 'antd';
 import Text from 'antd/lib/typography/Text';
 
 interface IProjectManagementStates {
@@ -50,7 +50,7 @@ interface IProjectManagementProps {
   fetchProjectMembers: (projectId) => void;
   fetchTasks: (projectId) => void;
   fetchSubject: () => (dispatch: any) => Promise<void>;
-  createSubject: (subjectName: string) => void;
+  createSubject: (subject: Subject) => void;
   createProject: (projectName: string, subjectId: string) => void;
   changeSubject: (subjectId: string) => (dispatch: any) => void;
   changeProject: (projectId: string) => void;
@@ -59,6 +59,9 @@ interface IProjectManagementProps {
   deleteSubject: (subjectId: string) => void;
   history;
 }
+
+const confirmDeleteText = 'Are you sure to delete this subject?';
+const confirmDeleteProjectText = 'Are you sure to delete this project?';
 
 class ProjectManagement extends Component<
   IProjectManagementProps,
@@ -74,8 +77,8 @@ class ProjectManagement extends Component<
     this.props.fetchSubject();
   }
 
-  handleSubjectCreate = (subjectName: string) => {
-    this.props.createSubject(subjectName);
+  handleSubjectCreate = (subject: Subject) => {
+    this.props.createSubject(subject);
   };
 
   handleSubjectChange = (subject: Subject) => {
@@ -119,14 +122,19 @@ class ProjectManagement extends Component<
             <Icon style={{ fontSize: '24px' }} type="setting" />
           </Button>
 
-          <Button
-            shape="circle"
-            size="large"
-            style={{ margin: '10px', border: 'transparent' }}
-            onClick={this.handleDeleteSubject}
+          <Popconfirm
+            placement="topRight"
+            title={confirmDeleteText}
+            onConfirm={this.handleDeleteSubject}
           >
-            <Icon style={{ fontSize: '24px' }} type="delete" />
-          </Button>
+            <Button
+              shape="circle"
+              size="large"
+              style={{ margin: '10px', border: 'transparent' }}
+            >
+              <Icon style={{ fontSize: '24px' }} type="delete" />
+            </Button>
+          </Popconfirm>
         </Col>
       </Row>
     );
@@ -147,14 +155,19 @@ class ProjectManagement extends Component<
             <Icon style={{ fontSize: '24px' }} type="setting" />
           </Button>
 
-          <Button
-            shape="circle"
-            size="large"
-            style={{ margin: '10px', border: 'transparent' }}
-            onClick={this.handleDeleteProject}
+          <Popconfirm
+            placement="topRight"
+            title={confirmDeleteProjectText}
+            onConfirm={this.handleDeleteProject}
           >
-            <Icon style={{ fontSize: '24px' }} type="delete" />
-          </Button>
+            <Button
+              shape="circle"
+              size="large"
+              style={{ margin: '10px', border: 'transparent' }}
+            >
+              <Icon style={{ fontSize: '24px' }} type="delete" />
+            </Button>
+          </Popconfirm>
         </Col>
       </Row>
     );
@@ -184,9 +197,9 @@ class ProjectManagement extends Component<
 
         {isFocusSubject ? (
           <div>
-            <Divider />
             <div style={{ padding: '30px' }}>
               {this.renderSubjectActions()}
+              <Divider />
 
               <ProjectSection
                 projects={projects}
@@ -199,8 +212,8 @@ class ProjectManagement extends Component<
 
             {isFocusProject ? (
               <div>
-                <Divider />
                 {this.renderProjectActions()}
+                <Divider />
 
                 <ProjectTitle project={focusProject} />
                 <ProjectThing project={focusProject} subject={focusSubject} />

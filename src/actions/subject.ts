@@ -33,12 +33,14 @@ export const fetchSubject = () => async dispatch => {
   return dispatch({ type: FETCH_SUBJECT, payload: userSubjects });
 };
 
-export const createSubject = subjectName => async dispatch => {
+export const createSubject = subject => async dispatch => {
   dispatch({ type: LOAD_SUBJECT });
 
-  const req = subjects.add(Subject.toJson(subjectName, authId)).then(ref => {
-    return dispatch(fetchSubject());
-  });
+  const req = subjects
+    .add(Subject.toJson(subject.name, authId, subject))
+    .then(ref => {
+      return dispatch(fetchSubject());
+    });
 };
 
 export const changeSubject = subjectId => async dispatch => {

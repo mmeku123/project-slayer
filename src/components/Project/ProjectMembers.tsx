@@ -9,7 +9,7 @@ import { addProjectMember, addSubjectMember } from '../../actions';
 import { string } from 'prop-types';
 import { Button, Input, Row, Col, Avatar, Icon, Card } from 'antd';
 
-import avatar from '../../images/avatars/1575649.svg';
+import avatar from '../../images/avatars/angle.svg';
 import { Typography } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import Text from 'antd/lib/typography/Text';
