@@ -3,6 +3,7 @@ import Comment from './Comment';
 import Student from './User/Student';
 import moment from 'moment';
 import projects from '../reducers/projects';
+import ProjectIcon from '../images/project';
 
 class Project {
   _id: string;

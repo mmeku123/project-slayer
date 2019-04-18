@@ -24,6 +24,25 @@ const users = db.collection('users');
 
 const authId = localStorage.getItem('auth_id');
 
+export const updateProjectImage = (
+  project: Project,
+  subjectId,
+  imagePath
+) => async dispatch => {
+  projects
+    .doc(project._id)
+    .update({ img: imagePath })
+    .then(() => {
+      subjects
+        .doc(subjectId)
+        .get()
+        .then(doc => {
+          const projects = doc.data().projectIds;
+          dispatch(fetchProjectByIds(projects));
+        });
+    });
+};
+
 export const createProject = (
   projectName: string,
   subjectId: string

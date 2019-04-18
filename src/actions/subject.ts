@@ -14,6 +14,16 @@ const users = db.collection('users');
 
 const authId = localStorage.getItem('auth_id');
 
+export const updateSubjectImage = (
+  subject: Subject,
+  imagePath: string
+) => async dispatch => {
+  subjects
+    .doc(subject._id)
+    .update({ img: imagePath })
+    .then(() => dispatch(fetchSubject()));
+};
+
 export const fetchSubject = () => async dispatch => {
   const req = await subjects.get();
 

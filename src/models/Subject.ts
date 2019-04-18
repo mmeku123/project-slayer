@@ -1,4 +1,5 @@
 import Teacher from './User/Teacher';
+import SubjectIcon from '../images/subject';
 
 class Subject {
   _id: string;
@@ -34,8 +35,7 @@ class Subject {
       id: subject.id,
       detail: subject.detail,
       studentIds: studentIdList,
-      projectIds: [],
-      img: subject.img
+      projectIds: []
     };
   }
 }
