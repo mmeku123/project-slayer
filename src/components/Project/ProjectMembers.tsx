@@ -96,17 +96,16 @@ class ProjectMembers extends Component<
                   >
                     <div>
                       <div>
-                        <Avatar size={128} shape="square" icon="user" />
+                        <Avatar
+                          size={128}
+                          shape="square"
+                          icon="user"
+                          src={member.img}
+                        />
                       </div>
                       <div style={{ height: '20px' }} />
                       <table style={{ lineHeight: '2.5em' }}>
                         <tbody>
-                          <tr>
-                            <td>
-                              <Text strong>Name</Text>
-                            </td>
-                            <td>{member.name}</td>
-                          </tr>
                           <tr>
                             <td>
                               <Text strong>Student ID</Text>
@@ -123,7 +122,7 @@ class ProjectMembers extends Component<
                             <td>
                               <Text strong>Nickname</Text>
                             </td>
-                            <td>{member.nickname}</td>
+                            <td>{member.name}</td>
                           </tr>
                           <tr>
                             <td>

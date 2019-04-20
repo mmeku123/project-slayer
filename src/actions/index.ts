@@ -14,7 +14,6 @@ export const createStudent = () => {
 
 export {
   addStudent,
-  authStudent,
   autoAuth,
   logOutUser,
   signInUser,

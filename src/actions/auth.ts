@@ -11,29 +11,30 @@ import { Student } from '../models';
 const db = firebase.firestore();
 const users = db.collection('users');
 
-export const authStudent = () => async dispatch => {
-  const studentId = '2dEeCuhsAft4cRkFa5px';
-
-  localStorage.setItem('auth_id', studentId);
-
-  return dispatch({ type: AUTH_USER });
-};
-
 export const addStudent = studentId => {
   users
     .doc(studentId)
     .get()
     .then(doc => {
-      const { id, name, nickname, email, phone, job } = doc.data();
-      const member = new Student(doc.id, id, name, nickname, email, phone, job);
+      const { id, name, nickname, email, phone, job, img } = doc.data();
+      const member = new Student(
+        doc.id,
+        id,
+        name,
+        nickname,
+        email,
+        phone,
+        job,
+        img
+      );
       return { type: ADD_PROJECT_MEMBER, payload: member };
     });
 };
 
-const createUser = (user: firebase.User) => async dispatch => {
+const createUser = (user: firebase.User, profile) => async dispatch => {
   users
     .doc(user.uid)
-    .set(Student.toJson(user.uid, user.email))
+    .set(Student.toJson(user.uid, profile))
     .then(() => dispatch(fetchUser(user.uid)));
 };
 
@@ -50,13 +51,15 @@ const fetchUser = (userId: string) => async dispatch => {
 
 export const signUpUser = (
   email: string,
-  password: string
+  password: string,
+  profile
 ) => async dispatch => {
   firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
     .then(user => {
-      dispatch(createUser(user.user));
+      console.log(user);
+      dispatch(createUser(user.user, profile));
       dispatch(signInUser(email, password));
     })
     .catch(error => {

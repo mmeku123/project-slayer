@@ -8,7 +8,8 @@ class Student implements User {
   nickname: string;
   email: string;
   phone: string;
-  job: String;
+  job: string;
+  img: string;
 
   constructor(
     _id: string,
@@ -17,7 +18,8 @@ class Student implements User {
     nickname: string,
     email: string,
     phone: string,
-    job: string
+    job: string,
+    img: string
   ) {
     this._id = _id;
     this.id = id;
@@ -26,17 +28,18 @@ class Student implements User {
     this.phone = phone;
     this.job = job;
     this.nickname = nickname;
+    this.img = img;
   }
 
-  static toJson(_id, email) {
+  static toJson(_id, data) {
     return {
       _id,
-      email,
-      id: '',
-      name: '',
-      nickname: '',
-      phone: '',
-      job: ''
+      email: data.email,
+      id: data.id,
+      name: data.name,
+      phone: data.phone,
+      job: data.job,
+      img: data.img
     };
   }
 
@@ -48,7 +51,8 @@ class Student implements User {
       data.nickname,
       data.email,
       data.phone,
-      data.job
+      data.job,
+      data.img
     );
 
     return newStudent;

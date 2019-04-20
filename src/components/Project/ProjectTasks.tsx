@@ -456,6 +456,9 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               <Title level={3}>{task.name}</Title>
             </div>
             <div>
+              <Text strong>owner :</Text> {task.owner}{' '}
+            </div>
+            <div>
               {' '}
               <Text strong>detail :</Text> {task.detail}{' '}
             </div>

@@ -24,7 +24,7 @@ class Task {
     this.detail = detail;
     this.isDone = false;
     this.priority = 'NORMAL';
-    this.owner = localStorage.getItem('auth_id');
+    this.owner = localStorage.getItem('auth_email');
     // ! FIXME !!!!
     this.startDate = moment().format('L');
     this.dueDate = moment().format('L');
@@ -36,7 +36,7 @@ class Task {
       name: task.name,
       projectId,
       detail: task.detail,
-      owner: localStorage.getItem('auth_id'),
+      owner: localStorage.getItem('auth_email'),
       isDone: task.isDone,
       comments: task.comments,
       startDate: task.startDate || moment().format('MM/DD/YYYY'),
