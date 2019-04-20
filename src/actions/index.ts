@@ -41,4 +41,4 @@ export {
   fetchSubject,
   updateSubjectImage
 } from './subject';
-export { addTask, editTask, fetchTasks } from './task';
+export { addTask, editTask, fetchTasks, voteTask } from './task';

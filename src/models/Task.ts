@@ -14,6 +14,10 @@ class Task {
 
   isDone: boolean;
   comments: Comment[] = [];
+  vote: { votedYes: string[]; votedNo: string[] } = {
+    votedYes: [],
+    votedNo: []
+  };
 
   startDate: string;
   dueDate: string;
@@ -25,7 +29,6 @@ class Task {
     this.isDone = false;
     this.priority = 'NORMAL';
     this.owner = localStorage.getItem('auth_email');
-    // ! FIXME !!!!
     this.startDate = moment().format('L');
     this.dueDate = moment().format('L');
   }
@@ -40,7 +43,11 @@ class Task {
       isDone: task.isDone,
       comments: task.comments || [],
       startDate: task.startDate || moment().format('MM/DD/YYYY'),
-      dueDate: task.dueDate || moment().format('MM/DD/YYYY')
+      dueDate: task.dueDate || moment().format('MM/DD/YYYY'),
+      vote: task.vote || {
+        votedYes: [],
+        votedNo: []
+      }
     };
   }
 
@@ -54,6 +61,7 @@ class Task {
     newTask.comments = data.comments;
     newTask.startDate = data.startDate;
     newTask.dueDate = data.dueDate;
+    newTask.vote = data.vote;
     return newTask;
   }
 }

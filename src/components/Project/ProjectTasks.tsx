@@ -3,9 +3,10 @@ import Project from '../../models/Project';
 import { Comment } from '../../models';
 import Task from '../../models/Task';
 import { connect } from 'react-redux';
-import { editTask, addTask } from '../../actions';
+import { editTask, addTask, voteTask } from '../../actions';
 import { bindActionCreators } from 'redux';
 import EditType from '../../constant/editType';
+
 import {
   Input,
   Radio,
@@ -21,6 +22,7 @@ import {
 import Title from 'antd/lib/typography/Title';
 import moment from 'moment';
 import Text from 'antd/lib/typography/Text';
+import { string } from 'prop-types';
 
 const Option = Select.Option;
 const dateFormat = 'MM/DD/YYYY';
@@ -29,6 +31,7 @@ interface IProjectTasksProps {
   focusProject: Project;
   addTask: (projectId: string, taskDetail) => void;
   editTask: (projectId: string, taskId: string, editData) => void;
+  voteTask: (projectId: string, taskId: string, voteStatus: string) => void;
 }
 
 interface IProjectTasksStates {
@@ -205,6 +208,10 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
       ...state,
       newTask: { ...state.newTask, dueDate: dateString }
     }));
+  };
+
+  handleVoteTask = (taskId, voteStatus) => {
+    this.props.voteTask(this.props.focusProject._id, taskId, voteStatus);
   };
 
   renderTaskCreate = () => {
@@ -431,6 +438,28 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
   };
 
   renderTaskDetail = (task: Task) => {
+    const userId = localStorage.getItem('auth_id');
+
+    const likeButtonStyle = {
+      lineHeight: '0em',
+      color: '',
+      marginRight: '8px'
+    };
+
+    const dislikeButtonStyle = {
+      lineHeight: '0em',
+      color: '',
+      marginLeft: '8px',
+      marginRight: '8px'
+    };
+
+    console.log(task.vote.votedYes.indexOf(userId));
+    if (task.vote.votedYes.indexOf(userId) >= 0) {
+      likeButtonStyle.color = 'green';
+    } else if (task.vote.votedNo.indexOf(userId) >= 0) {
+      dislikeButtonStyle.color = 'red';
+    }
+
     return (
       <Col key={task._id} style={{ margin: '12px' }} md={11}>
         <Card
@@ -531,15 +560,43 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
             </ul>
             <br />
 
-            <div style={{ textAlign: 'end' }}>
-              <Button
-                shape="circle"
-                style={{ lineHeight: '0em' }}
-                onClick={() => this.showEditDialog(task)}
-              >
-                <Icon type="setting" />
-              </Button>
-            </div>
+            <Row type="flex" justify="space-between">
+              <Col>
+                <div style={{ textAlign: 'start' }}>
+                  <span>
+                    <Button
+                      shape="circle"
+                      style={likeButtonStyle}
+                      onClick={() => this.handleVoteTask(task._id, 'YES')}
+                    >
+                      <Icon type="like" />
+                    </Button>
+                    {task.vote.votedYes.length}
+                  </span>
+                  <span>
+                    <Button
+                      shape="circle"
+                      style={dislikeButtonStyle}
+                      onClick={() => this.handleVoteTask(task._id, 'NO')}
+                    >
+                      <Icon type="dislike" />
+                    </Button>
+                    {task.vote.votedNo.length}
+                  </span>
+                </div>
+              </Col>
+              <Col>
+                <div style={{ textAlign: 'end' }}>
+                  <Button
+                    shape="circle"
+                    style={{ lineHeight: '0em' }}
+                    onClick={() => this.showEditDialog(task)}
+                  >
+                    <Icon type="setting" />
+                  </Button>
+                </div>
+              </Col>
+            </Row>
           </div>
         </Card>
       </Col>
@@ -584,7 +641,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ editTask, addTask }, dispatch);
+  return bindActionCreators({ editTask, addTask, voteTask }, dispatch);
 };
 
 export default connect(

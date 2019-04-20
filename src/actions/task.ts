@@ -30,6 +30,31 @@ export const fetchTasks = (projectId: string) => async dispatch => {
     });
 };
 
+export const voteTask = (
+  projectId: string,
+  taskId: string,
+  voteStatus
+) => async dispatch => {
+  const userId = localStorage.getItem('auth_id');
+
+  tasks
+    .doc(taskId)
+    .get()
+    .then(doc => {
+      const voted: { votedYes: string[]; votedNo: string[] } = doc.data().vote;
+      voted.votedNo = voted.votedNo.filter(vote => vote != userId);
+      voted.votedYes = voted.votedYes.filter(vote => vote != userId);
+      if (voteStatus == 'YES') voted.votedYes.push(userId);
+      else voted.votedNo.push(userId);
+      tasks
+        .doc(taskId)
+        .update({ vote: { votedYes: voted.votedYes, votedNo: voted.votedNo } })
+        .then(() => {
+          dispatch(fetchTasks(projectId));
+        });
+    });
+};
+
 export const editTask = (
   projectId: string,
   taskId: string,
