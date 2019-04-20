@@ -75,11 +75,20 @@ class ProjectSprint {
   detail: string;
   dueDate: string;
 
-  constructor(id: string, name: string, detail: string, dueDate: string) {
+  img: string;
+
+  constructor(
+    id: string,
+    name: string,
+    detail: string,
+    dueDate: string,
+    img: string
+  ) {
     this._id = id;
     this.name = name;
     this.detail = detail;
     this.dueDate = dueDate;
+    this.img = img;
   }
 
   static toJson(sprint: ProjectSprint) {
@@ -87,7 +96,8 @@ class ProjectSprint {
       _id: sprint._id,
       name: sprint.name,
       detail: sprint.detail,
-      dueDate: sprint.dueDate
+      dueDate: sprint.dueDate,
+      img: sprint.img
     };
   }
 }
@@ -117,7 +127,8 @@ class ProjectSchedule {
         sprint._id,
         sprint.name,
         sprint.detail,
-        sprint.dueDate
+        sprint.dueDate,
+        sprint.img
       );
     });
   }

@@ -100,7 +100,8 @@ export default function projects(state = initialState, action) {
                 sprint._id,
                 sprint.name,
                 sprint.detail,
-                sprint.dueDate
+                sprint.dueDate,
+                sprint.img
               );
             }
           );

@@ -101,7 +101,8 @@ export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
                 sprint._id,
                 sprint.name,
                 sprint.detail,
-                sprint.dueDate
+                sprint.dueDate,
+                sprint.img
               );
             }
           );
@@ -166,7 +167,7 @@ export const addSprint = (
 ) => async dispatch => {
   dispatch({ type: LOAD_PROJECT });
 
-  const { name, detail, dueDate } = sprintDetail;
+  const { name, detail, dueDate, img } = sprintDetail;
 
   console.log(sprintDetail);
 
@@ -186,7 +187,7 @@ export const addSprint = (
             ...projectSchedule,
             sprints: [
               ...projectSprints,
-              { _id: sprintId, name, detail, dueDate: dueDate }
+              { _id: sprintId, name, detail, dueDate, img }
             ]
           }
         })

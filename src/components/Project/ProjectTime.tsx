@@ -21,6 +21,9 @@ import moment from 'moment';
 import Meta from 'antd/lib/card/Meta';
 import Text from 'antd/lib/typography/Text';
 
+import MonsterAvatars from '../../images/monster';
+import SwordAvartar from '../../images/projects/sword.svg';
+
 const dateFormat = 'MM/DD/YYYY';
 const nowMoment = () => moment().format(dateFormat);
 
@@ -33,7 +36,7 @@ interface IProjectTimeProps {
 
 interface IProjectTimeStates {
   isAddingSprint: boolean;
-  newSprint: { name: string; detail: string; dueDate: string };
+  newSprint: { name: string; detail: string; dueDate: string; img: string };
 }
 
 class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
@@ -41,7 +44,12 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
     super(props);
     this.state = {
       isAddingSprint: false,
-      newSprint: { name: '', detail: '', dueDate: nowMoment() }
+      newSprint: {
+        name: '',
+        detail: '',
+        dueDate: nowMoment(),
+        img: MonsterAvatars[0]
+      }
     };
   }
 
@@ -74,6 +82,7 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
     this.setState(state => ({
       ...state,
       newSprint: {
+        ...state.newSprint,
         name,
         detail,
         dueDate
@@ -84,16 +93,22 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
   };
 
   handleCreateSprint = () => {
-    const { name, detail, dueDate } = this.state.newSprint;
+    const { name, detail, dueDate, img } = this.state.newSprint;
     this.props.addSprint(this.props.projectId, EditType.TIMELINE, {
       name,
       detail,
-      dueDate
+      dueDate,
+      img
     });
 
     this.setState(state => ({
       ...state,
-      newSprint: { name: '', detail: '', dueDate: nowMoment() },
+      newSprint: {
+        name: '',
+        detail: '',
+        dueDate: nowMoment(),
+        img: MonsterAvatars[0]
+      },
       isAddingSprint: false
     }));
   };
@@ -101,7 +116,12 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
   handleCancelCreateSprint = () => {
     this.setState(state => ({
       ...state,
-      newSprint: { name: '', detail: '', dueDate: nowMoment() },
+      newSprint: {
+        name: '',
+        detail: '',
+        dueDate: nowMoment(),
+        img: MonsterAvatars[0]
+      },
       isAddingSprint: false
     }));
   };
@@ -113,6 +133,13 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
     }));
   };
 
+  handleChangeMonsterAvatar = imgPath => {
+    this.setState(state => ({
+      ...state,
+      newSprint: { ...state.newSprint, img: imgPath }
+    }));
+  };
+
   renderAddingSprintCard = () => {
     return this.state.isAddingSprint ? (
       <Card
@@ -121,6 +148,19 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
         title="New Sprint"
       >
         <div>
+          <div>
+            {MonsterAvatars.map(image => {
+              return (
+                <Button
+                  style={{ width: '100px', height: '100px' }}
+                  onClick={() => this.handleChangeMonsterAvatar(image)}
+                >
+                  <img width="60px" height="60px" alt={image} src={image} />
+                </Button>
+              );
+            })}
+          </div>
+
           <Input
             placeholder="Sprint Name"
             type="text"
@@ -163,7 +203,17 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
           style={{ borderRadius: '12px', textAlign: 'center' }}
           hoverable
           cover={
-            <Avatar style={{ minHeight: '100px' }} shape="square" icon="user" />
+            <Avatar
+              style={{
+                minHeight: '100px',
+                maxWidth: '100px',
+                margin: 'auto',
+                marginTop: '12px'
+              }}
+              shape="square"
+              icon="user"
+              src={SwordAvartar}
+            />
           }
         >
           <div>
@@ -201,9 +251,15 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
               hoverable
               cover={
                 <Avatar
-                  style={{ minHeight: '100px' }}
+                  style={{
+                    minHeight: '100px',
+                    maxWidth: '100px',
+                    margin: 'auto',
+                    marginTop: '12px'
+                  }}
                   shape="square"
                   icon="user"
+                  src={sprint.img}
                 />
               }
             >
