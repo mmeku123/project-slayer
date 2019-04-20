@@ -1,5 +1,6 @@
 import { Project } from './Project';
 import Comment from './Comment';
+import moment from 'moment';
 
 class Task {
   _id: string;
@@ -13,9 +14,13 @@ class Task {
 
   isDone: boolean;
   comments: Comment[] = [];
+  vote: { votedYes: string[]; votedNo: string[] } = {
+    votedYes: [],
+    votedNo: []
+  };
 
-  startDate?: Date;
-  dueDate?: Date;
+  startDate: string;
+  dueDate: string;
 
   constructor(name: string, detail: string, projectId: string) {
     this.projectId = projectId;
@@ -23,9 +28,9 @@ class Task {
     this.detail = detail;
     this.isDone = false;
     this.priority = 'NORMAL';
-    this.owner = localStorage.getItem('auth_id');
-    this.startDate = new Date();
-    this.dueDate = new Date();
+    this.owner = localStorage.getItem('auth_email');
+    this.startDate = moment().format('L');
+    this.dueDate = moment().format('L');
   }
 
   static toJson(projectId, task) {
@@ -34,11 +39,15 @@ class Task {
       name: task.name,
       projectId,
       detail: task.detail,
-      owner: localStorage.getItem('auth_id'),
+      owner: localStorage.getItem('auth_email'),
       isDone: task.isDone,
-      comments: [],
-      startDate: new Date(task.startDate),
-      dueDate: new Date(task.dueDate)
+      comments: task.comments || [],
+      startDate: task.startDate || moment().format('MM/DD/YYYY'),
+      dueDate: task.dueDate || moment().format('MM/DD/YYYY'),
+      vote: task.vote || {
+        votedYes: [],
+        votedNo: []
+      }
     };
   }
 
@@ -52,6 +61,7 @@ class Task {
     newTask.comments = data.comments;
     newTask.startDate = data.startDate;
     newTask.dueDate = data.dueDate;
+    newTask.vote = data.vote;
     return newTask;
   }
 }

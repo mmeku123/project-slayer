@@ -5,7 +5,8 @@ import { Card, Icon } from 'antd';
 
 const { Meta } = Card;
 
-import projectAvatar from '../../images/projects/432386.svg';
+import subjectAvatar from '../../images/subjects/math.svg';
+import SubjectIcon from '../../images/subject';
 
 class SubjectCard extends Component<{ subject?: Subject }> {
   constructor(props) {
@@ -14,7 +15,9 @@ class SubjectCard extends Component<{ subject?: Subject }> {
   }
   render() {
     if (this.props.subject) {
-      const { name, owner } = this.props.subject;
+      const { id, name, detail, img } = this.props.subject;
+
+      const subjectIcon = img || SubjectIcon[0];
 
       return (
         <div>
@@ -22,14 +25,25 @@ class SubjectCard extends Component<{ subject?: Subject }> {
             hoverable
             bodyStyle={{ padding: '12px', margin: '5px' }}
             style={{ borderRadius: '10px', paddingTop: '10px' }}
-            cover={<img height="70" alt="exampleSubject" src={projectAvatar} />}
+            cover={<img height="50" alt="exampleSubject" src={subjectIcon} />}
           >
             <Meta
               style={{
                 textAlign: 'center'
               }}
               title={name}
-              description={owner || 'subject detail'}
+              description={
+                <span>
+                  <div>
+                    <strong>ID: </strong>
+                    {id || 'No id'}
+                  </div>
+                  <div>
+                    <strong>Detail: </strong>
+                    {detail || 'No detail'}
+                  </div>
+                </span>
+              }
             />
           </Card>
         </div>

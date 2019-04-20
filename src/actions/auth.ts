@@ -1,68 +1,40 @@
 import {
-  ADD_PROJECT,
-  ADD_SUBJECT_SUCCESS,
-  ADD_PROJECT_SUBJECT,
-  UPDATE_PROJECT,
-  FETCH_PROJECTS,
-  LOAD_SUBJECT,
-  CHANGE_SUBJECT,
-  CHANGE_PROJECT_SUBJECT,
-  CHANGE_PROJECT,
-  EDIT_PROJECT,
-  FETCH_SUBJECT,
-  ADD_PROJECT_SUCCESS,
-  EDIT_PROJECT_SUCCESS,
-  ADD_STUDENT,
-  CREATE_STUDENT,
   AUTH_USER,
   ADD_PROJECT_MEMBER,
-  FETCH_PROJECT_MEMBERS,
-  TOGGLE_SHOW_PROJECT,
-  FETCH_TASKS,
-  ADD_TASK,
-  EDIT_TASK,
   LOG_OUT_USER,
   FETCH_USER
 } from './types';
 
-import Project, { ProjectSprint, ProjectSchedule } from '../models/Project';
-
-import axios from 'axios';
 import firebase from '../firebase';
-import { Subject, Student, Task, Comment } from '../models';
-import EditType from '../constant/editType';
+import { Student } from '../models';
 
 const db = firebase.firestore();
-const projects = db.collection('projects');
-const subjects = db.collection('subjects');
 const users = db.collection('users');
-const tasks = db.collection('tasks');
-
-const authId = localStorage.getItem('auth_id');
-
-export const authStudent = () => async dispatch => {
-  const studentId = '2dEeCuhsAft4cRkFa5px';
-
-  localStorage.setItem('auth_id', studentId);
-
-  return dispatch({ type: AUTH_USER });
-};
 
 export const addStudent = studentId => {
   users
     .doc(studentId)
     .get()
     .then(doc => {
-      const { id, name, nickname, email, phone, job } = doc.data();
-      const member = new Student(doc.id, id, name, nickname, email, phone, job);
+      const { id, name, nickname, email, phone, job, img } = doc.data();
+      const member = new Student(
+        doc.id,
+        id,
+        name,
+        nickname,
+        email,
+        phone,
+        job,
+        img
+      );
       return { type: ADD_PROJECT_MEMBER, payload: member };
     });
 };
 
-const createUser = (user: firebase.User) => async dispatch => {
+const createUser = (user: firebase.User, profile) => async dispatch => {
   users
     .doc(user.uid)
-    .set(Student.toJson(user.uid, user.email))
+    .set(Student.toJson(user.uid, profile))
     .then(() => dispatch(fetchUser(user.uid)));
 };
 
@@ -86,13 +58,10 @@ export const signUpUser = (
     .auth()
     .createUserWithEmailAndPassword(email, password)
     .then(user => {
-      dispatch(createUser(user.user));
+      dispatch(createUser(user.user, profile));
       dispatch(signInUser(email, password));
     })
     .catch(error => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-
       console.log(error.code, error.message);
     });
 };
@@ -134,9 +103,6 @@ export const logOutUser = () => async dispatch => {
   localStorage.removeItem('auth_id');
   localStorage.removeItem('auth_email');
   localStorage.removeItem('auth_password');
-
-  console.log('logout');
-
   firebase
     .auth()
     .signOut()

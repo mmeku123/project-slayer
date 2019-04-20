@@ -1,10 +1,12 @@
 import Teacher from './User/Teacher';
+import SubjectIcon from '../images/subject';
 
 class Subject {
   _id: string;
   id: string;
   name: string;
-  owner?: Teacher;
+  detail: string;
+  img: string;
 
   studentIds: string[] = [];
 
@@ -15,22 +17,23 @@ class Subject {
     this.name = name;
   }
 
-  static fromMap(id, map): Subject {
-    const newSubject = new Subject(id, map.name);
-    newSubject.id = map.id;
-    newSubject.projectIds = map.projectIds;
-    newSubject.studentIds = map.studentIds;
-    newSubject.owner = map.owner;
+  static fromMap(id, data): Subject {
+    const newSubject = new Subject(id, data.name);
+    newSubject.id = data.id;
+    newSubject.projectIds = data.projectIds;
+    newSubject.studentIds = data.studentIds;
+    newSubject.detail = data.detail;
+    newSubject.img = data.img;
     return newSubject;
   }
 
-  static toJson(name, studentId?) {
+  static toJson(name, studentId, subject) {
     const studentIdList = studentId ? [studentId] : [];
 
     return {
       name,
-      id: '',
-      owner: '',
+      id: subject.id,
+      detail: subject.detail,
       studentIds: studentIdList,
       projectIds: []
     };

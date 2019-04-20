@@ -1,44 +1,28 @@
 import {
-  ADD_PROJECT,
-  ADD_SUBJECT_SUCCESS,
-  ADD_PROJECT_SUBJECT,
-  UPDATE_PROJECT,
-  FETCH_PROJECTS,
   LOAD_SUBJECT,
   CHANGE_SUBJECT,
-  CHANGE_PROJECT_SUBJECT,
-  CHANGE_PROJECT,
-  EDIT_PROJECT,
   FETCH_SUBJECT,
-  ADD_PROJECT_SUCCESS,
-  EDIT_PROJECT_SUCCESS,
-  ADD_STUDENT,
-  CREATE_STUDENT,
-  AUTH_USER,
-  ADD_PROJECT_MEMBER,
-  FETCH_PROJECT_MEMBERS,
-  TOGGLE_SHOW_PROJECT,
-  FETCH_TASKS,
-  ADD_TASK,
-  EDIT_TASK,
-  LOG_OUT_USER,
-  FETCH_USER
+  TOGGLE_SHOW_PROJECT
 } from './types';
 
-import Project, { ProjectSprint, ProjectSchedule } from '../models/Project';
-
-import axios from 'axios';
 import firebase from '../firebase';
-import { Subject, Student, Task, Comment } from '../models';
-import EditType from '../constant/editType';
+import { Subject } from '../models';
 
 const db = firebase.firestore();
-const projects = db.collection('projects');
 const subjects = db.collection('subjects');
 const users = db.collection('users');
-const tasks = db.collection('tasks');
 
 const authId = localStorage.getItem('auth_id');
+
+export const updateSubjectImage = (
+  subject: Subject,
+  imagePath: string
+) => async dispatch => {
+  subjects
+    .doc(subject._id)
+    .update({ img: imagePath })
+    .then(() => dispatch(fetchSubject()));
+};
 
 export const fetchSubject = () => async dispatch => {
   const req = await subjects.get();
@@ -59,12 +43,14 @@ export const fetchSubject = () => async dispatch => {
   return dispatch({ type: FETCH_SUBJECT, payload: userSubjects });
 };
 
-export const createSubject = subjectName => async dispatch => {
+export const createSubject = subject => async dispatch => {
   dispatch({ type: LOAD_SUBJECT });
 
-  const req = subjects.add(Subject.toJson(subjectName, authId)).then(ref => {
-    return dispatch(fetchSubject());
-  });
+  const req = subjects
+    .add(Subject.toJson(subject.name, authId, subject))
+    .then(ref => {
+      return dispatch(fetchSubject());
+    });
 };
 
 export const changeSubject = subjectId => async dispatch => {

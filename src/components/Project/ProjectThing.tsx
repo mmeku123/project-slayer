@@ -48,6 +48,18 @@ class ProjectThing extends Component<IProjectThingProps, IProjectThingStates> {
     };
   }
 
+  updateDimensions = () => {
+    this.setState({});
+  };
+
+  componentDidMount() {
+    window.addEventListener('resize', this.updateDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
+  }
+
   changeShowType = type => {
     let showType: ShowType = ShowType.DETAIL;
 

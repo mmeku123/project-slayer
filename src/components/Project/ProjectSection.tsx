@@ -33,7 +33,7 @@ class ProjectCardList extends Component<{
     return this.props.projects.map(project => {
       if (project)
         return (
-          <Col lg={8} md={10} sm={12} xs={24}>
+          <Col lg={8} md={10} sm={12} xs={24} key={'col' + project._id}>
             <div
               style={{ padding: '10px' }}
               onClick={() => this.handleChangeProject(project)}
@@ -60,7 +60,6 @@ class ProjectSection extends Component<
   };
 
   showNewProjectInput = () => {
-    console.log('click');
     this.setState({ isAddNewProject: true });
   };
 
@@ -74,7 +73,6 @@ class ProjectSection extends Component<
   };
 
   renderInputNewProject = () => {
-    console.log(this.state.isAddNewProject);
     return this.state.isAddNewProject ? (
       <Col lg={8} md={10} sm={12} xs={24}>
         <div>

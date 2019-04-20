@@ -1,47 +1,14 @@
-import {
-  ADD_PROJECT,
-  ADD_SUBJECT_SUCCESS,
-  ADD_PROJECT_SUBJECT,
-  UPDATE_PROJECT,
-  FETCH_PROJECTS,
-  LOAD_SUBJECT,
-  CHANGE_SUBJECT,
-  CHANGE_PROJECT_SUBJECT,
-  CHANGE_PROJECT,
-  EDIT_PROJECT,
-  FETCH_SUBJECT,
-  ADD_PROJECT_SUCCESS,
-  EDIT_PROJECT_SUCCESS,
-  ADD_STUDENT,
-  CREATE_STUDENT,
-  AUTH_USER,
-  ADD_PROJECT_MEMBER,
-  FETCH_PROJECT_MEMBERS,
-  TOGGLE_SHOW_PROJECT,
-  FETCH_TASKS,
-  ADD_TASK,
-  EDIT_TASK,
-  LOG_OUT_USER,
-  FETCH_USER
-} from './types';
+import { FETCH_TASKS } from './types';
 
-import Project, { ProjectSprint, ProjectSchedule } from '../models/Project';
-
-import axios from 'axios';
 import firebase from '../firebase';
-import { Subject, Student, Task, Comment } from '../models';
-import EditType from '../constant/editType';
+import { Task, Comment } from '../models';
+import moment from 'moment';
 
 const db = firebase.firestore();
-const projects = db.collection('projects');
-const subjects = db.collection('subjects');
-const users = db.collection('users');
 const tasks = db.collection('tasks');
 
-const authId = localStorage.getItem('auth_id');
-
 export const addTask = (projectId: string, newTask: Task) => async dispatch => {
-  tasks.add(Task.toJson(projectId, newTask)).then(ref => {
+  tasks.add(Task.toJson(projectId, newTask)).then(() => {
     return dispatch(fetchTasks(projectId));
   });
 };
@@ -63,6 +30,31 @@ export const fetchTasks = (projectId: string) => async dispatch => {
     });
 };
 
+export const voteTask = (
+  projectId: string,
+  taskId: string,
+  voteStatus
+) => async dispatch => {
+  const userId = localStorage.getItem('auth_id');
+
+  tasks
+    .doc(taskId)
+    .get()
+    .then(doc => {
+      const voted: { votedYes: string[]; votedNo: string[] } = doc.data().vote;
+      voted.votedNo = voted.votedNo.filter(vote => vote != userId);
+      voted.votedYes = voted.votedYes.filter(vote => vote != userId);
+      if (voteStatus == 'YES') voted.votedYes.push(userId);
+      else voted.votedNo.push(userId);
+      tasks
+        .doc(taskId)
+        .update({ vote: { votedYes: voted.votedYes, votedNo: voted.votedNo } })
+        .then(() => {
+          dispatch(fetchTasks(projectId));
+        });
+    });
+};
+
 export const editTask = (
   projectId: string,
   taskId: string,
@@ -70,10 +62,17 @@ export const editTask = (
 ) => async dispatch => {
   switch (editData.type) {
     case 'detail':
-      const { name, isDone, detail, priority } = editData.editDetail;
+      const {
+        name,
+        isDone,
+        detail,
+        priority,
+        startDate,
+        dueDate
+      } = editData.editDetail;
       tasks
         .doc(taskId)
-        .update({ name, isDone, detail, priority })
+        .update({ name, isDone, detail, priority, startDate, dueDate })
         .then(() => {
           return dispatch(fetchTasks(projectId));
         });
@@ -85,7 +84,9 @@ export const editTask = (
         .get()
         .then(doc => {
           const existedComments = doc.data().comments;
-          const commentId = doc.data().comments.length++;
+          const commentLength = doc.data().comments.length;
+          const commentId = commentLength == 0 ? 0 : commentLength;
+
           tasks
             .doc(taskId)
             .update({
@@ -94,7 +95,8 @@ export const editTask = (
                 Comment.toJson(
                   commentId.toString(),
                   localStorage.getItem('auth_id'),
-                  new Date(),
+                  localStorage.getItem('auth_email'),
+                  moment().format('MM/DD/YYYY'),
                   newComment
                 )
               ]
@@ -103,6 +105,7 @@ export const editTask = (
               return dispatch(fetchTasks(projectId));
             });
         });
+      break;
     case 'delete_comment':
       const { commentId } = editData;
       tasks

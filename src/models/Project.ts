@@ -1,6 +1,9 @@
 import Task from './Task';
 import Comment from './Comment';
 import Student from './User/Student';
+import moment from 'moment';
+import projects from '../reducers/projects';
+import ProjectIcon from '../images/project';
 
 class Project {
   _id: string;
@@ -10,6 +13,8 @@ class Project {
   tasks: Task[] = [];
   studentIds: string[] = [];
   commentIds: string[] = [];
+
+  img: string;
 
   progress?: ProjectProgress;
   schedule?: ProjectSchedule;
@@ -27,11 +32,12 @@ class Project {
     newProject.commentIds = data.commentIds;
     newProject.progress = data.progress;
     newProject.schedule = data.schedule;
+    newProject.img = data.img;
 
     return newProject;
   }
 
-  static toJson(name, studentId?) {
+  static toJson(name, studentId) {
     const studentIdList = studentId ? [studentId] : [];
 
     return {
@@ -67,13 +73,22 @@ class ProjectSprint {
   _id: string;
   name: string;
   detail: string;
-  dueDate: Date;
+  dueDate: string;
 
-  constructor(id: string, name: string, detail: string, dueDate: Date) {
+  img: string;
+
+  constructor(
+    id: string,
+    name: string,
+    detail: string,
+    dueDate: string,
+    img: string
+  ) {
     this._id = id;
     this.name = name;
     this.detail = detail;
     this.dueDate = dueDate;
+    this.img = img;
   }
 
   static toJson(sprint: ProjectSprint) {
@@ -81,18 +96,19 @@ class ProjectSprint {
       _id: sprint._id,
       name: sprint.name,
       detail: sprint.detail,
-      dueDate: sprint.dueDate
+      dueDate: sprint.dueDate,
+      img: sprint.img
     };
   }
 }
 
 class ProjectSchedule {
   _id: string;
-  startDate: Date;
+  startDate: string;
 
   sprints: ProjectSprint[] = [];
 
-  constructor(_id?: string, startDate: Date = new Date()) {
+  constructor(_id?: string, startDate: string = moment().format('L')) {
     if (_id) this._id = _id;
     this.startDate = startDate;
   }
@@ -111,7 +127,8 @@ class ProjectSchedule {
         sprint._id,
         sprint.name,
         sprint.detail,
-        sprint.dueDate
+        sprint.dueDate,
+        sprint.img
       );
     });
   }

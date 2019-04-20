@@ -2,27 +2,62 @@ import React, { Component } from 'react';
 
 import { Form, Icon, Input, Button, Checkbox, Row, Col } from 'antd';
 
-class SignUpForm extends Component<{
-  form;
-  onSubmit: (username, password, profile) => void;
-}> {
+import CharacterAvatars from '../../images/avatar';
+import { Link } from 'react-router-dom';
+
+class SignUpForm extends Component<
+  {
+    form;
+    onSubmit: (username, password, profile) => void;
+  },
+  { profileImg: string }
+> {
+  constructor(props) {
+    super(props);
+    this.state = { profileImg: CharacterAvatars[0] };
+  }
+
+  handleChangeAvatar = imgPath => {
+    this.setState({ profileImg: imgPath });
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.props.onSubmit(values.userName, values.password, {
-          // TODO: implement user profile
+          email: values.userName,
+          id: values.studentId,
+          name: values.nickname,
+          phone: values.phone,
+          job: values.job,
+          img: this.state.profileImg
         });
-        console.log('Received values of form: ', values);
       }
     });
   };
 
   render() {
     const { getFieldDecorator } = this.props.form;
+
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 }
+      }
+    };
+
     return (
-      <Form onSubmit={this.handleSubmit} className="login-form">
-        <Form.Item>
+      <Form
+        {...formItemLayout}
+        onSubmit={this.handleSubmit}
+        className="login-form"
+      >
+        <Form.Item label="Email">
           {getFieldDecorator('userName', {
             rules: [
               {
@@ -37,11 +72,11 @@ class SignUpForm extends Component<{
           })(
             <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="Email"
+              placeholder="fameza@123.com"
             />
           )}
         </Form.Item>
-        <Form.Item>
+        <Form.Item label="Password">
           {getFieldDecorator('password', {
             rules: [
               { required: true, message: 'Please input your Password!' },
@@ -55,35 +90,92 @@ class SignUpForm extends Component<{
             />
           )}
         </Form.Item>
-
-        <Form.Item>
-          <Row>
-            <Col span={6}>
-              <a href="/">
+        <Form.Item label="Student ID">
+          {getFieldDecorator('studentId', {
+            rules: [
+              {
+                required: true,
+                message: 'Please input your student ID!'
+              }
+            ]
+          })(
+            <Input
+              prefix={
+                <Icon type="idcard" style={{ color: 'rgba(0,0,0,.25)' }} />
+              }
+              placeholder="590612345"
+            />
+          )}
+        </Form.Item>
+        <Form.Item label="Nickname">
+          {getFieldDecorator('nickname')(
+            <Input
+              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="Fameoki"
+            />
+          )}
+        </Form.Item>
+        <Form.Item label="Phone Number">
+          {getFieldDecorator('phone')(
+            <Input
+              prefix={
+                <Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />
+              }
+              placeholder="0812345678"
+            />
+          )}
+        </Form.Item>
+        <Form.Item label="Project Role">
+          {getFieldDecorator('job')(
+            <Input
+              prefix={
+                <Icon type="global" style={{ color: 'rgba(0,0,0,.25)' }} />
+              }
+              placeholder="Developer, Product Owner"
+            />
+          )}
+        </Form.Item>
+        <Form.Item label="Avatar">
+          <div>
+            {CharacterAvatars.map(image => {
+              return (
                 <Button
-                  style={{ width: '100%' }}
-                  type="default"
-                  className="login-form-button"
+                  key={image}
+                  style={{ width: '90px', height: '90px', margin: '4px' }}
+                  onClick={() => this.handleChangeAvatar(image)}
                 >
-                  Cancel
+                  <img width="100%" height="100%" alt={image} src={image} />
                 </Button>
-              </a>
-            </Col>
-            <Col span={16} offset={2}>
+              );
+            })}
+          </div>
+        </Form.Item>
+        <Row>
+          <Col span={6}>
+            <a href="/">
               <Button
                 style={{ width: '100%' }}
-                type="primary"
-                htmlType="submit"
+                type="default"
                 className="login-form-button"
               >
-                Sign Up
+                Cancel
               </Button>
-            </Col>
-          </Row>
-          <Row>
-            Or <a href="/signin">Already have an account? </a>
-          </Row>
-        </Form.Item>
+            </a>
+          </Col>
+          <Col span={16} offset={2}>
+            <Button
+              style={{ width: '100%' }}
+              type="primary"
+              htmlType="submit"
+              className="login-form-button"
+            >
+              Sign Up
+            </Button>
+          </Col>
+        </Row>
+        <Row style={{ margin: '12px' }}>
+          Or <Link to="/signin">Already have an account? </Link>
+        </Row>
       </Form>
     );
   }

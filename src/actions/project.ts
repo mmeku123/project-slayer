@@ -1,50 +1,53 @@
 import {
-  ADD_PROJECT,
-  ADD_SUBJECT_SUCCESS,
+  LOAD_PROJECT,
   ADD_PROJECT_SUBJECT,
   UPDATE_PROJECT,
   FETCH_PROJECTS,
-  LOAD_SUBJECT,
-  CHANGE_SUBJECT,
-  CHANGE_PROJECT_SUBJECT,
   CHANGE_PROJECT,
   EDIT_PROJECT,
-  FETCH_SUBJECT,
   ADD_PROJECT_SUCCESS,
-  EDIT_PROJECT_SUCCESS,
-  ADD_STUDENT,
-  CREATE_STUDENT,
-  AUTH_USER,
-  ADD_PROJECT_MEMBER,
   FETCH_PROJECT_MEMBERS,
-  TOGGLE_SHOW_PROJECT,
-  FETCH_TASKS,
-  ADD_TASK,
-  EDIT_TASK,
-  LOG_OUT_USER,
-  FETCH_USER
+  TOGGLE_SHOW_PROJECT
 } from './types';
 
-import Project, { ProjectSprint, ProjectSchedule } from '../models/Project';
+import Project, { ProjectSprint } from '../models/Project';
 
-import axios from 'axios';
+// import axios from 'axios';
 import firebase from '../firebase';
-import { Subject, Student, Task, Comment } from '../models';
+import { Student } from '../models';
 import EditType from '../constant/editType';
 
 const db = firebase.firestore();
 const projects = db.collection('projects');
 const subjects = db.collection('subjects');
 const users = db.collection('users');
-const tasks = db.collection('tasks');
 
 const authId = localStorage.getItem('auth_id');
+
+export const updateProjectImage = (
+  project: Project,
+  subjectId,
+  imagePath
+) => async dispatch => {
+  projects
+    .doc(project._id)
+    .update({ img: imagePath })
+    .then(() => {
+      subjects
+        .doc(subjectId)
+        .get()
+        .then(doc => {
+          const projects = doc.data().projectIds;
+          dispatch(fetchProjectByIds(projects));
+        });
+    });
+};
 
 export const createProject = (
   projectName: string,
   subjectId: string
 ) => async dispatch => {
-  dispatch({ type: ADD_PROJECT, payload: null });
+  dispatch({ type: LOAD_PROJECT });
 
   const req = await projects.add(Project.toJson(projectName, authId));
 
@@ -59,6 +62,8 @@ export const addProjectToSubject = (
   projectId: string,
   subjectId: string
 ) => async dispatch => {
+  dispatch({ type: LOAD_PROJECT });
+
   const req = await subjects.doc(subjectId);
   const doc = await req.get();
   const projectIds = await doc.data().projectIds;
@@ -71,6 +76,8 @@ export const addProjectToSubject = (
 };
 
 export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
+  dispatch({ type: LOAD_PROJECT });
+
   const userProjects: Project[] = [];
 
   if (projectIds.length == 0) {
@@ -94,7 +101,8 @@ export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
                 sprint._id,
                 sprint.name,
                 sprint.detail,
-                sprint.dueDate
+                sprint.dueDate,
+                sprint.img
               );
             }
           );
@@ -111,6 +119,8 @@ export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
 };
 
 export const updateProject = (projectId: string) => async dispatch => {
+  dispatch({ type: LOAD_PROJECT });
+
   projects
     .doc(projectId)
     .get()
@@ -122,6 +132,8 @@ export const updateProject = (projectId: string) => async dispatch => {
 };
 
 export const changeProject = projectId => async dispatch => {
+  dispatch({ type: LOAD_PROJECT });
+
   dispatch({ type: TOGGLE_SHOW_PROJECT });
   return dispatch({ type: CHANGE_PROJECT, projectId });
 };
@@ -131,9 +143,9 @@ export const editProject = (
   editType: EditType,
   value
 ) => async dispatch => {
-  dispatch({ type: EDIT_PROJECT });
+  dispatch({ type: LOAD_PROJECT });
+
   let editData = {};
-  let editResult = {};
 
   switch (editType) {
     case EditType.DETAIL:
@@ -153,16 +165,19 @@ export const addSprint = (
   editType: EditType,
   sprintDetail
 ) => async dispatch => {
-  dispatch({ type: EDIT_PROJECT });
+  dispatch({ type: LOAD_PROJECT });
 
-  const { _id, name, detail, dueDate } = sprintDetail;
+  const { name, detail, dueDate, img } = sprintDetail;
+
   projects
     .doc(projectId)
     .get()
     .then(doc => {
       const projectSprints = doc.data().schedule.sprints;
       const projectSchedule = doc.data().schedule;
-      const sprintId = doc.data().schedule.sprints.length++;
+      const sprintNo = doc.data().schedule.sprints.length;
+      const sprintId = sprintNo ? projectSprints[sprintNo - 1]._id + 1 : 0;
+
       projects
         .doc(projectId)
         .update({
@@ -170,7 +185,7 @@ export const addSprint = (
             ...projectSchedule,
             sprints: [
               ...projectSprints,
-              { _id: sprintId, name, detail, dueDate }
+              { _id: sprintId, name, detail, dueDate, img }
             ]
           }
         })
@@ -184,6 +199,8 @@ export const deleteSprint = (
   projectId: string,
   sprintId: string
 ) => async dispatch => {
+  dispatch({ type: LOAD_PROJECT });
+
   projects
     .doc(projectId)
     .get()
@@ -213,6 +230,8 @@ export const deleteProject = (
   projectId: string,
   subjectId
 ) => async dispatch => {
+  dispatch({ type: LOAD_PROJECT });
+
   subjects
     .doc(subjectId)
     .get()
@@ -234,6 +253,8 @@ export const deleteProject = (
 };
 
 export const addProjectMember = (projectId, memberEmail) => async dispatch => {
+  dispatch({ type: LOAD_PROJECT });
+
   projects
     .doc(projectId)
     .get()
@@ -270,6 +291,7 @@ export const addProjectMember = (projectId, memberEmail) => async dispatch => {
 
 export const fetchProjectMembers = projectId => async dispatch => {
   const members = [];
+  dispatch({ type: LOAD_PROJECT });
 
   projects
     .doc(projectId)

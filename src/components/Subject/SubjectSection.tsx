@@ -11,12 +11,12 @@ interface ISubjectListProps {
   chooseSubject: Subject;
   isLoading: boolean;
   onChangeSubject: (subject: Subject) => void;
-  onCreateSubject: (subjectName: string) => void;
+  onCreateSubject: (subject: Subject) => void;
 }
 
 interface ISubjectSectionStates {
   isAddNewSubject: boolean;
-  newSubjectName: string;
+  newSubject: Subject;
 }
 
 class SubjectSection extends Component<
@@ -25,32 +25,72 @@ class SubjectSection extends Component<
 > {
   constructor(props: ISubjectListProps) {
     super(props);
-    this.state = { isAddNewSubject: false, newSubjectName: '' };
+    this.state = {
+      isAddNewSubject: false,
+      newSubject: {
+        _id: '',
+        id: '',
+        detail: '',
+        img: '',
+        name: '',
+        projectIds: [],
+        studentIds: []
+      }
+    };
   }
 
   handleChangeSubject = (subject: Subject) => {
-    console.log(subject);
     this.props.onChangeSubject(subject);
   };
 
   showNewSubjectInput = () => {
-    this.setState({ isAddNewSubject: true });
+    this.setState(state => ({ isAddNewSubject: true }));
   };
 
   createNewSubject = () => {
-    this.props.onCreateSubject(this.state.newSubjectName);
-    this.setState({ isAddNewSubject: false });
+    this.props.onCreateSubject(this.state.newSubject);
+    this.setState(state => ({ ...state, isAddNewSubject: false }));
   };
 
   inputChange = event => {
-    this.setState({ newSubjectName: event.target.value });
+    const target = event.target;
+    switch (target.name) {
+      case 'id':
+        this.setState(state => ({
+          ...state,
+          newSubject: { ...state.newSubject, id: target.value }
+        }));
+        break;
+      case 'name':
+        this.setState(state => ({
+          ...state,
+          newSubject: { ...state.newSubject, name: target.value }
+        }));
+        break;
+      case 'detail':
+        this.setState(state => ({
+          ...state,
+          newSubject: { ...state.newSubject, detail: target.value }
+        }));
+        break;
+    }
   };
 
   renderInputNewSubject = () => {
     return this.state.isAddNewSubject ? (
       <Col lg={8} md={10} sm={12} xs={24}>
         <div>
-          <Input placeholder="New Subject" onChange={this.inputChange} />
+          <Input name="id" placeholder="ID" onChange={this.inputChange} />
+          <Input
+            name="name"
+            placeholder="New subject name"
+            onChange={this.inputChange}
+          />
+          <Input
+            name="detail"
+            placeholder="Detail"
+            onChange={this.inputChange}
+          />
           <Row type="flex" justify="end">
             <Col>
               <Button
@@ -101,7 +141,13 @@ class SubjectSection extends Component<
               {this.props.subjects && this.props.subjects != [] ? (
                 this.props.subjects.map(subject => {
                   return (
-                    <Col lg={8} md={10} sm={12} xs={24}>
+                    <Col
+                      lg={8}
+                      md={10}
+                      sm={12}
+                      xs={24}
+                      key={'col' + subject._id}
+                    >
                       <div
                         style={{ padding: '10px' }}
                         onClick={() => this.handleChangeSubject(subject)}

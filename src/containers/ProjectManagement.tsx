@@ -11,7 +11,9 @@ import {
   fetchProjectMembers,
   fetchTasks,
   deleteProject,
-  deleteSubject
+  deleteSubject,
+  updateSubjectImage,
+  updateProjectImage
 } from '../actions';
 
 import DocumentData from 'firebase/firebase-firestore';
@@ -26,11 +28,25 @@ import ProjectTitle from '../components/Project/ProjectTitle';
 import { bindActionCreators } from 'redux';
 import { Student } from '../models';
 import { Redirect, withRouter } from 'react-router';
-import { Button, Row, Col, Icon, Spin, Divider } from 'antd';
+import {
+  Button,
+  Row,
+  Col,
+  Icon,
+  Spin,
+  Divider,
+  Popconfirm,
+  Modal,
+  Card
+} from 'antd';
 import Text from 'antd/lib/typography/Text';
+import ProjectIcons from '../images/project';
+import SubjectIcons from '../images/subject';
 
 interface IProjectManagementStates {
   isFetchSubjectDone: boolean;
+  isEditSubjectVisible: boolean;
+  isEditProjectVisible: boolean;
 }
 interface IProjectManagementProps {
   auth: { user: Student; isAuth: boolean; authId: string };
@@ -50,15 +66,24 @@ interface IProjectManagementProps {
   fetchProjectMembers: (projectId) => void;
   fetchTasks: (projectId) => void;
   fetchSubject: () => (dispatch: any) => Promise<void>;
-  createSubject: (subjectName: string) => void;
+  createSubject: (subject: Subject) => void;
   createProject: (projectName: string, subjectId: string) => void;
   changeSubject: (subjectId: string) => (dispatch: any) => void;
   changeProject: (projectId: string) => void;
   changeProjectBySubject: (subject: Subject) => void;
   deleteProject: (projectId: string, subjectId: string) => void;
   deleteSubject: (subjectId: string) => void;
+  updateSubjectImage: (subject: Subject, path: string) => void;
+  updateProjectImage: (
+    project: Project,
+    subjectId: string,
+    path: string
+  ) => void;
   history;
 }
+
+const confirmDeleteText = 'Are you sure to delete this subject?';
+const confirmDeleteProjectText = 'Are you sure to delete this project?';
 
 class ProjectManagement extends Component<
   IProjectManagementProps,
@@ -66,7 +91,11 @@ class ProjectManagement extends Component<
 > {
   constructor(props) {
     super(props);
-    this.state = { isFetchSubjectDone: false };
+    this.state = {
+      isFetchSubjectDone: false,
+      isEditProjectVisible: false,
+      isEditSubjectVisible: false
+    };
   }
 
   componentWillMount() {
@@ -74,8 +103,8 @@ class ProjectManagement extends Component<
     this.props.fetchSubject();
   }
 
-  handleSubjectCreate = (subjectName: string) => {
-    this.props.createSubject(subjectName);
+  handleSubjectCreate = (subject: Subject) => {
+    this.props.createSubject(subject);
   };
 
   handleSubjectChange = (subject: Subject) => {
@@ -104,6 +133,78 @@ class ProjectManagement extends Component<
     );
   };
 
+  showEditSubject = () => {
+    this.setState({ isEditSubjectVisible: true });
+  };
+
+  handleConfirmEditSubject = () => {
+    this.setState({ isEditSubjectVisible: false });
+  };
+
+  handleCancelEditSubject = () => {
+    this.setState({ isEditSubjectVisible: false });
+  };
+
+  handleChangeSubjectIcon = imgPath => {
+    this.props.updateSubjectImage(this.props.subjects.focusSubject, imgPath);
+  };
+
+  renderSubjectIconList = () => {
+    return (
+      <div>
+        {SubjectIcons.map(image => {
+          return (
+            <Button
+              key={image}
+              style={{ width: '100px', height: '100px' }}
+              onClick={() => this.handleChangeSubjectIcon(image)}
+            >
+              <img alt="subject image" src={image} />
+            </Button>
+          );
+        })}
+      </div>
+    );
+  };
+
+  showEditProject = () => {
+    this.setState({ isEditProjectVisible: true });
+  };
+
+  handleConfirmEditProject = () => {
+    this.setState({ isEditProjectVisible: false });
+  };
+
+  handleCancelEditProject = () => {
+    this.setState({ isEditProjectVisible: false });
+  };
+
+  handleChangeProjectIcon = imgPath => {
+    this.props.updateProjectImage(
+      this.props.projects.focusProject,
+      this.props.subjects.focusSubject._id,
+      imgPath
+    );
+  };
+
+  renderProjectIconList = () => {
+    return (
+      <div>
+        {ProjectIcons.map(image => {
+          return (
+            <Button
+              key={image}
+              style={{ width: '100px', height: '100px' }}
+              onClick={() => this.handleChangeProjectIcon(image)}
+            >
+              <img alt="project image" src={image} />
+            </Button>
+          );
+        })}
+      </div>
+    );
+  };
+
   renderSubjectActions = () => {
     return (
       <Row type="flex" justify="end">
@@ -111,22 +212,34 @@ class ProjectManagement extends Component<
           <Button
             shape="circle"
             size="large"
-            style={{ margin: '10px', border: 'transparent' }}
-            onClick={() => {
-              console.log('edit subject');
-            }}
+            style={{ margin: '10px', lineHeight: '0em' }}
+            onClick={() => this.showEditSubject()}
           >
             <Icon style={{ fontSize: '24px' }} type="setting" />
           </Button>
 
-          <Button
-            shape="circle"
-            size="large"
-            style={{ margin: '10px', border: 'transparent' }}
-            onClick={this.handleDeleteSubject}
+          <Modal
+            title="Subject Setting"
+            visible={this.state.isEditSubjectVisible}
+            onOk={this.handleConfirmEditSubject}
+            onCancel={this.handleCancelEditSubject}
           >
-            <Icon style={{ fontSize: '24px' }} type="delete" />
-          </Button>
+            {this.renderSubjectIconList()}
+          </Modal>
+
+          <Popconfirm
+            placement="topRight"
+            title={confirmDeleteText}
+            onConfirm={this.handleDeleteSubject}
+          >
+            <Button
+              shape="circle"
+              size="large"
+              style={{ margin: '10px', lineHeight: '0em' }}
+            >
+              <Icon style={{ fontSize: '24px' }} type="delete" />
+            </Button>
+          </Popconfirm>
         </Col>
       </Row>
     );
@@ -139,22 +252,36 @@ class ProjectManagement extends Component<
           <Button
             shape="circle"
             size="large"
-            style={{ margin: '10px', border: 'transparent' }}
+            style={{ margin: '10px', lineHeight: '0em' }}
             onClick={() => {
-              console.log('edit project');
+              this.showEditProject();
             }}
           >
             <Icon style={{ fontSize: '24px' }} type="setting" />
           </Button>
 
-          <Button
-            shape="circle"
-            size="large"
-            style={{ margin: '10px', border: 'transparent' }}
-            onClick={this.handleDeleteProject}
+          <Modal
+            title="Project Setting"
+            visible={this.state.isEditProjectVisible}
+            onOk={this.handleConfirmEditProject}
+            onCancel={this.handleCancelEditProject}
           >
-            <Icon style={{ fontSize: '24px' }} type="delete" />
-          </Button>
+            {this.renderProjectIconList()}
+          </Modal>
+
+          <Popconfirm
+            placement="topRight"
+            title={confirmDeleteProjectText}
+            onConfirm={this.handleDeleteProject}
+          >
+            <Button
+              shape="circle"
+              size="large"
+              style={{ margin: '10px', lineHeight: '0em' }}
+            >
+              <Icon style={{ fontSize: '24px' }} type="delete" />
+            </Button>
+          </Popconfirm>
         </Col>
       </Row>
     );
@@ -170,8 +297,8 @@ class ProjectManagement extends Component<
     }
 
     return (
-      <div>
-        <div>
+      <div className="container">
+        <div style={{ padding: '30px' }}>
           <SubjectSection
             subjects={subjects}
             chooseSubject={focusSubject}
@@ -182,34 +309,34 @@ class ProjectManagement extends Component<
           />
         </div>
 
-        <Divider />
-
         {isFocusSubject ? (
           <div>
-            {this.renderSubjectActions()}
+            <div style={{ padding: '30px' }}>
+              {this.renderSubjectActions()}
+              <Divider />
 
-            <ProjectSection
-              projects={projects}
-              chooseProject={focusProject}
-              isChooseProject={isFocusProject}
-              onChangeProject={this.handleProjectChange}
-              onCreateProject={this.handleProjectCreate}
-            />
-
-            <Divider />
+              <ProjectSection
+                projects={projects}
+                chooseProject={focusProject}
+                isChooseProject={isFocusProject}
+                onChangeProject={this.handleProjectChange}
+                onCreateProject={this.handleProjectCreate}
+              />
+            </div>
 
             {isFocusProject ? (
               <div>
                 {this.renderProjectActions()}
+                <Divider />
 
                 <ProjectTitle project={focusProject} />
                 <ProjectThing project={focusProject} subject={focusSubject} />
+
+                <Divider />
               </div>
             ) : (
-              <div />
+              <Divider />
             )}
-
-            <Divider />
           </div>
         ) : (
           <div />
@@ -240,7 +367,9 @@ const mapDispatchToProps = dispatch => {
       fetchProjectMembers,
       fetchTasks,
       deleteProject,
-      deleteSubject
+      deleteSubject,
+      updateSubjectImage,
+      updateProjectImage
     },
     dispatch
   );

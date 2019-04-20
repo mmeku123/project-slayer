@@ -14,7 +14,6 @@ export const createStudent = () => {
 
 export {
   addStudent,
-  authStudent,
   autoAuth,
   logOutUser,
   signInUser,
@@ -31,13 +30,15 @@ export {
   editProject,
   fetchProjectByIds,
   fetchProjectMembers,
-  updateProject
+  updateProject,
+  updateProjectImage
 } from './project';
 export {
   addSubjectMember,
   changeSubject,
   createSubject,
   deleteSubject,
-  fetchSubject
+  fetchSubject,
+  updateSubjectImage
 } from './subject';
-export { addTask, editTask, fetchTasks } from './task';
+export { addTask, editTask, fetchTasks, voteTask } from './task';
