@@ -28,7 +28,7 @@ class SignIn extends Component<ISignInProps, ISignInStates> {
   }
 
   componentDidUpdate() {
-    this.props.auth.isAuth ? this.props.history.push('/project') : null;
+    this.props.auth.isAuth ? this.props.history.push('/') : null;
   }
 
   handleSubmitSignIn = (email: string, password: string) => {

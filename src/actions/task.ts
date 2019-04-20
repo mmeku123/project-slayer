@@ -59,7 +59,9 @@ export const editTask = (
         .get()
         .then(doc => {
           const existedComments = doc.data().comments;
-          const commentId = doc.data().comments.length++;
+          const commentLength = doc.data().comments.length;
+          const commentId = commentLength == 0 ? 0 : commentLength;
+
           tasks
             .doc(taskId)
             .update({
@@ -68,7 +70,8 @@ export const editTask = (
                 Comment.toJson(
                   commentId.toString(),
                   localStorage.getItem('auth_id'),
-                  moment().format('L'),
+                  localStorage.getItem('auth_email'),
+                  moment().format('MM/DD/YYYY'),
                   newComment
                 )
               ]
@@ -77,6 +80,7 @@ export const editTask = (
               return dispatch(fetchTasks(projectId));
             });
         });
+      break;
     case 'delete_comment':
       const { commentId } = editData;
       tasks

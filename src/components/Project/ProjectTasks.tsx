@@ -405,13 +405,17 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               {task.comments.map((comment: Comment) => {
                 return (
                   <li key={comment._id + '$' + task._id}>
-                    {comment.detail} - {comment.ownerId} :{comment.time}
+                    {comment.detail} - {comment.ownerEmail}
+                    <i> {moment(comment.time).format('LL')}</i>
                     <Button
+                      shape="circle"
+                      type="danger"
                       onClick={() =>
                         this.handleDeleteComment(task._id, comment._id)
                       }
+                      style={{ margin: '8px', lineHeight: '0em' }}
                     >
-                      Delete
+                      <Icon type="delete" />
                     </Button>
                   </li>
                 );
@@ -489,14 +493,10 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               {task.comments.map((comment: Comment) => {
                 return (
                   <li key={comment.time + '@' + task._id + '$'}>
-                    {comment.detail} - {comment.ownerId} :{comment.time}
-                    <Button
-                      onClick={() =>
-                        this.handleDeleteComment(task._id, comment._id)
-                      }
-                    >
-                      Delete
-                    </Button>
+                    <div>
+                      {comment.detail} - {comment.ownerEmail}{' '}
+                      <i> {moment(comment.time).format('LL')}</i>
+                    </div>
                   </li>
                 );
               })}
