@@ -140,6 +140,7 @@ class SignUpForm extends Component<
             {CharacterAvatars.map(image => {
               return (
                 <Button
+                  key={image}
                   style={{ width: '90px', height: '90px', margin: '4px' }}
                   onClick={() => this.handleChangeAvatar(image)}
                 >

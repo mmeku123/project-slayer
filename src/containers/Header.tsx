@@ -17,7 +17,6 @@ interface IHeaderStates {}
 
 class Header extends Component<IHeaderProps, IHeaderStates> {
   componentWillMount() {
-    console.log('will mount');
     this.props.autoAuth();
   }
 

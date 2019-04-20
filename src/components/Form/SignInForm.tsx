@@ -11,7 +11,6 @@ class SignInForm extends Component<{
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.props.onSubmit(values.userName, values.password);
-        console.log('Received values of form: ', values);
       }
     });
   };

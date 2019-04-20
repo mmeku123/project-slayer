@@ -88,8 +88,6 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
         dueDate
       }
     }));
-
-    console.log(this.state.newSprint);
   };
 
   handleCreateSprint = () => {
@@ -152,6 +150,7 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
             {MonsterAvatars.map(image => {
               return (
                 <Button
+                  key={image}
                   style={{ width: '100px', height: '100px' }}
                   onClick={() => this.handleChangeMonsterAvatar(image)}
                 >
@@ -295,7 +294,6 @@ class ProjectTime extends Component<IProjectTimeProps, IProjectTimeStates> {
 
   render() {
     let schedule = this.props.schedule;
-    console.log(schedule.sprints);
     return (
       <div style={{ textAlign: 'center' }}>
         <Title>Project Schedule</Title>

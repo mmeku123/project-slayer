@@ -25,7 +25,6 @@ class SignUp extends Component<
   }
 
   handleSubmitSignUp = (email, password, profile) => {
-    console.log(profile);
     this.props.signUpUser(email, password, profile);
   };
 

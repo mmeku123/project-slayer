@@ -38,7 +38,7 @@ class Task {
       detail: task.detail,
       owner: localStorage.getItem('auth_email'),
       isDone: task.isDone,
-      comments: task.comments,
+      comments: task.comments || [],
       startDate: task.startDate || moment().format('MM/DD/YYYY'),
       dueDate: task.dueDate || moment().format('MM/DD/YYYY')
     };

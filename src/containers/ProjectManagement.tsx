@@ -155,6 +155,7 @@ class ProjectManagement extends Component<
         {SubjectIcons.map(image => {
           return (
             <Button
+              key={image}
               style={{ width: '100px', height: '100px' }}
               onClick={() => this.handleChangeSubjectIcon(image)}
             >
@@ -192,6 +193,7 @@ class ProjectManagement extends Component<
         {ProjectIcons.map(image => {
           return (
             <Button
+              key={image}
               style={{ width: '100px', height: '100px' }}
               onClick={() => this.handleChangeProjectIcon(image)}
             >

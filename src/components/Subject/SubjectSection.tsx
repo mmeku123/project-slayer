@@ -40,7 +40,6 @@ class SubjectSection extends Component<
   }
 
   handleChangeSubject = (subject: Subject) => {
-    console.log(subject);
     this.props.onChangeSubject(subject);
   };
 
@@ -142,7 +141,13 @@ class SubjectSection extends Component<
               {this.props.subjects && this.props.subjects != [] ? (
                 this.props.subjects.map(subject => {
                   return (
-                    <Col lg={8} md={10} sm={12} xs={24}>
+                    <Col
+                      lg={8}
+                      md={10}
+                      sm={12}
+                      xs={24}
+                      key={'col' + subject._id}
+                    >
                       <div
                         style={{ padding: '10px' }}
                         onClick={() => this.handleChangeSubject(subject)}

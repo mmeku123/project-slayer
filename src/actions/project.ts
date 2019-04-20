@@ -169,8 +169,6 @@ export const addSprint = (
 
   const { name, detail, dueDate, img } = sprintDetail;
 
-  console.log(sprintDetail);
-
   projects
     .doc(projectId)
     .get()

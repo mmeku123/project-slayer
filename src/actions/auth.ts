@@ -58,7 +58,6 @@ export const signUpUser = (
     .auth()
     .createUserWithEmailAndPassword(email, password)
     .then(user => {
-      console.log(user);
       dispatch(createUser(user.user, profile));
       dispatch(signInUser(email, password));
     })
@@ -104,9 +103,6 @@ export const logOutUser = () => async dispatch => {
   localStorage.removeItem('auth_id');
   localStorage.removeItem('auth_email');
   localStorage.removeItem('auth_password');
-
-  console.log('logout');
-
   firebase
     .auth()
     .signOut()

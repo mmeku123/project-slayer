@@ -86,7 +86,12 @@ class ProjectMembers extends Component<
           {members &&
             members.map(member => {
               return (
-                <Col md={8} xs={12} style={{ margin: '24px' }}>
+                <Col
+                  md={8}
+                  xs={12}
+                  style={{ margin: '24px' }}
+                  key={'col' + member._id}
+                >
                   <Card
                     hoverable
                     key={member._id}
