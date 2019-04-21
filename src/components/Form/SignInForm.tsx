@@ -67,7 +67,7 @@ class SignInForm extends Component<{
             </Col>
           </Row>
           <Row>
-            Or <a href="/signup">register now!</a>
+            Or <Link to="/signup">register now!</Link>
           </Row>
         </Form.Item>
       </Form>
