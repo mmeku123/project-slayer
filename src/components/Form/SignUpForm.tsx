@@ -160,7 +160,7 @@ class SignUpForm extends Component<
               >
                 Cancel
               </Button>
-            </>
+            </Link>
           </Col>
           <Col span={16} offset={2}>
             <Button
