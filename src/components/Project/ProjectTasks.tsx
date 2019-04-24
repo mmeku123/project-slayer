@@ -408,25 +408,29 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               <div />
             )}
             <ul>
-              comment
-              {task.comments.map((comment: Comment) => {
-                return (
-                  <li key={comment._id + '$' + task._id}>
-                    {comment.detail} - {comment.ownerEmail}
-                    <i> {moment(comment.time).format('LL')}</i>
-                    <Button
-                      shape="circle"
-                      type="danger"
-                      onClick={() =>
-                        this.handleDeleteComment(task._id, comment._id)
-                      }
-                      style={{ margin: '8px', lineHeight: '0em' }}
-                    >
-                      <Icon type="delete" />
-                    </Button>
-                  </li>
-                );
-              })}
+              <Text strong>Comment</Text>
+              {task.comments.length == 0 ? (
+                <div>No comment yet</div>
+              ) : (
+                task.comments.map((comment: Comment) => {
+                  return (
+                    <li key={comment._id + '$' + task._id}>
+                      {comment.detail} - {comment.ownerEmail}
+                      <i> {moment(comment.time).format('LL')}</i>
+                      <Button
+                        shape="circle"
+                        type="danger"
+                        onClick={() =>
+                          this.handleDeleteComment(task._id, comment._id)
+                        }
+                        style={{ margin: '8px', lineHeight: '0em' }}
+                      >
+                        <Icon type="delete" />
+                      </Button>
+                    </li>
+                  );
+                })
+              )}
             </ul>
             <br />
             <Button onClick={this.cancelEdit}>Cancel</Button>
@@ -521,17 +525,21 @@ class ProjectTasks extends Component<IProjectTasksProps, IProjectTasksStates> {
               <div />
             )}
             <ul>
-              Comment
-              {task.comments.map((comment: Comment) => {
-                return (
-                  <li key={comment.time + '@' + task._id + '$'}>
-                    <div>
-                      {comment.detail} - {comment.ownerEmail}{' '}
-                      <i> {moment(comment.time).format('LL')}</i>
-                    </div>
-                  </li>
-                );
-              })}
+              <Text strong>Comment</Text>
+              {task.comments.length == 0 ? (
+                <div>No comment yet</div>
+              ) : (
+                task.comments.map((comment: Comment) => {
+                  return (
+                    <li key={comment.time + '@' + task._id + '$'}>
+                      <div>
+                        {comment.detail} - {comment.ownerEmail}{' '}
+                        <i> {moment(comment.time).format('LL')}</i>
+                      </div>
+                    </li>
+                  );
+                })
+              )}
               {this.state.isAddComment && task._id == this.state.editTaskId ? (
                 <div>
                   <Input
