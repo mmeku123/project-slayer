@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 
 import { Form, Icon, Input, Button, Checkbox, Row, Col } from 'antd';
 
-import CharacterAvatars from '../../images/avatar';
+import CharacterAvatars, {
+  student as StudentAvatar
+} from '../../images/avatar';
 import { Link } from 'react-router-dom';
 
 class SignUpForm extends Component<
@@ -14,7 +16,7 @@ class SignUpForm extends Component<
 > {
   constructor(props) {
     super(props);
-    this.state = { profileImg: CharacterAvatars[0] };
+    this.state = { profileImg: StudentAvatar };
   }
 
   handleChangeAvatar = imgPath => {

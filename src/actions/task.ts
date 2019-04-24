@@ -4,10 +4,19 @@ import firebase from '../firebase';
 import { Task, Comment } from '../models';
 import moment from 'moment';
 
+import {
+  showErrorNotification,
+  showLoadingNotification,
+  showSuccessNotification,
+  showWarningNotification
+} from './actor';
+
 const db = firebase.firestore();
 const tasks = db.collection('tasks');
 
 export const addTask = (projectId: string, newTask: Task) => async dispatch => {
+  dispatch(showLoadingNotification('Adding...'));
+
   tasks.add(Task.toJson(projectId, newTask)).then(() => {
     return dispatch(fetchTasks(projectId));
   });
@@ -26,8 +35,10 @@ export const fetchTasks = (projectId: string) => async dispatch => {
         });
         return task;
       });
-      return dispatch({ type: FETCH_TASKS, payload: { tasksByTime } });
-    });
+      dispatch({ type: FETCH_TASKS, payload: { tasksByTime } });
+      dispatch(showSuccessNotification('Done'));
+    })
+    .catch(error => dispatch(showErrorNotification(error.message)));
 };
 
 export const voteTask = (
@@ -35,6 +46,8 @@ export const voteTask = (
   taskId: string,
   voteStatus
 ) => async dispatch => {
+  dispatch(showLoadingNotification('Voting...'));
+
   const userId = localStorage.getItem('auth_id');
 
   tasks
@@ -60,6 +73,8 @@ export const editTask = (
   taskId: string,
   editData
 ) => async dispatch => {
+  dispatch(showLoadingNotification('Editing...'));
+
   switch (editData.type) {
     case 'detail':
       const {

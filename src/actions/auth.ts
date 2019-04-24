@@ -5,13 +5,20 @@ import {
   FETCH_USER
 } from './types';
 
+import {
+  showNotification,
+  showErrorNotification,
+  showLoadingNotification,
+  showSuccessNotification
+} from './actor';
+
 import firebase from '../firebase';
 import { Student } from '../models';
 
 const db = firebase.firestore();
 const users = db.collection('users');
 
-export const addStudent = studentId => {
+export const addStudent = studentId => async dispatch => {
   users
     .doc(studentId)
     .get()
@@ -32,10 +39,15 @@ export const addStudent = studentId => {
 };
 
 const createUser = (user: firebase.User, profile) => async dispatch => {
+  dispatch(showLoadingNotification('Signing up...'));
+
   users
     .doc(user.uid)
     .set(Student.toJson(user.uid, profile))
-    .then(() => dispatch(fetchUser(user.uid)));
+    .then(() => {
+      dispatch(fetchUser(user.uid));
+    })
+    .catch(error => dispatch(showErrorNotification(error.message)));
 };
 
 const fetchUser = (userId: string) => async dispatch => {
@@ -46,7 +58,8 @@ const fetchUser = (userId: string) => async dispatch => {
       const user = Student.fromMap(doc.id, doc.data());
 
       return dispatch({ type: FETCH_USER, payload: { user } });
-    });
+    })
+    .catch(error => dispatch(showErrorNotification(error.message)));
 };
 
 export const signUpUser = (
@@ -59,10 +72,11 @@ export const signUpUser = (
     .createUserWithEmailAndPassword(email, password)
     .then(user => {
       dispatch(createUser(user.user, profile));
+      dispatch(showSuccessNotification('Sign up !'));
       dispatch(signInUser(email, password));
     })
     .catch(error => {
-      console.log(error.code, error.message);
+      dispatch(showErrorNotification(error.message));
     });
 };
 
@@ -70,6 +84,8 @@ export const signInUser = (
   email: string,
   password: string
 ) => async dispatch => {
+  dispatch(showLoadingNotification('Signing in...'));
+
   firebase
     .auth()
     .signInWithEmailAndPassword(email, password)
@@ -80,13 +96,13 @@ export const signInUser = (
         localStorage.setItem('auth_id', user.uid);
         localStorage.setItem('auth_email', email);
         localStorage.setItem('auth_password', password);
-        return dispatch({ type: AUTH_USER, payload: { userId: user.uid } });
+        console.log('log in as id ', localStorage.getItem('auth_id'));
+        dispatch({ type: AUTH_USER, payload: { userId: user.uid } });
+        dispatch(showSuccessNotification('Sign in !'));
       }
     })
     .catch(error => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
+      dispatch(showErrorNotification(error.message));
     });
 };
 
@@ -100,13 +116,11 @@ export const autoAuth = () => async dispatch => {
 };
 
 export const logOutUser = () => async dispatch => {
-  localStorage.removeItem('auth_id');
-  localStorage.removeItem('auth_email');
-  localStorage.removeItem('auth_password');
   firebase
     .auth()
     .signOut()
     .then(() => {
-      return dispatch({ type: LOG_OUT_USER });
+      dispatch({ type: LOG_OUT_USER });
+      dispatch(showNotification('Log out !'));
     });
 };

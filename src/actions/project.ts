@@ -12,6 +12,13 @@ import {
 
 import Project, { ProjectSprint } from '../models/Project';
 
+import {
+  showErrorNotification,
+  showLoadingNotification,
+  showSuccessNotification,
+  showWarningNotification
+} from './actor';
+
 // import axios from 'axios';
 import firebase from '../firebase';
 import { Student } from '../models';
@@ -29,6 +36,8 @@ export const updateProjectImage = (
   subjectId,
   imagePath
 ) => async dispatch => {
+  dispatch(showLoadingNotification('Updating...'));
+
   projects
     .doc(project._id)
     .update({ img: imagePath })
@@ -38,7 +47,9 @@ export const updateProjectImage = (
         .get()
         .then(doc => {
           const projects = doc.data().projectIds;
+
           dispatch(fetchProjectByIds(projects));
+          dispatch(showSuccessNotification('Update success'));
         });
     });
 };
@@ -47,23 +58,25 @@ export const createProject = (
   projectName: string,
   subjectId: string
 ) => async dispatch => {
-  dispatch({ type: LOAD_PROJECT });
+  dispatch(showLoadingNotification('Creating...'));
 
-  const req = await projects.add(Project.toJson(projectName, authId));
-
-  dispatch({
-    type: ADD_PROJECT_SUCCESS,
-    payload: { id: req.id, name: projectName, studentId: authId }
-  });
-  return dispatch(addProjectToSubject(req.id, subjectId));
+  projects
+    .add(Project.toJson(projectName, authId))
+    .then(doc => {
+      dispatch({
+        type: ADD_PROJECT_SUCCESS,
+        payload: { id: doc.id, name: projectName, studentId: authId }
+      });
+      dispatch(addProjectToSubject(doc.id, subjectId));
+      dispatch(showSuccessNotification('Create success'));
+    })
+    .catch(error => dispatch(showErrorNotification(error.message)));
 };
 
 export const addProjectToSubject = (
   projectId: string,
   subjectId: string
 ) => async dispatch => {
-  dispatch({ type: LOAD_PROJECT });
-
   const req = await subjects.doc(subjectId);
   const doc = await req.get();
   const projectIds = await doc.data().projectIds;
@@ -76,14 +89,14 @@ export const addProjectToSubject = (
 };
 
 export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
-  dispatch({ type: LOAD_PROJECT });
+  dispatch(showLoadingNotification('Loading...'));
 
   const userProjects: Project[] = [];
 
   if (projectIds.length == 0) {
     return dispatch({ type: FETCH_PROJECTS, payload: { projects: [] } });
   } else {
-    const res = projectIds.forEach(projectId => {
+    projectIds.forEach(projectId => {
       projects
         .doc(projectId)
         .get()
@@ -113,13 +126,14 @@ export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
             type: FETCH_PROJECTS,
             payload: { projects: userProjects }
           });
-        });
+        })
+        .catch(error => dispatch(showErrorNotification(error.message)));
     });
   }
 };
 
 export const updateProject = (projectId: string) => async dispatch => {
-  dispatch({ type: LOAD_PROJECT });
+  dispatch(showLoadingNotification('Loading...'));
 
   projects
     .doc(projectId)
@@ -127,13 +141,13 @@ export const updateProject = (projectId: string) => async dispatch => {
     .then(doc => {
       const project = Project.fromMap(doc.id, doc.data());
 
-      return dispatch({ type: UPDATE_PROJECT, payload: { project } });
-    });
+      dispatch({ type: UPDATE_PROJECT, payload: { project } });
+      dispatch(showSuccessNotification('Success'));
+    })
+    .catch(error => dispatch(showErrorNotification(error.message)));
 };
 
 export const changeProject = projectId => async dispatch => {
-  dispatch({ type: LOAD_PROJECT });
-
   dispatch({ type: TOGGLE_SHOW_PROJECT });
   return dispatch({ type: CHANGE_PROJECT, projectId });
 };
@@ -143,7 +157,7 @@ export const editProject = (
   editType: EditType,
   value
 ) => async dispatch => {
-  dispatch({ type: LOAD_PROJECT });
+  dispatch(showLoadingNotification('Updating...'));
 
   let editData = {};
 
@@ -156,8 +170,10 @@ export const editProject = (
     .doc(projectId)
     .update(editData)
     .then(() => {
-      return dispatch(updateProject(projectId));
-    });
+      dispatch(updateProject(projectId));
+      dispatch(showSuccessNotification('Success'));
+    })
+    .catch(error => dispatch(showErrorNotification(error.message)));
 };
 
 export const addSprint = (
@@ -165,8 +181,6 @@ export const addSprint = (
   editType: EditType,
   sprintDetail
 ) => async dispatch => {
-  dispatch({ type: LOAD_PROJECT });
-
   const { name, detail, dueDate, img } = sprintDetail;
 
   projects
@@ -190,8 +204,9 @@ export const addSprint = (
           }
         })
         .then(() => {
-          return dispatch(updateProject(projectId));
-        });
+          dispatch(updateProject(projectId));
+        })
+        .catch(error => dispatch(showErrorNotification(error.message)));
     });
 };
 
@@ -199,7 +214,7 @@ export const deleteSprint = (
   projectId: string,
   sprintId: string
 ) => async dispatch => {
-  dispatch({ type: LOAD_PROJECT });
+  dispatch(showLoadingNotification('Deleting Sprint...'));
 
   projects
     .doc(projectId)
@@ -221,8 +236,10 @@ export const deleteSprint = (
           }
         })
         .then(() => {
-          return dispatch(updateProject(projectId));
-        });
+          dispatch(updateProject(projectId));
+          dispatch(showSuccessNotification('Success'));
+        })
+        .catch(error => dispatch(showErrorNotification(error.message)));
     });
 };
 
@@ -230,7 +247,7 @@ export const deleteProject = (
   projectId: string,
   subjectId
 ) => async dispatch => {
-  dispatch({ type: LOAD_PROJECT });
+  dispatch(showLoadingNotification('Deleting Project...'));
 
   subjects
     .doc(subjectId)
@@ -246,14 +263,19 @@ export const deleteProject = (
       subjects
         .doc(subjectId)
         .update({ projectIds: remainedProjects })
-        .then(() => dispatch(fetchProjectByIds(remainedProjects)));
+        .then(() => dispatch(fetchProjectByIds(remainedProjects)))
+        .catch(error => dispatch(showErrorNotification(error.message)));
 
-      projects.doc(projectId).delete();
+      projects
+        .doc(projectId)
+        .delete()
+        .then(() => dispatch(showSuccessNotification('Success')))
+        .catch(error => dispatch(showErrorNotification(error.message)));
     });
 };
 
 export const addProjectMember = (projectId, memberEmail) => async dispatch => {
-  dispatch({ type: LOAD_PROJECT });
+  dispatch(showLoadingNotification('Adding Member...'));
 
   projects
     .doc(projectId)
@@ -278,12 +300,18 @@ export const addProjectMember = (projectId, memberEmail) => async dispatch => {
               projects
                 .doc(projectId)
                 .update({ studentIds: [...projectMembers, member.id] })
-                .then(() => dispatch(fetchProjectMembers(projectId)));
+                .then(() => {
+                  dispatch(fetchProjectMembers(projectId));
+                  dispatch(showSuccessNotification('Success'));
+                })
+                .catch(error => dispatch(showErrorNotification(error.message)));
             } else {
-              console.log('member duplicate');
+              dispatch(showWarningNotification('member duplicated'));
             }
           } else {
-            console.log('error with the email');
+            dispatch(
+              showWarningNotification('member with this email not found')
+            );
           }
         });
     });
@@ -291,7 +319,8 @@ export const addProjectMember = (projectId, memberEmail) => async dispatch => {
 
 export const fetchProjectMembers = projectId => async dispatch => {
   const members = [];
-  dispatch({ type: LOAD_PROJECT });
+
+  dispatch(showLoadingNotification('Loading...'));
 
   projects
     .doc(projectId)
@@ -305,11 +334,13 @@ export const fetchProjectMembers = projectId => async dispatch => {
             members.push(Student.fromMap(doc.id, doc.data()));
           })
           .then(() => {
-            return dispatch({
+            dispatch({
               type: FETCH_PROJECT_MEMBERS,
               payload: members
             });
-          });
+            dispatch(showSuccessNotification('Success'));
+          })
+          .catch(error => dispatch(showErrorNotification(error.message)));
       });
     });
 };

@@ -34,11 +34,11 @@ class Student implements User {
   static toJson(_id, data) {
     return {
       _id,
-      email: data.email,
-      id: data.id,
-      name: data.name,
-      phone: data.phone,
-      job: data.job,
+      email: data.email || 'temp@1234.com',
+      id: data.id || '123456789',
+      name: data.name || 'Anonymous',
+      phone: data.phone || 'xxx-xxx',
+      job: data.job || 'Guest',
       img: data.img
     };
   }

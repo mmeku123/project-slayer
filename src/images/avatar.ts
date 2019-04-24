@@ -20,4 +20,5 @@ const CharacterAvatar = [
   teacher
 ];
 
+export { student };
 export default CharacterAvatar;

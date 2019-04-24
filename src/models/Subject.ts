@@ -32,8 +32,8 @@ class Subject {
 
     return {
       name,
-      id: subject.id,
-      detail: subject.detail,
+      id: subject.id || '',
+      detail: subject.detail || '',
       studentIds: studentIdList,
       projectIds: []
     };

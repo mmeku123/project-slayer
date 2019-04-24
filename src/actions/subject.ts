@@ -12,12 +12,21 @@ const db = firebase.firestore();
 const subjects = db.collection('subjects');
 const users = db.collection('users');
 
+import {
+  showErrorNotification,
+  showLoadingNotification,
+  showSuccessNotification,
+  showWarningNotification
+} from './actor';
+
 const authId = localStorage.getItem('auth_id');
 
 export const updateSubjectImage = (
   subject: Subject,
   imagePath: string
 ) => async dispatch => {
+  dispatch(showLoadingNotification('Updating...'));
+
   subjects
     .doc(subject._id)
     .update({ img: imagePath })
@@ -40,17 +49,18 @@ export const fetchSubject = () => async dispatch => {
       userSubjects.push(Subject.fromMap(doc.id, doc.data()));
   });
 
-  return dispatch({ type: FETCH_SUBJECT, payload: userSubjects });
+  dispatch({ type: FETCH_SUBJECT, payload: userSubjects });
 };
 
 export const createSubject = subject => async dispatch => {
-  dispatch({ type: LOAD_SUBJECT });
+  dispatch(showLoadingNotification('Creating...'));
 
   const req = subjects
     .add(Subject.toJson(subject.name, authId, subject))
     .then(ref => {
       return dispatch(fetchSubject());
-    });
+    })
+    .catch(error => dispatch(showErrorNotification(error.message)));
 };
 
 export const changeSubject = subjectId => async dispatch => {
@@ -59,12 +69,13 @@ export const changeSubject = subjectId => async dispatch => {
 };
 
 export const deleteSubject = (subjectId: string) => async dispatch => {
-  dispatch({ type: LOAD_SUBJECT });
+  dispatch(showLoadingNotification('Deleting...'));
 
   subjects
     .doc(subjectId)
     .delete()
-    .then(() => dispatch(fetchSubject()));
+    .then(() => dispatch(fetchSubject()))
+    .catch(error => dispatch(showErrorNotification(error.message)));
 };
 
 export const addSubjectMember = (subjectId, memberEmail) => async dispatch => {
@@ -99,5 +110,6 @@ export const addSubjectMember = (subjectId, memberEmail) => async dispatch => {
             console.log('error with the email');
           }
         });
-    });
+    })
+    .catch(error => dispatch(showErrorNotification(error.message)));
 };
