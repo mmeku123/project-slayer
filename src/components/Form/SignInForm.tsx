@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { Form, Icon, Input, Button, Row, Col } from 'antd';
+import { Link } from 'react-router-dom';
 
 class SignInForm extends Component<{
   form;
@@ -67,7 +68,7 @@ class SignInForm extends Component<{
             </Col>
           </Row>
           <Row>
-            Or <a href="/signup">register now!</a>
+            Or <Link to="/signup">register now!</Link>
           </Row>
         </Form.Item>
       </Form>

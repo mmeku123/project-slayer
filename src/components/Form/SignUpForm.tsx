@@ -152,7 +152,7 @@ class SignUpForm extends Component<
         </Form.Item>
         <Row>
           <Col span={6}>
-            <a href="/">
+            <Link to="/">
               <Button
                 style={{ width: '100%' }}
                 type="default"
@@ -160,7 +160,7 @@ class SignUpForm extends Component<
               >
                 Cancel
               </Button>
-            </a>
+            </Link>
           </Col>
           <Col span={16} offset={2}>
             <Button
@@ -181,6 +181,6 @@ class SignUpForm extends Component<
   }
 }
 
-const WrappedSignInForm = Form.create({ name: 'normal_login' })(SignUpForm);
+const WrappedSignUpForm = Form.create({ name: 'normal_register' })(SignUpForm);
 
-export default WrappedSignInForm;
+export default WrappedSignUpForm;
