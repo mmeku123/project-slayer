@@ -5,6 +5,8 @@ import {
   FETCH_USER
 } from './types';
 
+import { fetchSubject } from './subject';
+
 import {
   showNotification,
   showErrorNotification,
@@ -99,6 +101,7 @@ export const signInUser = (
         console.log('log in as id ', localStorage.getItem('auth_id'));
         dispatch({ type: AUTH_USER, payload: { userId: user.uid } });
         dispatch(showSuccessNotification('Sign in !'));
+        dispatch(fetchSubject());
       }
     })
     .catch(error => {
@@ -111,7 +114,7 @@ export const autoAuth = () => async dispatch => {
   const password = localStorage.getItem('auth_password');
 
   if (email && password) {
-    return dispatch(signInUser(email, password));
+    dispatch(signInUser(email, password));
   }
 };
 
@@ -120,6 +123,9 @@ export const logOutUser = () => async dispatch => {
     .auth()
     .signOut()
     .then(() => {
+      localStorage.removeItem('auth_id');
+      localStorage.removeItem('auth_email');
+      localStorage.removeItem('auth_password');
       dispatch({ type: LOG_OUT_USER });
       dispatch(showNotification('Log out !'));
     });
