@@ -36,8 +36,6 @@ export const updateProjectImage = (
   subjectId,
   imagePath
 ) => async dispatch => {
-  dispatch(showLoadingNotification('Updating...'));
-
   projects
     .doc(project._id)
     .update({ img: imagePath })
@@ -49,7 +47,6 @@ export const updateProjectImage = (
           const projects = doc.data().projectIds;
 
           dispatch(fetchProjectByIds(projects));
-          dispatch(showSuccessNotification('Update success'));
         });
     });
 };
@@ -89,8 +86,6 @@ export const addProjectToSubject = (
 };
 
 export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
-  dispatch(showLoadingNotification('Loading...'));
-
   const userProjects: Project[] = [];
 
   if (projectIds.length == 0) {
@@ -133,8 +128,6 @@ export const fetchProjectByIds = (projectIds: string[]) => async dispatch => {
 };
 
 export const updateProject = (projectId: string) => async dispatch => {
-  dispatch(showLoadingNotification('Loading...'));
-
   projects
     .doc(projectId)
     .get()
@@ -142,7 +135,6 @@ export const updateProject = (projectId: string) => async dispatch => {
       const project = Project.fromMap(doc.id, doc.data());
 
       dispatch({ type: UPDATE_PROJECT, payload: { project } });
-      dispatch(showSuccessNotification('Success'));
     })
     .catch(error => dispatch(showErrorNotification(error.message)));
 };
@@ -320,8 +312,6 @@ export const addProjectMember = (projectId, memberEmail) => async dispatch => {
 export const fetchProjectMembers = projectId => async dispatch => {
   const members = [];
 
-  dispatch(showLoadingNotification('Loading...'));
-
   projects
     .doc(projectId)
     .get()
@@ -338,7 +328,6 @@ export const fetchProjectMembers = projectId => async dispatch => {
               type: FETCH_PROJECT_MEMBERS,
               payload: members
             });
-            dispatch(showSuccessNotification('Success'));
           })
           .catch(error => dispatch(showErrorNotification(error.message)));
       });

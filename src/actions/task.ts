@@ -36,7 +36,6 @@ export const fetchTasks = (projectId: string) => async dispatch => {
         return task;
       });
       dispatch({ type: FETCH_TASKS, payload: { tasksByTime } });
-      dispatch(showSuccessNotification('Done'));
     })
     .catch(error => dispatch(showErrorNotification(error.message)));
 };
