@@ -47,6 +47,8 @@ interface IProjectManagementStates {
   isFetchSubjectDone: boolean;
   isEditSubjectVisible: boolean;
   isEditProjectVisible: boolean;
+  subjectImg: string;
+  projectImg: string;
 }
 interface IProjectManagementProps {
   auth: { user: Student; isAuth: boolean; authId: string };
@@ -92,6 +94,8 @@ class ProjectManagement extends Component<
   constructor(props) {
     super(props);
     this.state = {
+      subjectImg: SubjectIcons[0],
+      projectImg: ProjectIcons[0],
       isFetchSubjectDone: false,
       isEditProjectVisible: false,
       isEditSubjectVisible: false
@@ -109,7 +113,9 @@ class ProjectManagement extends Component<
 
   handleSubjectChange = (subject: Subject) => {
     this.props.changeSubject(subject._id);
-    this.setState({ isFetchSubjectDone: true });
+    this.setState({
+      isFetchSubjectDone: true
+    });
   };
 
   handleProjectCreate = (projectName: string) => {
@@ -138,6 +144,11 @@ class ProjectManagement extends Component<
   };
 
   handleConfirmEditSubject = () => {
+    this.props.updateSubjectImage(
+      this.props.subjects.focusSubject,
+      this.state.subjectImg
+    );
+
     this.setState({ isEditSubjectVisible: false });
   };
 
@@ -146,7 +157,7 @@ class ProjectManagement extends Component<
   };
 
   handleChangeSubjectIcon = imgPath => {
-    this.props.updateSubjectImage(this.props.subjects.focusSubject, imgPath);
+    this.setState({ subjectImg: imgPath });
   };
 
   renderSubjectIconList = () => {
@@ -172,6 +183,11 @@ class ProjectManagement extends Component<
   };
 
   handleConfirmEditProject = () => {
+    this.props.updateProjectImage(
+      this.props.projects.focusProject,
+      this.props.subjects.focusSubject._id,
+      this.state.projectImg
+    );
     this.setState({ isEditProjectVisible: false });
   };
 
@@ -180,11 +196,7 @@ class ProjectManagement extends Component<
   };
 
   handleChangeProjectIcon = imgPath => {
-    this.props.updateProjectImage(
-      this.props.projects.focusProject,
-      this.props.subjects.focusSubject._id,
-      imgPath
-    );
+    this.setState({ projectImg: imgPath });
   };
 
   renderProjectIconList = () => {
